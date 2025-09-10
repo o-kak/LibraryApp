@@ -10,13 +10,10 @@ namespace Model
     {
         public List<Reader> Readers;
         public List<Book> Books;
-
-        private Random random;
         public LibraryManager()
         {
             Readers = new List<Reader>();
             Books = new List<Book>();
-            random = new Random();
         }
 
         public void AddReader(string name, string address)
