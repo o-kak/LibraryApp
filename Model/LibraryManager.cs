@@ -63,5 +63,15 @@ namespace Model
         {
             return _books.Where(book =>  !book.IsAvailable);
         }
+
+        public IEnumerable<Book> FilterBooksByGenre(string genre)
+        {
+            return _books.Where(book => book.Genre == genre);
+        }
+
+        public IEnumerable<Book> FilterBooksByAuthor(string author)
+        {
+            return _books.Where(book => book.Author == author);
+        }
     }
 }
