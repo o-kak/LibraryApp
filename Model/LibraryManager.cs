@@ -20,6 +20,11 @@ namespace Model
             _books = new List<Book>();
         }
 
+        /// <summary>
+        /// добавить читателя в коллекцию
+        /// </summary>
+        /// <param name="name">имя читателя</param>
+        /// <param name="address">адрес читателя</param>
         public void AddReader(string name, string address)
         {
             int id = _readers.Count + 1;
@@ -27,16 +32,36 @@ namespace Model
             _readers.Add(reader);
         }
 
+        /// <summary>
+        /// добавить книгу в фонд, добавляет книгу в коллекцию
+        /// </summary>
+        /// <param name="title">название книги</param>
+        /// <param name="author">автор книги</param>
+        /// <param name="genre">жанр книги</param>
         public void AddBook(string title, string author, string genre)
         {
             Book book = new Book(title, author, genre);
             _books.Add(book);
         }
 
+        /// <summary>
+        /// удалить читателя из списка
+        /// </summary>
+        /// <param name="reader">читатель</param>
         public void DeleteReader(Reader reader) => _readers.Remove(reader);
 
+        /// <summary>
+        /// удалить книгу из списка
+        /// </summary>
+        /// <param name="book">книга</param>
         public void DeleteBook(Book book) => _books.Remove(book);
 
+        /// <summary>
+        /// дать книгу читателю: вызывает у читателя метод BorrowBook, меняет статус доступности книги на ложь
+        /// </summary>
+        /// <param name="book">книга</param>
+        /// <param name="reader">читатель</param>
+        /// <exception cref="InvalidOperationException">книга недоступна</exception>
         public void GiveBook(Book book, Reader reader)
         {
             if (!book.IsAvailable)
@@ -46,6 +71,12 @@ namespace Model
             book.UpdateAvailability(false);
         }
 
+        /// <summary>
+        /// вернуть книгу: вызывает у читателя метод ReturnBook, меняет статус доступности книги на правду
+        /// </summary>
+        /// <param name="book"></param>
+        /// <param name="reader"></param>
+        /// <exception cref="InvalidOperationException"></exception>
         public void ReturnBook(Book book, Reader reader)
         {
             if (!reader.ReturnBook(book))
@@ -54,21 +85,39 @@ namespace Model
             book.UpdateAvailability(true);
         }
 
+        /// <summary>
+        /// вывод книг, которые есть в фонде
+        /// </summary>
+        /// <returns>коллекция доступных книг</returns>
         public IEnumerable<Book> GetAvailableBooks()
         {
             return _books.Where(book => book.IsAvailable);
         }
 
+        /// <summary>
+        /// вывод книг, которых нет в фонде
+        /// </summary>
+        /// <returns>коллекция недоступных книг</returns>
         public IEnumerable<Book> GetBorrowedBooks()
         {
             return _books.Where(book =>  !book.IsAvailable);
         }
 
+        /// <summary>
+        /// фильтрация книг по жанру
+        /// </summary>
+        /// <param name="genre">жанр</param>
+        /// <returns>коллекция отфильтрованных книг</returns>
         public IEnumerable<Book> FilterBooksByGenre(string genre)
         {
             return _books.Where(book => book.Genre == genre);
         }
 
+        /// <summary>
+        /// фильтрация книг по автору
+        /// </summary>
+        /// <param name="author">автор</param>
+        /// <returns>коллекция отфильтрованных книг</returns>
         public IEnumerable<Book> FilterBooksByAuthor(string author)
         {
             return _books.Where(book => book.Author == author);
