@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    internal class LibraryManager
+    public class LibraryManager
     {
         private readonly List<Reader> _readers = new List<Reader>();
         private readonly List<Book> _books = new List<Book>();
