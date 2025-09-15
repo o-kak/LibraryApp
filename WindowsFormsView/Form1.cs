@@ -21,11 +21,12 @@ namespace WindowsFormsView
 
             if (!libraryManager.Books.Any())
             {
-                libraryManager.AddBook("1984", "George Orwell", "Dystopian");
-                libraryManager.AddBook("Brave New World", "Aldous Huxley", "Science Fiction");
-                libraryManager.AddBook("Fahrenheit 451", "Ray Bradbury", "Dystopian");
+                libraryManager.AddBook("Война и мир", "Толстой", "Роман");
+                libraryManager.AddBook("Преступление и наказание", "Достоевский", "Роман");
+                libraryManager.AddBook("Мастер и Маргарита", "Булгаков", "Фантастика");
                 UpdateBooksListView(libraryManager.Books);
             }
+            
         }
         LibraryManager libraryManager = new LibraryManager();
 
