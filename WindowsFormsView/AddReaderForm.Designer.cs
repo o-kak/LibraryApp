@@ -31,21 +31,22 @@ namespace WindowsFormsView
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddReaderForm));
             this.ReaderNamTextBox = new System.Windows.Forms.TextBox();
             this.ReaderAdressTextBox = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.SaveReaderButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.BorrowedBooksCheckedListBox = new System.Windows.Forms.CheckedListBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // ReaderNamTextBox
             // 
-            this.ReaderNamTextBox.Location = new System.Drawing.Point(125, 183);
+            this.ReaderNamTextBox.Location = new System.Drawing.Point(125, 245);
             this.ReaderNamTextBox.Name = "ReaderNamTextBox";
             this.ReaderNamTextBox.Size = new System.Drawing.Size(268, 26);
             this.ReaderNamTextBox.TabIndex = 0;
@@ -53,29 +54,23 @@ namespace WindowsFormsView
             // ReaderAdressTextBox
             // 
             this.ReaderAdressTextBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
-            this.ReaderAdressTextBox.Location = new System.Drawing.Point(125, 236);
+            this.ReaderAdressTextBox.Location = new System.Drawing.Point(125, 295);
             this.ReaderAdressTextBox.Name = "ReaderAdressTextBox";
             this.ReaderAdressTextBox.Size = new System.Drawing.Size(268, 26);
             this.ReaderAdressTextBox.TabIndex = 1;
             // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(125, 297);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(268, 26);
-            this.textBox3.TabIndex = 2;
-            // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(157, 31);
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(125, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(191, 101);
+            this.pictureBox1.Size = new System.Drawing.Size(268, 215);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             // 
             // SaveReaderButton
             // 
-            this.SaveReaderButton.Location = new System.Drawing.Point(172, 545);
+            this.SaveReaderButton.Location = new System.Drawing.Point(172, 565);
             this.SaveReaderButton.Name = "SaveReaderButton";
             this.SaveReaderButton.Size = new System.Drawing.Size(163, 67);
             this.SaveReaderButton.TabIndex = 5;
@@ -86,7 +81,7 @@ namespace WindowsFormsView
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(41, 186);
+            this.label1.Location = new System.Drawing.Point(45, 245);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 20);
             this.label1.TabIndex = 6;
@@ -95,7 +90,7 @@ namespace WindowsFormsView
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(41, 242);
+            this.label2.Location = new System.Drawing.Point(41, 295);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(57, 20);
             this.label2.TabIndex = 7;
@@ -104,7 +99,7 @@ namespace WindowsFormsView
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(45, 367);
+            this.label3.Location = new System.Drawing.Point(45, 400);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 20);
             this.label3.TabIndex = 8;
@@ -113,12 +108,17 @@ namespace WindowsFormsView
             // BorrowedBooksCheckedListBox
             // 
             this.BorrowedBooksCheckedListBox.FormattingEnabled = true;
-            this.BorrowedBooksCheckedListBox.Location = new System.Drawing.Point(125, 367);
+            this.BorrowedBooksCheckedListBox.Location = new System.Drawing.Point(125, 400);
             this.BorrowedBooksCheckedListBox.Name = "BorrowedBooksCheckedListBox";
             this.BorrowedBooksCheckedListBox.Size = new System.Drawing.Size(268, 142);
             this.BorrowedBooksCheckedListBox.TabIndex = 9;
-           
-
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(125, 342);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(268, 26);
+            this.textBox3.TabIndex = 2;
             // 
             // AddReaderForm
             // 
@@ -146,12 +146,12 @@ namespace WindowsFormsView
 
         private System.Windows.Forms.TextBox ReaderNamTextBox;
         private System.Windows.Forms.TextBox ReaderAdressTextBox;
-        private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button SaveReaderButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckedListBox BorrowedBooksCheckedListBox;
+        private System.Windows.Forms.TextBox textBox3;
     }
 }

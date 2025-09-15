@@ -13,61 +13,74 @@ namespace WindowsFormsView
 {
     public partial class AddReaderForm : Form
     {
-        LibraryManager libraryManager = new LibraryManager();
-        public AddReaderForm()
+        private LibraryManager _libraryManager;
+
+        public AddReaderForm(LibraryManager libraryManager)
         {
+            this._libraryManager = libraryManager;
             InitializeComponent();
-
-
-            // Пример добавления книг
-            libraryManager.AddBook("1984", "George Orwell", "Dystopian");
-            libraryManager.AddBook ("Brave New World", "Aldous Huxley", "Science Fiction");
-            libraryManager.AddBook("Fahrenheit 451", "Ray Bradbury", "Dystopian");
-
             FillBorrowedBooksCheckedListBox();
         }
-
         private void FillBorrowedBooksCheckedListBox()
         {
-            BorrowedBooksCheckedListBox.Items.Clear(); // Очистка текущих элементов
-
-            foreach (var book in libraryManager.Books) // Предполагается, что _libraryManager инициализирован
+            BorrowedBooksCheckedListBox.Items.Clear();
+            foreach (var book in _libraryManager.Books)
             {
-                BorrowedBooksCheckedListBox.Items.Add(book.Title); // Добавление названия книги
+                BorrowedBooksCheckedListBox.Items.Add(book); 
             }
-        } 
-
+        }
         private void SaveReaderButton_Click(object sender, EventArgs e)
         {
             string readerName = ReaderNamTextBox.Text;
             string readerAdress = ReaderAdressTextBox.Text;
 
-            libraryManager.AddReader(readerName, readerAdress);
-            Reader currentReader = libraryManager.Readers.Last();
-            if (BorrowedBooksCheckedListBox.CheckedItems.Count > 0) 
+            if (string.IsNullOrWhiteSpace(readerName) || string.IsNullOrWhiteSpace(readerAdress))
             {
-                foreach (var item in BorrowedBooksCheckedListBox.CheckedItems) 
+                MessageBox.Show("Пожалуйста, заполните все поля.");
+                return;
+            }
+
+            _libraryManager.AddReader(readerName, readerAdress);   
+
+            bool hasErrors = false;
+            var readers = _libraryManager.Readers.ToList();
+
+            if (readers.Count == 0)
+            {
+                MessageBox.Show("Не удалось получить список читателей.");
+                return;
+            }
+            if (BorrowedBooksCheckedListBox.CheckedItems.Count > 0)
+            {
+                foreach (var item in BorrowedBooksCheckedListBox.CheckedItems)
                 {
                     Book selectedBook = item as Book;
-                    if (selectedBook != null) 
+                    if (selectedBook != null)
                     {
-                        try 
+                        try
                         {
-                            libraryManager.GiveBook(selectedBook, currentReader);
+                            _libraryManager.GiveBook(selectedBook, readers.Last());
                         }
-
-                        catch(InvalidProgramException ex) 
+                        catch (InvalidOperationException ex)
                         {
-                            MessageBox.Show(ex.Message);   
+                            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            hasErrors = true;
+                            _libraryManager.DeleteReader(readers.Last());
                         }
                     }
                 }
             }
-            Form1 mainForm = Application.OpenForms.OfType<Form1>().FirstOrDefault();
-            if (mainForm != null)
+
+            if (!hasErrors)
             {
-                mainForm.UpdateReaderListView(currentReader);
+                Form1 mainForm = Application.OpenForms.OfType<Form1>().FirstOrDefault();
+                if (mainForm != null)
+                {
+                    mainForm.UpdateReaderListView(readers); 
+                }
+
+                this.Close();
             }
-        }  
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace Model
             _readers = new List<Reader>();
             _books = new List<Book>();
         }
-
+        
         public void AddReader(string name, string address)
         {
             int id = _readers.Count + 1;
