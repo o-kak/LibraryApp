@@ -26,15 +26,16 @@ namespace ConsoleView
 
         static void ShowMainMenu(LibraryManager manager)
         {
-            Console.WriteLine("=== СИСТЕМА УПРАВЛЕНИЯ БИБИЛИОТЕКОЙ ===");
-            Console.WriteLine("[1] Список читателй");
-            Console.WriteLine("[2] Список книг");
-            Console.WriteLine("[3] Поиск книг по жанру/автору");
-
             ConsoleKey key;
-
             do
             {
+                Console.Clear();
+                Console.WriteLine("=== СИСТЕМА УПРАВЛЕНИЯ БИБИЛИОТЕКОЙ ===");
+                Console.WriteLine("[1] Список читателй");
+                Console.WriteLine("[2] Список книг");
+                Console.WriteLine("[3] Поиск книг по жанру/автору");
+                Console.WriteLine("[Esc] Выход");
+
                 key = Console.ReadKey().Key;
                 switch(key)
                 {
@@ -157,8 +158,15 @@ namespace ConsoleView
             Console.Write("\nВведите номер книги: ");
             if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= books.Count)
             {
-                manager.GiveBook(books[choice - 1], reader);
-                Console.WriteLine("\nКнига выдана!");
+                try
+                {
+                    manager.GiveBook(books[choice - 1], reader);
+                    Console.WriteLine("\nКнига выдана!");
+                }
+                catch(InvalidOperationException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
             else
             {
@@ -183,8 +191,15 @@ namespace ConsoleView
             Console.Write("\nВведите номер книги: ");
             if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= reader.BooksBorrowed.Count)
             {
-                manager.ReturnBook(reader.BooksBorrowed[choice - 1], reader);
-                Console.WriteLine("\nКнига возвращена!");
+                try
+                {
+                    manager.ReturnBook(reader.BooksBorrowed[choice - 1], reader);
+                    Console.WriteLine("\nКнига возвращена!");
+                }
+                catch(InvalidOperationException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
             else
             {
@@ -220,12 +235,20 @@ namespace ConsoleView
             {
                 Console.Write("\nВведите жанр: ");
                 string genre = Console.ReadLine();
+                while (string.IsNullOrEmpty(genre))
+                {
+                    Console.WriteLine("Введенное значение не должно быть пустым");
+                }
                 ShowBooks(manager.FilterBooksByGenre(genre ?? ""));
             }
             else if (key == ConsoleKey.D2)
             {
                 Console.Write("\nВведите автора: ");
                 string author = Console.ReadLine();
+                while (string.IsNullOrEmpty(author))
+                {
+                    Console.WriteLine("Введенное значение не должно быть пустым");
+                }
                 ShowBooks(manager.FilterBooksByAuthor(author ?? ""));
             }
         }
