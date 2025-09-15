@@ -74,9 +74,9 @@ namespace Model
         /// <summary>
         /// вернуть книгу: вызывает у читателя метод ReturnBook, меняет статус доступности книги на правду
         /// </summary>
-        /// <param name="book"></param>
-        /// <param name="reader"></param>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <param name="book">книга</param>
+        /// <param name="reader">читатель</param>
+        /// <exception cref="InvalidOperationException">ошибка если список книг пустой</exception>
         public void ReturnBook(Book book, Reader reader)
         {
             if (!reader.ReturnBook(book))
