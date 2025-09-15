@@ -24,6 +24,10 @@ namespace ConsoleView
             ShowMainMenu(manager);
         }
 
+        /// <summary>
+        /// главное меню
+        /// </summary>
+        /// <param name="manager">менеджер бибилиотеки</param>
         static void ShowMainMenu(LibraryManager manager)
         {
             ConsoleKey key;
@@ -46,6 +50,11 @@ namespace ConsoleView
                     
             } while (!key.Equals(ConsoleKey.Escape));
         }
+
+        /// <summary>
+        /// показать список читателей
+        /// </summary>
+        /// <param name="manager">менеджер бибилиотеки</param>
         static void ShowReaders(LibraryManager manager)
         {
             int index = 0;
@@ -56,7 +65,7 @@ namespace ConsoleView
                 Console.Clear();
                 Console.WriteLine("=== СПИСОК ЧИТАТЕЛЕЙ ===\n");
 
-                var readers = manager.Readers.ToList();
+                List<Reader> readers = manager.Readers.ToList();
 
                 if (!readers.Any())
                 {
@@ -90,6 +99,11 @@ namespace ConsoleView
             } while (key != ConsoleKey.Escape);
         }
 
+        /// <summary>
+        /// профиль читатаеля и работа с читатаелем
+        /// </summary>
+        /// <param name="manager">менеджер библиотеки</param>
+        /// <param name="reader">читатель</param>
         static void ShowReaderProfile(LibraryManager manager, Reader reader)
         {
             ConsoleKey key;
@@ -141,6 +155,11 @@ namespace ConsoleView
             } while (key != ConsoleKey.Escape);
         }
 
+        /// <summary>
+        /// выдать книгу
+        /// </summary>
+        /// <param name="manager">менеджер</param>
+        /// <param name="reader">читатель</param>
         static void GiveBookToReader(LibraryManager manager, Reader reader)
         {
             var books = manager.GetAvailableBooks().ToList();
@@ -175,6 +194,11 @@ namespace ConsoleView
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// вернуть книгу
+        /// </summary>
+        /// <param name="manager">менеджер</param>
+        /// <param name="reader">читатель</param>
         static void ReturnBookFromReader(LibraryManager manager, Reader reader)
         {
             if (!reader.BooksBorrowed.Any())
@@ -208,6 +232,10 @@ namespace ConsoleView
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// показать список книг
+        /// </summary>
+        /// <param name="books">список книг</param>
         static void ShowBooks(IEnumerable<Book> books)
         {
             Console.Clear();
@@ -222,6 +250,10 @@ namespace ConsoleView
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// фильтрация книг по жанру и автору
+        /// </summary>
+        /// <param name="manager">менеджер</param>
         static void FilterBooksMenu(LibraryManager manager)
         {
             Console.Clear();
@@ -253,6 +285,10 @@ namespace ConsoleView
             }
         }
 
+        /// <summary>
+        /// меню работы с книгами
+        /// </summary>
+        /// <param name="manager">менеджер</param>
         static void ShowBooksMenu(LibraryManager manager)
         {
             ConsoleKey key;
@@ -263,6 +299,8 @@ namespace ConsoleView
                 Console.WriteLine("[1] Показать все книги");
                 Console.WriteLine("[2] Показать доступные книги");
                 Console.WriteLine("[3] Показать выданные книги");
+                Console.WriteLine("[4] Добавить книгу");
+                Console.WriteLine("[5] Удалить книгу");
                 Console.WriteLine("[Esc] Назад");
 
                 key = Console.ReadKey().Key;
@@ -278,9 +316,93 @@ namespace ConsoleView
                     case ConsoleKey.D3:
                         ShowBooks(manager.GetBorrowedBooks());
                         break;
+                    case ConsoleKey.D4:
+                        AddBookMenu(manager);
+                        break;
+                    case ConsoleKey.D5:
+                        DeleteBookMenu(manager);
+                        break;
                 }
 
             } while (key != ConsoleKey.Escape);
+        }
+
+        /// <summary>
+        /// добавить новую книгу
+        /// </summary>
+        /// <param name="manager">менеджер</param>
+        static void AddBookMenu(LibraryManager manager)
+        {
+            Console.Clear();
+            Console.WriteLine("=== ДОБАВЛЕНИЕ КНИГИ ===\n");
+
+            Console.Write("Введите название: ");
+            string title = Console.ReadLine();
+            while (string.IsNullOrEmpty(title))
+            {
+                Console.WriteLine("Поле должно быть заполнено");
+                title = Console.ReadLine();
+            }
+
+            Console.Write("Введите автора: ");
+            string author = Console.ReadLine();
+            while (string.IsNullOrEmpty(author))
+            {
+                Console.WriteLine("Поле должно быть заполнено");
+                title = Console.ReadLine();
+            }
+
+            Console.Write("Введите жанр: ");
+            string genre = Console.ReadLine();
+            while (string.IsNullOrEmpty(genre))
+            {
+                Console.WriteLine("Поле должно быть заполнено");
+                title = Console.ReadLine();
+            }
+
+            manager.AddBook(title, author, genre);
+            Console.WriteLine("\nКнига добавлена!");
+
+            Console.WriteLine("\nНажмите любую клавишу для продолжения...");
+            Console.ReadKey();
+        }
+
+        /// <summary>
+        /// удалить книгу
+        /// </summary>
+        /// <param name="manager">менеджер</param>
+        static void DeleteBookMenu(LibraryManager manager)
+        {
+            Console.Clear();
+            Console.WriteLine("=== УДАЛЕНИЕ КНИГИ ===\n");
+
+            List<Book> books = manager.Books.ToList();
+            if (!books.Any())
+            {
+                Console.WriteLine("Нет книг для удаления.");
+                Console.WriteLine("\nНажмите любую клавишу...");
+                Console.ReadKey();
+                return;
+            }
+
+            for (int i = 0; i < books.Count; i++)
+            {
+                Console.WriteLine($"[{i + 1}] {books[i].Title} — {books[i].Author}");
+            }
+
+            Console.Write("\nВведите номер книги для удаления: ");
+            if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= books.Count)
+            {
+                manager.DeleteBook(books[choice - 1]);
+                Console.WriteLine("\nКнига удалена!");
+            }
+            else
+            {
+                Console.WriteLine("\nНеверный выбор.");
+            }
+
+            Console.WriteLine("\nНажмите любую клавишу для продолжения...");
+            Console.ReadKey();
         }
     }
 }
