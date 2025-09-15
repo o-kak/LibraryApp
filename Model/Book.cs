@@ -20,6 +20,10 @@ namespace Model
             Genre = genre;
             IsAvailable = true;
         }
+        public override string ToString()
+        {
+            return Title; 
+        }
 
         /// <summary>
         /// изменение статуса(доступна ли книга в фонде библотеки)

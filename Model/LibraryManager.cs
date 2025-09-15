@@ -19,12 +19,7 @@ namespace Model
             _readers = new List<Reader>();
             _books = new List<Book>();
         }
-
-        /// <summary>
-        /// добавить читателя в коллекцию
-        /// </summary>
-        /// <param name="name">имя читателя</param>
-        /// <param name="address">адрес читателя</param>
+        
         public void AddReader(string name, string address)
         {
             int id = _readers.Count + 1;
@@ -32,12 +27,6 @@ namespace Model
             _readers.Add(reader);
         }
 
-        /// <summary>
-        /// добавить книгу в фонд, добавляет книгу в коллекцию
-        /// </summary>
-        /// <param name="title">название книги</param>
-        /// <param name="author">автор книги</param>
-        /// <param name="genre">жанр книги</param>
         public void AddBook(string title, string author, string genre)
         {
             Book book = new Book(title, author, genre);
