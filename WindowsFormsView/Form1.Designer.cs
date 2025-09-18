@@ -46,6 +46,8 @@
             this.UpdateButton = new System.Windows.Forms.Button();
             this.BorrowedBookCheckBox1 = new System.Windows.Forms.CheckBox();
             this.ChangeInfoButton = new System.Windows.Forms.Button();
+            this.GenreComboBox1 = new System.Windows.Forms.ComboBox();
+            this.AuthorComboBox2 = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // AddReaderButton
@@ -146,7 +148,7 @@
             // IsAvailableCheckBox
             // 
             this.IsAvailableCheckBox.AutoSize = true;
-            this.IsAvailableCheckBox.Location = new System.Drawing.Point(1161, 83);
+            this.IsAvailableCheckBox.Location = new System.Drawing.Point(1161, 172);
             this.IsAvailableCheckBox.Name = "IsAvailableCheckBox";
             this.IsAvailableCheckBox.Size = new System.Drawing.Size(160, 24);
             this.IsAvailableCheckBox.TabIndex = 6;
@@ -176,9 +178,9 @@
             // 
             // UpdateButton
             // 
-            this.UpdateButton.Location = new System.Drawing.Point(1161, 145);
+            this.UpdateButton.Location = new System.Drawing.Point(1145, 32);
             this.UpdateButton.Name = "UpdateButton";
-            this.UpdateButton.Size = new System.Drawing.Size(160, 41);
+            this.UpdateButton.Size = new System.Drawing.Size(176, 75);
             this.UpdateButton.TabIndex = 9;
             this.UpdateButton.Text = "Весь список";
             this.UpdateButton.UseVisualStyleBackColor = true;
@@ -188,7 +190,7 @@
             // 
             this.BorrowedBookCheckBox1.AutoSize = true;
             this.BorrowedBookCheckBox1.CheckAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.BorrowedBookCheckBox1.Location = new System.Drawing.Point(1161, 113);
+            this.BorrowedBookCheckBox1.Location = new System.Drawing.Point(1161, 132);
             this.BorrowedBookCheckBox1.Name = "BorrowedBookCheckBox1";
             this.BorrowedBookCheckBox1.Size = new System.Drawing.Size(182, 24);
             this.BorrowedBookCheckBox1.TabIndex = 10;
@@ -206,11 +208,33 @@
             this.ChangeInfoButton.UseVisualStyleBackColor = true;
             this.ChangeInfoButton.Click += new System.EventHandler(this.ChangeInfoButton_Click);
             // 
+            // GenreComboBox1
+            // 
+            this.GenreComboBox1.FormattingEnabled = true;
+            this.GenreComboBox1.Location = new System.Drawing.Point(985, 128);
+            this.GenreComboBox1.Name = "GenreComboBox1";
+            this.GenreComboBox1.Size = new System.Drawing.Size(160, 28);
+            this.GenreComboBox1.TabIndex = 12;
+            this.GenreComboBox1.Text = "Жанр";
+            this.GenreComboBox1.SelectedIndexChanged += new System.EventHandler(this.GenreComboBox1_SelectedIndexChanged);
+            // 
+            // AuthorComboBox2
+            // 
+            this.AuthorComboBox2.FormattingEnabled = true;
+            this.AuthorComboBox2.Location = new System.Drawing.Point(985, 170);
+            this.AuthorComboBox2.Name = "AuthorComboBox2";
+            this.AuthorComboBox2.Size = new System.Drawing.Size(160, 28);
+            this.AuthorComboBox2.TabIndex = 13;
+            this.AuthorComboBox2.Text = "Автор";
+            this.AuthorComboBox2.SelectedIndexChanged += new System.EventHandler(this.AuthorComboBox2_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1344, 794);
+            this.Controls.Add(this.AuthorComboBox2);
+            this.Controls.Add(this.GenreComboBox1);
             this.Controls.Add(this.ChangeInfoButton);
             this.Controls.Add(this.BorrowedBookCheckBox1);
             this.Controls.Add(this.UpdateButton);
@@ -248,6 +272,8 @@
         private System.Windows.Forms.ColumnHeader BookGenre;
         private System.Windows.Forms.CheckBox BorrowedBookCheckBox1;
         private System.Windows.Forms.Button ChangeInfoButton;
+        private System.Windows.Forms.ComboBox GenreComboBox1;
+        private System.Windows.Forms.ComboBox AuthorComboBox2;
     }
 }
 

@@ -25,10 +25,20 @@ namespace WindowsFormsView
                 libraryManager.AddBook("Преступление и наказание", "Достоевский", "Роман");
                 libraryManager.AddBook("Мастер и Маргарита", "Булгаков", "Фантастика");
                 UpdateBooksListView(libraryManager.Books);
+                LoadAuthorsAndGenres();
             }
             
         }
         LibraryManager libraryManager = new LibraryManager();
+        private void LoadAuthorsAndGenres() 
+        {
+            var authors = libraryManager.Books.Select(x => x.Author).Distinct().ToList();
+            AuthorComboBox2.DataSource = authors;
+
+            var genres = libraryManager.Books.Select(x => x.Genre).Distinct().ToList();
+            GenreComboBox1.DataSource = genres;
+        }
+
 
         /// <summary>
         /// Кнопка, для открытия окна для создания нового читателя
@@ -59,6 +69,8 @@ namespace WindowsFormsView
         {
             BorrowedBookCheckBox1.Checked = false;
             IsAvailableCheckBox.Checked = false;
+            AuthorComboBox2.SelectedIndex = -1;
+            GenreComboBox1.SelectedIndex = -1;
             UpdateBooksListView(libraryManager.Books);
         }
 
@@ -197,6 +209,30 @@ namespace WindowsFormsView
                     crf.ShowDialog();
                 }
             }
+        }
+
+        private void GenreComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string genre = GenreComboBox1.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(genre))
+            {
+                GenreComboBox1.Text = "Жанры";
+                return;
+            }
+
+            // Обновляем список книг на основе выбранного жанра
+            UpdateBooksListView(libraryManager.FilterBooksByGenre(genre));
+        }
+
+        private void AuthorComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string author = AuthorComboBox2.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(author)) 
+            {
+                AuthorComboBox2.Text = "Авторы";
+                return;
+            }
+            UpdateBooksListView(libraryManager.FilterBooksByAuthor(author));
         }
     }
 }
