@@ -147,6 +147,12 @@ namespace WindowsFormsView
             BookListView.EndUpdate();
         }
 
+
+        /// <summary>
+        /// показать доступные книги
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void IsAvailableCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (IsAvailableCheckBox.Checked)
@@ -157,6 +163,11 @@ namespace WindowsFormsView
             }
         }
 
+        /// <summary>
+        /// показать недоступные книги
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BorrowedBookCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (BorrowedBookCheckBox1.Checked) 
@@ -211,6 +222,12 @@ namespace WindowsFormsView
             }
         }
 
+
+        /// <summary>
+        /// при выборе жанра в комбобокс происходит фильтрация книг по жанру
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GenreComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             string genre = GenreComboBox1.SelectedItem?.ToString();
@@ -220,10 +237,14 @@ namespace WindowsFormsView
                 return;
             }
 
-            // Обновляем список книг на основе выбранного жанра
             UpdateBooksListView(libraryManager.FilterBooksByGenre(genre));
         }
 
+        /// <summary>
+        /// при выборе автора в комбобокс происходит фильтрация книг по автору
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AuthorComboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             string author = AuthorComboBox2.SelectedItem?.ToString();

@@ -38,16 +38,18 @@ namespace ConsoleView
                 Console.WriteLine("[1] Список читателй");
                 Console.WriteLine("[2] Список книг");
                 Console.WriteLine("[3] Поиск книг по жанру/автору");
+                Console.WriteLine("[4] Добавить читателя");
                 Console.WriteLine("[Esc] Выход");
 
                 key = Console.ReadKey().Key;
-                switch(key)
+                switch (key)
                 {
                     case ConsoleKey.D1: ShowReaders(manager); break;
                     case ConsoleKey.D2: ShowBooksMenu(manager); break;
                     case ConsoleKey.D3: FilterBooksMenu(manager); break;
+                    case ConsoleKey.D4: AddReaderMenu(manager); break;
                 }
-                    
+
             } while (!key.Equals(ConsoleKey.Escape));
         }
 
@@ -100,7 +102,7 @@ namespace ConsoleView
         }
 
         /// <summary>
-        /// профиль читатаеля и работа с читатаелем
+        /// профиль читатателя и работа с читатаелем
         /// </summary>
         /// <param name="manager">менеджер библиотеки</param>
         /// <param name="reader">читатель</param>
@@ -404,5 +406,38 @@ namespace ConsoleView
             Console.WriteLine("\nНажмите любую клавишу для продолжения...");
             Console.ReadKey();
         }
+
+        /// <summary>
+        /// доюавить читателя
+        /// </summary>
+        /// <param name="manager">менеджер</param>
+        static void AddReaderMenu(LibraryManager manager)
+        {
+            Console.Clear();
+            Console.WriteLine("=== ДОБАВЛЕНИЕ ЧИТАТЕЛЯ ===\n");
+
+            Console.Write("Введите имя: ");
+            string name = Console.ReadLine();
+            while (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("Поле должно быть заполнено");
+                name = Console.ReadLine();
+            }
+
+            Console.Write("Введите адрес: ");
+            string address = Console.ReadLine();
+            while (string.IsNullOrEmpty(address))
+            {
+                Console.WriteLine("Поле должно быть заполнено");
+                address = Console.ReadLine();
+            }
+
+            manager.AddReader(name, address);
+            Console.WriteLine("\nЧитатель добавлен!");
+
+            Console.WriteLine("\nНажмите любую клавишу для продолжения...");
+            Console.ReadKey();
+        }
     }
+
 }
