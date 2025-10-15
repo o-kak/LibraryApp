@@ -3,21 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model
 {
-    public class Reader
+    [Table("Readers", Schema = "public")]
+    public class Reader : IDomainObject
     {
         public string Name { get; set; }
         public string Address { get; set; }
-        public int ID { get; set; }
+        public int Id { get; set; }
         public List<Book> BooksBorrowed { get; set; } = new List<Book>();
 
-        public Reader(string name, string address, int id)
+        public Reader(string name, string address)
         {
             Name = name;
             Address = address;
-            ID = id;
+        }
+
+        public Reader()
+        {
+
         }
 
         /// <summary>

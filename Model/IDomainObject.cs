@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer
+namespace Model
 {
-    public class Class1
+    internal interface IDomainObject
     {
+        int Id { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace Model
         public void AddReader(string name, string address)
         {
             int id = _readers.Count + 1;
-            Reader reader = new Reader(name, address, id);
+            Reader reader = new Reader(name, address);
             _readers.Add(reader);
         }
 

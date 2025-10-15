@@ -82,7 +82,7 @@ namespace ConsoleView
                     if (i == index)
                         Console.BackgroundColor = ConsoleColor.DarkGray;
 
-                    Console.WriteLine($"{readers[i].ID}. {readers[i].Name} ({readers[i].Address})");
+                    Console.WriteLine($"{readers[i].Id}. {readers[i].Name} ({readers[i].Address})");
 
                     Console.ResetColor();
                 }
@@ -113,7 +113,7 @@ namespace ConsoleView
             {
                 Console.Clear();
                 Console.WriteLine($"=== ПРОФИЛЬ ЧИТАТЕЛЯ ===\n");
-                Console.WriteLine($"ID: {reader.ID}");
+                Console.WriteLine($"ID: {reader.Id}");
                 Console.WriteLine($"Имя: {reader.Name}");
                 Console.WriteLine($"Адрес: {reader.Address}");
                 Console.WriteLine($"Книги на руках: {(reader.BooksBorrowed.Any() ? string.Join(", ", reader.BooksBorrowed.Select(b => b.Title)) : "нет")}");
