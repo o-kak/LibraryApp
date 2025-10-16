@@ -21,10 +21,7 @@ namespace Model
             Address = address;
         }
 
-        public Reader()
-        {
-
-        }
+        public Reader() { }
 
         /// <summary>
         /// изменение имени

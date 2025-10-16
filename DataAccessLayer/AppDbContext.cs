@@ -10,8 +10,9 @@ namespace DataAccessLayer
 {
     internal class AppDbContext : DbContext
     {
-        public AppDbContext() : base("name=PostgresConnection") { }
         public DbSet<Reader> Readers { get; set; }
+        public DbSet<Book> Books { get; set; }
+        public AppDbContext() : base("name=PostgresConnection") { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

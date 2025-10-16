@@ -13,12 +13,13 @@ namespace DataAccessLayer
         {
             using (var db = new AppDbContext())
             {
-                db.Readers.Add(new Reader("Alice", "aaa"));
-                db.SaveChanges();
-
                 var users = db.Readers.ToList();
                 foreach (var u in users)
                     Console.WriteLine($"{u.Id}: {u.Name}");
+
+                var books = db.Books.ToList();
+                foreach (var b in books)
+                    Console.WriteLine($"{b.Id}: {b.Title}");
             }
         }
     }
