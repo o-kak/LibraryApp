@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Model;
+using BusinessLogic;
 
 namespace WindowsFormsView
 {
@@ -59,7 +60,7 @@ namespace WindowsFormsView
         /// </summary>
         private void Savebutton1_Click(object sender, EventArgs e)
         {
-            var currentReader = ___libraryManager.Readers.FirstOrDefault(r => r.ID == currentID);
+            var currentReader = ___libraryManager.Readers.FirstOrDefault(r => r.Id == currentID);
             if (currentReader == null)
             {
                 MessageBox.Show("Читатель не найден!");

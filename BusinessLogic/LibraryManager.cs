@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using Model;
 
-namespace Model
+namespace BusinessLogic
 {
     public class LibraryManager
     {
@@ -19,7 +21,7 @@ namespace Model
             _readers = new List<Reader>();
             _books = new List<Book>();
         }
-        
+
         /// <summary>
         /// добавить читателя
         /// </summary>
@@ -66,7 +68,7 @@ namespace Model
         {
             if (!book.IsAvailable)
                 throw new InvalidOperationException("Этой книги нет в фонде!");
-            
+
             reader.BorrowBook(book);
             book.UpdateAvailability(false);
         }
@@ -100,7 +102,7 @@ namespace Model
         /// <returns>коллекция недоступных книг</returns>
         public IEnumerable<Book> GetBorrowedBooks()
         {
-            return _books.Where(book =>  !book.IsAvailable);
+            return _books.Where(book => !book.IsAvailable);
         }
 
         /// <summary>

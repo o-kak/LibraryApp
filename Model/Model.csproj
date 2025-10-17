@@ -89,7 +89,6 @@
   <ItemGroup>
     <Compile Include="Book.cs" />
     <Compile Include="IDomainObject.cs" />
-    <Compile Include="LibraryManager.cs" />
     <Compile Include="Reader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

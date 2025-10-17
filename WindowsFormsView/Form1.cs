@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Model;
+using BusinessLogic;
+
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace WindowsFormsView
@@ -84,7 +86,7 @@ namespace WindowsFormsView
                 var selectedItem = ReaderListView.SelectedItems[0];
                 int readerId = int.Parse(selectedItem.SubItems[2].Text); 
 
-                var readerToDelete = libraryManager.Readers.FirstOrDefault(x => x.ID == readerId);
+                var readerToDelete = libraryManager.Readers.FirstOrDefault(x => x.Id == readerId);
 
                 if (readerToDelete != null)
                 {
@@ -116,7 +118,7 @@ namespace WindowsFormsView
             {
                 ListViewItem item = new ListViewItem(reader.Name);
                 item.SubItems.Add(reader.Address);
-                item.SubItems.Add(reader.ID.ToString());
+                item.SubItems.Add(reader.Id.ToString());
 
                 string borrowedBooks = reader.BooksBorrowed != null && reader.BooksBorrowed.Any()
                     ? String.Join(", ", reader.BooksBorrowed.Select(b => b.Title))
