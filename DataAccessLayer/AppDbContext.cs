@@ -8,7 +8,7 @@ using Model;
 
 namespace DataAccessLayer
 {
-    internal class AppDbContext : DbContext
+    public class AppDbContext : DbContext
     {
         public DbSet<Reader> Readers { get; set; }
         public DbSet<Book> Books { get; set; }

@@ -19,7 +19,7 @@ namespace DataAccessLayer
 
                 var books = db.Books.ToList();
                 foreach (var b in books)
-                    Console.WriteLine($"{b.Id}: {b.Title}");
+                    Console.WriteLine($"{b.Id}: {b.Title} {b.IsAvailable}");
             }
         }
     }

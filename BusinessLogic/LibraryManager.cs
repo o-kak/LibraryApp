@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using DataAccessLayer;
 using Model;
 
 namespace BusinessLogic
 {
     public class LibraryManager
     {
-        private readonly List<Reader> _readers = new List<Reader>();
-        private readonly List<Book> _books = new List<Book>();
+        private readonly IRepository<Reader> _readerRepository;
+        private readonly IRepository<Book> _bookRepository;
 
-        public IEnumerable<Book> Books => _books;
-        public IEnumerable<Reader> Readers => _readers;
-
-        public LibraryManager()
+        public LibraryManager(IRepository<Reader> readerRepository, IRepository<Book> bookRepository)
         {
-            _readers = new List<Reader>();
-            _books = new List<Book>();
+            _readerRepository = readerRepository;
+            _bookRepository = bookRepository;
         }
 
         /// <summary>
@@ -29,9 +28,8 @@ namespace BusinessLogic
         /// <param name="address">адрес</param>
         public void AddReader(string name, string address)
         {
-            int id = _readers.Count + 1;
             Reader reader = new Reader(name, address);
-            _readers.Add(reader);
+            _readerRepository.Add(reader);
         }
 
         /// <summary>
@@ -43,20 +41,20 @@ namespace BusinessLogic
         public void AddBook(string title, string author, string genre)
         {
             Book book = new Book(title, author, genre);
-            _books.Add(book);
+            _bookRepository.Add(book);
         }
 
         /// <summary>
         /// удалить читателя из списка
         /// </summary>
         /// <param name="reader">читатель</param>
-        public void DeleteReader(Reader reader) => _readers.Remove(reader);
+        public void DeleteReader(int readerId) => _readerRepository.Delete(readerId);
 
         /// <summary>
         /// удалить книгу из списка
         /// </summary>
         /// <param name="book">книга</param>
-        public void DeleteBook(Book book) => _books.Remove(book);
+        public void DeleteBook(int bookId) => _bookRepository.Delete(bookId);
 
         /// <summary>
         /// дать книгу читателю: вызывает у читателя метод BorrowBook, меняет статус доступности книги на ложь
@@ -64,13 +62,26 @@ namespace BusinessLogic
         /// <param name="book">книга</param>
         /// <param name="reader">читатель</param>
         /// <exception cref="InvalidOperationException">книга недоступна</exception>
-        public void GiveBook(Book book, Reader reader)
+        public void GiveBook(int bookId, int readerId)
         {
+            var book = _bookRepository.ReadById(bookId);
+            var reader = _readerRepository.ReadById(readerId);
+
+            if (book == null)
+                throw new InvalidOperationException("Книга не найдена!");
+
+            if (reader == null)
+                throw new InvalidOperationException("Читатель не найден!");
+
             if (!book.IsAvailable)
                 throw new InvalidOperationException("Этой книги нет в фонде!");
 
             reader.BorrowBook(book);
             book.UpdateAvailability(false);
+            book.ReaderId = readerId;
+
+            _bookRepository.Update(book);
+            _readerRepository.Update(reader);
         }
 
         /// <summary>
@@ -79,12 +90,25 @@ namespace BusinessLogic
         /// <param name="book">книга</param>
         /// <param name="reader">читатель</param>
         /// <exception cref="InvalidOperationException">ошибка если список книг пустой</exception>
-        public void ReturnBook(Book book, Reader reader)
+        public void ReturnBook(int bookId, int readerId)
         {
+            var book = _bookRepository.ReadById(bookId);
+            var reader = _readerRepository.ReadById(readerId);
+
+            if (book == null)
+                throw new InvalidOperationException("Книга не найдена!");
+
+            if (reader == null)
+                throw new InvalidOperationException("Читатель не найден!");
+
             if (!reader.ReturnBook(book))
                 throw new InvalidOperationException("У читателя нет этой книги!");
 
             book.UpdateAvailability(true);
+            book.ReaderId = null;
+
+            _bookRepository.Update(book);
+            _readerRepository.Update(reader);
         }
 
         /// <summary>
@@ -93,7 +117,8 @@ namespace BusinessLogic
         /// <returns>коллекция доступных книг</returns>
         public IEnumerable<Book> GetAvailableBooks()
         {
-            return _books.Where(book => book.IsAvailable);
+            List<Book> allBooks = _bookRepository.ReadAll().ToList(); 
+            return allBooks.Where(book => book.IsAvailable);
         }
 
         /// <summary>
@@ -102,7 +127,8 @@ namespace BusinessLogic
         /// <returns>коллекция недоступных книг</returns>
         public IEnumerable<Book> GetBorrowedBooks()
         {
-            return _books.Where(book => !book.IsAvailable);
+            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            return allBooks.Where(book => !book.IsAvailable);
         }
 
         /// <summary>
@@ -112,7 +138,8 @@ namespace BusinessLogic
         /// <returns>коллекция отфильтрованных книг</returns>
         public IEnumerable<Book> FilterBooksByGenre(string genre)
         {
-            return _books.Where(book => book.Genre == genre);
+            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            return allBooks.Where(book => book.Genre == genre);
         }
 
         /// <summary>
@@ -122,7 +149,8 @@ namespace BusinessLogic
         /// <returns>коллекция отфильтрованных книг</returns>
         public IEnumerable<Book> FilterBooksByAuthor(string author)
         {
-            return _books.Where(book => book.Author == author);
+            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            return allBooks.Where(book => book.Author == author);
         }
     }
 }
