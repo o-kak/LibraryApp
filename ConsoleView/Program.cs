@@ -15,13 +15,6 @@ namespace ConsoleView
         {
             LibraryManager manager = new LibraryManager();
 
-            manager.AddReader("Иван Иванов", "ул. Пушкина, д. 10");
-            manager.AddReader("Анна Смирнова", "ул. Ленина, д. 5");
-
-            manager.AddBook("Война и мир", "Толстой", "Роман");
-            manager.AddBook("Преступление и наказание", "Достоевский", "Роман");
-            manager.AddBook("Мастер и Маргарита", "Булгаков", "Фантастика");
-
             ShowMainMenu(manager);
         }
 
@@ -68,7 +61,7 @@ namespace ConsoleView
                 Console.Clear();
                 Console.WriteLine("=== СПИСОК ЧИТАТЕЛЕЙ ===\n");
 
-                List<Reader> readers = manager.Readers.ToList();
+                List<Reader> readers = manager.GetAllReaders().ToList();
 
                 if (!readers.Any())
                 {
@@ -97,7 +90,7 @@ namespace ConsoleView
                 else if (key == ConsoleKey.DownArrow)
                     index = (index + 1) % readers.Count;
                 else if (key == ConsoleKey.Enter)
-                    ShowReaderProfile(manager, readers[index]);
+                    ShowReaderProfile(manager, readers[index].Id);
 
             } while (key != ConsoleKey.Escape);
         }
@@ -107,8 +100,9 @@ namespace ConsoleView
         /// </summary>
         /// <param name="manager">менеджер библиотеки</param>
         /// <param name="reader">читатель</param>
-        static void ShowReaderProfile(LibraryManager manager, Reader reader)
+        static void ShowReaderProfile(LibraryManager manager, int readerId)
         {
+            Reader reader = manager.GetReader(readerId);
             ConsoleKey key;
             do
             {
@@ -141,7 +135,7 @@ namespace ConsoleView
                         break;
 
                     case ConsoleKey.D2:
-                        manager.DeleteReader(reader);
+                        manager.DeleteReader(reader.Id);
                         Console.WriteLine("\nЧитатель удалён.");
                         Console.ReadKey();
                         return;
@@ -182,7 +176,7 @@ namespace ConsoleView
             {
                 try
                 {
-                    manager.GiveBook(books[choice - 1], reader);
+                    manager.GiveBook(books[choice - 1].Id, reader.Id);
                     Console.WriteLine("\nКнига выдана!");
                 }
                 catch(InvalidOperationException ex)
@@ -220,7 +214,7 @@ namespace ConsoleView
             {
                 try
                 {
-                    manager.ReturnBook(reader.BooksBorrowed[choice - 1], reader);
+                    manager.ReturnBook(reader.BooksBorrowed[choice - 1].Id, reader.Id);
                     Console.WriteLine("\nКнига возвращена!");
                 }
                 catch(InvalidOperationException ex)
@@ -311,7 +305,7 @@ namespace ConsoleView
                 switch (key)
                 {
                     case ConsoleKey.D1:
-                        ShowBooks(manager.Books);
+                        ShowBooks(manager.GetAllBooks());
                         break;
                     case ConsoleKey.D2:
                         ShowBooks(manager.GetAvailableBooks());
@@ -379,7 +373,7 @@ namespace ConsoleView
             Console.Clear();
             Console.WriteLine("=== УДАЛЕНИЕ КНИГИ ===\n");
 
-            List<Book> books = manager.Books.ToList();
+            List<Book> books = manager.GetAllBooks().ToList();
             if (!books.Any())
             {
                 Console.WriteLine("Нет книг для удаления.");
@@ -396,7 +390,7 @@ namespace ConsoleView
             Console.Write("\nВведите номер книги для удаления: ");
             if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= books.Count)
             {
-                manager.DeleteBook(books[choice - 1]);
+                manager.DeleteBook(books[choice - 1].Id);
                 Console.WriteLine("\nКнига удалена!");
             }
             else

@@ -15,10 +15,11 @@ namespace BusinessLogic
         private readonly IRepository<Reader> _readerRepository;
         private readonly IRepository<Book> _bookRepository;
 
-        public LibraryManager(IRepository<Reader> readerRepository, IRepository<Book> bookRepository)
+        public LibraryManager()
         {
-            _readerRepository = readerRepository;
-            _bookRepository = bookRepository;
+            AppDbContext context = new AppDbContext();
+            _readerRepository = new EntityRepository<Reader>(context);
+            _bookRepository = new EntityRepository<Book>(context);
         }
 
         /// <summary>
@@ -111,6 +112,21 @@ namespace BusinessLogic
             _readerRepository.Update(reader);
         }
 
+        public IEnumerable<Book> GetAllBooks()
+        {
+            return _bookRepository.ReadAll();
+        }
+
+        public IEnumerable<Reader> GetAllReaders()
+        {
+            return _readerRepository.ReadAll();
+        }
+
+        public Reader GetReader(int readerId)
+        {
+            return _readerRepository.ReadById(readerId);
+        }
+
         /// <summary>
         /// вывод книг, которые есть в фонде
         /// </summary>
@@ -119,6 +135,12 @@ namespace BusinessLogic
         {
             List<Book> allBooks = _bookRepository.ReadAll().ToList(); 
             return allBooks.Where(book => book.IsAvailable);
+        }
+
+        public IEnumerable<Book> GetReadersBorrowedBooks(int readerId)
+        {
+            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            return allBooks.Where(book => book.ReaderId == readerId);
         }
 
         /// <summary>
