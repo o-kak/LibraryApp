@@ -88,7 +88,7 @@ namespace WindowsFormsView
 
                 if (int.TryParse(selectedItem.SubItems[2].Text, out int readerId))
                 {
-                    libraryManager.DeleteReaderAndReturnBooks(readerId);
+                    libraryManager.DeleteReader(readerId);
                     var updatedReaders = libraryManager.GetAllReaders().ToList();
                     UpdateReaderListView(updatedReaders);
                 }

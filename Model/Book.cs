@@ -18,8 +18,6 @@ namespace Model
 
         public int? ReaderId { get; set; }
 
-        public Reader Reader { get; set; }
-
         public Book(string title, string author, string genre)
         {
             Title = title;

@@ -76,7 +76,7 @@ namespace ConsoleView
                     if (i == index)
                         Console.BackgroundColor = ConsoleColor.DarkGray;
 
-                    Console.WriteLine($"{readers[i].Id}. {readers[i].Name} ({readers[i].Address})");
+                    Console.WriteLine($"Id: {readers[i].Id} Имя: {readers[i].Name} ({readers[i].Address})");
 
                     Console.ResetColor();
                 }

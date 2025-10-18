@@ -49,18 +49,12 @@ namespace BusinessLogic
         /// удалить читателя из списка
         /// </summary>
         /// <param name="reader">читатель</param>
-        public void DeleteReader(int readerId) => _readerRepository.Delete(readerId);
-
-        /// <summary>
-        /// удалить книгу у читателя, которого хотим удалить
-        /// </summary>
-        /// <param name="reader">читатель</param>
-        public void DeleteReaderAndReturnBooks(int readerId)
+        public void DeleteReader(int readerId)
         {
             var readerToDelete = _readerRepository.ReadById(readerId);
 
             if (readerToDelete != null)
-            {               
+            {
                 var booksToReturn = readerToDelete.BooksBorrowed?.ToList();
 
                 if (booksToReturn != null && booksToReturn.Any())
@@ -74,9 +68,10 @@ namespace BusinessLogic
                     }
                 }
 
-                DeleteReader(readerId);
+                _readerRepository.Delete(readerId);
             }
         }
+
         /// <summary>
         /// удалить книгу из списка
         /// </summary>
