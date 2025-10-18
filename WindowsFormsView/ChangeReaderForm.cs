@@ -32,11 +32,12 @@ namespace WindowsFormsView
         /// <param name="item">выбранная строка из таблицы читателей</param>
         private void LoadInfo(ListViewItem item) 
         {
+            var books = ___libraryManager.GetAllBooks().ToList();
             string selectedBooks = item.SubItems[3].Text;
             ReturnOrBorrowBookCheckedListBox.Items.Clear();
             if (selectedBooks == "Нет заимствованных книг")
             {
-                foreach (var book in ___libraryManager.Books)
+                foreach (var book in books)
                 {
                     ReturnOrBorrowBookCheckedListBox.Items.Add(book, false); 
                 }
@@ -47,7 +48,7 @@ namespace WindowsFormsView
                                           .Select(b => b.Trim())
                                           .ToList();
 
-                foreach (var book in ___libraryManager.Books)
+                foreach (var book in books)
                 {
                     bool isChecked = selectedBooksList.Contains(book.Title);
                     ReturnOrBorrowBookCheckedListBox.Items.Add(book, isChecked);
@@ -60,7 +61,8 @@ namespace WindowsFormsView
         /// </summary>
         private void Savebutton1_Click(object sender, EventArgs e)
         {
-            var currentReader = ___libraryManager.Readers.FirstOrDefault(r => r.Id == currentID);
+            List<Reader> readers = ___libraryManager.GetAllReaders().ToList();
+            var currentReader = readers.FirstOrDefault(r => r.Id == currentID);
             if (currentReader == null)
             {
                 MessageBox.Show("Читатель не найден!");
@@ -81,7 +83,7 @@ namespace WindowsFormsView
                     {
                         try
                         {
-                            ___libraryManager.ReturnBook(book, currentReader);
+                            ___libraryManager.ReturnBook(book.Id, currentReader.Id);
                         }
                         catch (InvalidOperationException ex)
                         {
@@ -93,7 +95,7 @@ namespace WindowsFormsView
                     {
                         try
                         {
-                            ___libraryManager.GiveBook(book, currentReader);
+                            ___libraryManager.GiveBook(book.Id, currentReader.Id);
                         }
                         catch (InvalidOperationException ex)
                         {
@@ -107,7 +109,7 @@ namespace WindowsFormsView
             Form1 mainForm = Application.OpenForms.OfType<Form1>().FirstOrDefault();
             if (mainForm != null)
             {
-                mainForm.UpdateReaderListView(___libraryManager.Readers);
+                mainForm.UpdateReaderListView(readers);
             }
 
             this.Close();

@@ -52,6 +52,32 @@ namespace BusinessLogic
         public void DeleteReader(int readerId) => _readerRepository.Delete(readerId);
 
         /// <summary>
+        /// удалить книгу у читателя, которого хотим удалить
+        /// </summary>
+        /// <param name="reader">читатель</param>
+        public void DeleteReaderAndReturnBooks(int readerId)
+        {
+            var readerToDelete = _readerRepository.ReadById(readerId);
+
+            if (readerToDelete != null)
+            {               
+                var booksToReturn = readerToDelete.BooksBorrowed?.ToList();
+
+                if (booksToReturn != null && booksToReturn.Any())
+                {
+                    foreach (var book in booksToReturn)
+                    {
+                        if (book != null)
+                        {
+                            ReturnBook(book.Id, readerToDelete.Id);
+                        }
+                    }
+                }
+
+                DeleteReader(readerId);
+            }
+        }
+        /// <summary>
         /// удалить книгу из списка
         /// </summary>
         /// <param name="book">книга</param>

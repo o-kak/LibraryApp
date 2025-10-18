@@ -21,23 +21,23 @@ namespace WindowsFormsView
         {
             InitializeComponent();
 
-            if (!libraryManager.Books.Any())
-            {
-                libraryManager.AddBook("Война и мир", "Толстой", "Роман");
-                libraryManager.AddBook("Преступление и наказание", "Достоевский", "Роман");
-                libraryManager.AddBook("Мастер и Маргарита", "Булгаков", "Фантастика");
-                UpdateBooksListView(libraryManager.Books);
-                LoadAuthorsAndGenres();
-            }
-            
+            LibraryManager libraryManager = new LibraryManager();
+            List<Book> books = libraryManager.GetAllBooks().ToList();
+            List<Reader> readers = libraryManager.GetAllReaders().ToList();
+            UpdateBooksListView(books);
+            UpdateReaderListView(readers);
+            LoadAuthorsAndGenres();
+
         }
-        LibraryManager libraryManager = new LibraryManager();
+        private LibraryManager libraryManager = new LibraryManager();
+
         private void LoadAuthorsAndGenres() 
         {
-            var authors = libraryManager.Books.Select(x => x.Author).Distinct().ToList();
+            var books= libraryManager.GetAllBooks().ToList();
+            var authors = books.Select(x => x.Author).Distinct().ToList();
             AuthorComboBox2.DataSource = authors;
 
-            var genres = libraryManager.Books.Select(x => x.Genre).Distinct().ToList();
+            var genres = books.Select(x => x.Genre).Distinct().ToList();
             GenreComboBox1.DataSource = genres;
         }
 
@@ -69,11 +69,12 @@ namespace WindowsFormsView
         /// </summary>
         private void UpdateButton_Click(object sender, EventArgs e)
         {
+            var books = libraryManager.GetAllBooks().ToList();
             BorrowedBookCheckBox1.Checked = false;
             IsAvailableCheckBox.Checked = false;
             AuthorComboBox2.SelectedIndex = -1;
             GenreComboBox1.SelectedIndex = -1;
-            UpdateBooksListView(libraryManager.Books);
+            UpdateBooksListView(books);
         }
 
         /// <summary>
@@ -84,19 +85,16 @@ namespace WindowsFormsView
             if (ReaderListView.SelectedItems.Count > 0)
             {
                 var selectedItem = ReaderListView.SelectedItems[0];
-                int readerId = int.Parse(selectedItem.SubItems[2].Text); 
 
-                var readerToDelete = libraryManager.Readers.FirstOrDefault(x => x.Id == readerId);
-
-                if (readerToDelete != null)
+                if (int.TryParse(selectedItem.SubItems[2].Text, out int readerId))
                 {
-                    libraryManager.DeleteReader(readerToDelete);
-                    UpdateReaderListView(libraryManager.Readers); 
-                    ReaderListView.Refresh();
+                    libraryManager.DeleteReaderAndReturnBooks(readerId);
+                    var updatedReaders = libraryManager.GetAllReaders().ToList();
+                    UpdateReaderListView(updatedReaders);
                 }
                 else
                 {
-                    MessageBox.Show("Читатель не найден.");
+                    MessageBox.Show("Не удалось распознать ID читателя из выбранной строки.");
                 }
             }
             else
@@ -185,17 +183,19 @@ namespace WindowsFormsView
         /// </summary>
         private void DeleteBookButton_Click(object sender, EventArgs e)
         {
+            var books = libraryManager.GetAllBooks().ToList();
             if (BookListView.SelectedItems.Count > 0)
             {
                 var selectedItem = BookListView.SelectedItems[0];
                 string bookTitle = selectedItem.SubItems[0].Text;
 
-                var bookToDelete = libraryManager.Books.FirstOrDefault(x => x.Title == bookTitle);
+                var bookToDelete = books.FirstOrDefault(x => x.Title == bookTitle);
 
                 if (bookToDelete != null)
                 {
-                    libraryManager.DeleteBook(bookToDelete);
-                    UpdateBooksListView(libraryManager.Books);
+                    libraryManager.DeleteBook(bookToDelete.Id);
+                    var updatedBooks = libraryManager.GetAllBooks().ToList();
+                    UpdateBooksListView(books);
                     BookListView.Refresh();
                 }
                 else

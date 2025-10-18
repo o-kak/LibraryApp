@@ -19,19 +19,21 @@ namespace WindowsFormsView
         public AddReaderForm(LibraryManager libraryManager)
         {
             this._libraryManager = libraryManager;
+            List<Book> books = libraryManager.GetAllBooks().ToList();
             InitializeComponent();
-            FillBorrowedBooksCheckedListBox();
+            FillBorrowedBooksCheckedListBox(books);
         }
-        private void FillBorrowedBooksCheckedListBox()
+        private void FillBorrowedBooksCheckedListBox(List<Book> books)
         {
             BorrowedBooksCheckedListBox.Items.Clear();
-            foreach (var book in _libraryManager.Books)
+            foreach (var book in books)
             {
                 BorrowedBooksCheckedListBox.Items.Add(book); 
             }
         }
         private void SaveReaderButton_Click(object sender, EventArgs e)
         {
+            
             string readerName = ReaderNamTextBox.Text;
             string readerAdress = ReaderAdressTextBox.Text;
 
@@ -44,7 +46,7 @@ namespace WindowsFormsView
             _libraryManager.AddReader(readerName, readerAdress);   
 
             bool hasErrors = false;
-            var readers = _libraryManager.Readers.ToList();
+            List<Reader> readers = _libraryManager.GetAllReaders().ToList();
 
             if (readers.Count == 0)
             {
@@ -60,13 +62,13 @@ namespace WindowsFormsView
                     {
                         try
                         {
-                            _libraryManager.GiveBook(selectedBook, readers.Last());
+                            _libraryManager.GiveBook(selectedBook.Id, readers.Last().Id);
                         }
                         catch (InvalidOperationException ex)
                         {
                             MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             hasErrors = true;
-                            _libraryManager.DeleteReader(readers.Last());
+                            _libraryManager.DeleteReader(readers.Last().Id);
                         }
                     }
                 }

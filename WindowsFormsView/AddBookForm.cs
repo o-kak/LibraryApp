@@ -33,7 +33,7 @@ namespace WindowsFormsView
                 return;
             }
             __libraryManager.AddBook(bookTitle, bookAuthor, bookGenre);
-            var books = __libraryManager.Books.ToList();
+            var books = __libraryManager.GetAllBooks().ToList();
 
             Form1 mainForm = Application.OpenForms.OfType<Form1>().FirstOrDefault();
             if (mainForm != null)
