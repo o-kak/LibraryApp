@@ -1,13 +1,13 @@
-﻿using System;
+﻿using DataAccessLayer;
+using Model;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Configuration;
+using System.Linq;
 using System.Net;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
-using DataAccessLayer;
-using Model;
 
 namespace BusinessLogic
 {
@@ -33,7 +33,7 @@ namespace BusinessLogic
             _readerRepository = new DapperRepository<Reader>(_connectionString, "Readers");
             _bookRepository = new DapperRepository<Book>(_connectionString, "Books");
 
-        }
+        } 
 
         /// <summary>
         /// добавить читателя

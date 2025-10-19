@@ -118,8 +118,8 @@ namespace WindowsFormsView
                 item.SubItems.Add(reader.Address);
                 item.SubItems.Add(reader.Id.ToString());
 
-                string borrowedBooks = reader.BooksBorrowed != null && reader.BooksBorrowed.Any()
-                    ? String.Join(", ", reader.BooksBorrowed.Select(b => b.Title))
+                string borrowedBooks = libraryManager.GetReadersBorrowedBooks(reader.Id) != null && libraryManager.GetReadersBorrowedBooks(reader.Id).Any()
+                    ? String.Join(", ", libraryManager.GetReadersBorrowedBooks(reader.Id).Select(b => b.Title))
                     : "Нет заимствованных книг";
 
                 item.SubItems.Add(borrowedBooks);
