@@ -37,7 +37,6 @@ namespace DataAccessLayer
                 object parameters = null;
                 if (typeof(T) == typeof(Book))
                 {
-                    // Приводим entity к типу Book
                     var book = entity as Book;
                     if (book == null)
                     {
@@ -52,7 +51,7 @@ namespace DataAccessLayer
                         IsAvailable = book.IsAvailable,
                         ReaderId = book.ReaderId
                     };
-                    book.Id = dbConnection.QuerySingle<int>(insertQuery, parameters); // Устанавливаем Id
+                    book.Id = dbConnection.QuerySingle<int>(insertQuery, parameters);
                     return entity;
 
                 }
@@ -69,7 +68,7 @@ namespace DataAccessLayer
                         Name = reader.Name,
                         Address = reader.Address
                     };
-                    reader.Id = dbConnection.QuerySingle<int>(insertQuery, parameters); // Устанавливаем Id
+                    reader.Id = dbConnection.QuerySingle<int>(insertQuery, parameters); 
                     return entity;
                 }
                 else
