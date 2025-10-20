@@ -1,12 +1,13 @@
-﻿using System;
+﻿using DataAccessLayer;
+using Model;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
-using DataAccessLayer;
-using Model;
 
 namespace BusinessLogic
 {
@@ -15,12 +16,24 @@ namespace BusinessLogic
         private readonly IRepository<Reader> _readerRepository;
         private readonly IRepository<Book> _bookRepository;
 
+
         public LibraryManager()
         {
             AppDbContext context = new AppDbContext();
             _readerRepository = new EntityRepository<Reader>(context);
             _bookRepository = new EntityRepository<Book>(context);
+
+
         }
+
+        /*private readonly string _connectionString;
+        public LibraryManager()
+        {
+            _connectionString = "Host=db.prisma.io;Port=5432;Database=postgres;Username=8d4767405025eb1c608cbeadfbfdb7e077c3f0171832fc93ed4c07e11fa6820d;Password=sk_mzVa5M7wDbXc3L0pz16F0;SSL Mode=Require;Trust Server Certificate=true;"; 
+            _readerRepository = new DapperRepository<Reader>(_connectionString, "Readers");
+            _bookRepository = new DapperRepository<Book>(_connectionString, "Books");
+
+        } */
 
         /// <summary>
         /// добавить читателя
