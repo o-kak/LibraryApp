@@ -79,7 +79,7 @@ namespace WindowsFormsView
                 {
                     bool isChecked = ReturnOrBorrowBookCheckedListBox.GetItemChecked(ReturnOrBorrowBookCheckedListBox.Items.IndexOf(item));
 
-                    if (!isChecked && currentReader.BooksBorrowed.Contains(book))
+                    if (!isChecked && ___libraryManager.GetReadersBorrowedBooks(currentReader.Id).Contains(book))
                     {
                         try
                         {
@@ -91,7 +91,7 @@ namespace WindowsFormsView
                         }
                     }
 
-                    else if (isChecked && !currentReader.BooksBorrowed.Contains(book))
+                    else if (isChecked && !___libraryManager.GetReadersBorrowedBooks(currentReader.Id).Contains(book))
                     {
                         try
                         {

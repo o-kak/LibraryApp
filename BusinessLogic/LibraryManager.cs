@@ -17,23 +17,23 @@ namespace BusinessLogic
         private readonly IRepository<Book> _bookRepository;
 
 
-        public LibraryManager()
+        /*public LibraryManager()
         {
             AppDbContext context = new AppDbContext();
             _readerRepository = new EntityRepository<Reader>(context);
             _bookRepository = new EntityRepository<Book>(context);
 
 
-        }
+        }*/
 
-        /*private readonly string _connectionString;
+        private readonly string _connectionString;
         public LibraryManager()
         {
             _connectionString = "Host=db.prisma.io;Port=5432;Database=postgres;Username=8d4767405025eb1c608cbeadfbfdb7e077c3f0171832fc93ed4c07e11fa6820d;Password=sk_mzVa5M7wDbXc3L0pz16F0;SSL Mode=Require;Trust Server Certificate=true;"; 
             _readerRepository = new DapperRepository<Reader>(_connectionString, "Readers");
             _bookRepository = new DapperRepository<Book>(_connectionString, "Books");
 
-        } */
+        }
 
         /// <summary>
         /// добавить читателя
@@ -68,7 +68,7 @@ namespace BusinessLogic
 
             if (readerToDelete != null)
             {
-                var booksToReturn = readerToDelete.BooksBorrowed?.ToList();
+                var booksToReturn = GetReadersBorrowedBooks(readerToDelete.Id).ToList();
 
                 if (booksToReturn != null && booksToReturn.Any())
                 {
@@ -111,7 +111,7 @@ namespace BusinessLogic
             if (!book.IsAvailable)
                 throw new InvalidOperationException("Этой книги нет в фонде!");
 
-            reader.BorrowBook(book);
+
             book.UpdateAvailability(false);
             book.ReaderId = readerId;
 
@@ -135,9 +135,6 @@ namespace BusinessLogic
 
             if (reader == null)
                 throw new InvalidOperationException("Читатель не найден!");
-
-            if (!reader.ReturnBook(book))
-                throw new InvalidOperationException("У читателя нет этой книги!");
 
             book.UpdateAvailability(true);
             book.ReaderId = null;

@@ -111,7 +111,7 @@ namespace ConsoleView
                 Console.WriteLine($"ID: {reader.Id}");
                 Console.WriteLine($"Имя: {reader.Name}");
                 Console.WriteLine($"Адрес: {reader.Address}");
-                Console.WriteLine($"Книги на руках: {(reader.BooksBorrowed.Any() ? string.Join(", ", reader.BooksBorrowed.Select(b => b.Title)) : "нет")}");
+                Console.WriteLine($"Книги на руках: {(manager.GetReadersBorrowedBooks(reader.Id).Any() ? string.Join(", ", manager.GetReadersBorrowedBooks(reader.Id).Select(b => b.Title)) : "нет")}");
                 Console.WriteLine("\n[1] Изменить данные");
                 Console.WriteLine("[2] Удалить читателя");
                 Console.WriteLine("[3] Взять книгу");
@@ -198,7 +198,7 @@ namespace ConsoleView
         /// <param name="reader">читатель</param>
         static void ReturnBookFromReader(LibraryManager manager, Reader reader)
         {
-            if (!reader.BooksBorrowed.Any())
+            if (!manager.GetReadersBorrowedBooks(reader.Id).Any())
             {
                 Console.WriteLine("\nУ читателя нет книг.");
                 Console.ReadKey();
@@ -206,15 +206,15 @@ namespace ConsoleView
             }
 
             Console.WriteLine("\nКниги у читателя:");
-            for (int i = 0; i < reader.BooksBorrowed.Count; i++)
-                Console.WriteLine($"[{i + 1}] {reader.BooksBorrowed[i].Title}");
+            for (int i = 0; i < manager.GetReadersBorrowedBooks(reader.Id).ToList().Count; i++)
+                Console.WriteLine($"[{i + 1}] {manager.GetReadersBorrowedBooks(reader.Id).ToList()[i].Title}");
 
             Console.Write("\nВведите номер книги: ");
-            if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= reader.BooksBorrowed.Count)
+            if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= manager.GetReadersBorrowedBooks(reader.Id).ToList().Count)
             {
                 try
                 {
-                    manager.ReturnBook(reader.BooksBorrowed[choice - 1].Id, reader.Id);
+                    manager.ReturnBook(manager.GetReadersBorrowedBooks(reader.Id).ToList()[choice - 1].Id, reader.Id);
                     Console.WriteLine("\nКнига возвращена!");
                 }
                 catch(InvalidOperationException ex)
