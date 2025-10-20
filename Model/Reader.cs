@@ -33,7 +33,5 @@ namespace Model
         /// </summary>
         /// <param name="address">новый адрес</param>
         public void UpdateAddress(string address) => Address = address;
-
-        
     }
 }
