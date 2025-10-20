@@ -33,50 +33,29 @@ namespace DataAccessLayer
         {
             using (IDbConnection dbConnection = CreateConnection())
             {
-                string insertQuery = "";
-                object parameters = null;
-                if (typeof(T) == typeof(Book))
-                {
-                    var book = entity as Book;
-                    if (book == null)
-                    {
-                        throw new ArgumentException("entity is not of type Book");
-                    }
-                    insertQuery = $"INSERT INTO \"{_tableName}\" (\"Title\", \"Author\", \"Genre\", \"IsAvailable\", \"ReaderId\") VALUES (@Title, @Author, @Genre, @IsAvailable, @ReaderId) RETURNING \"Id\";";
-                    parameters = new
-                    {
-                        Title = book.Title,
-                        Author = book.Author,
-                        Genre = book.Genre,
-                        IsAvailable = book.IsAvailable,
-                        ReaderId = book.ReaderId
-                    };
-                    book.Id = dbConnection.QuerySingle<int>(insertQuery, parameters);
-                    return entity;
+                string tableNameWithSchema;
+                tableNameWithSchema = $"\"{_tableName}\"";
+                var properties = typeof(T).GetProperties()
+                    .Where(p => p.CanWrite && p.Name != nameof(IDomainObject.Id))
+                    .ToList();
 
-                }
-                else if (typeof(T) == typeof(Reader))
+                var columnNames = properties.Select(p => $"\"{p.Name}\"").ToList();
+                var parameterNames = properties.Select(p => $"@{p.Name}").ToList();
+
+                string insertQuery = $"INSERT INTO {tableNameWithSchema} ({string.Join(", ", columnNames)}) VALUES ({string.Join(", ", parameterNames)}) RETURNING \"Id\";";
+
+                int newId = dbConnection.QuerySingle<int>(insertQuery, entity);
+
+                var idProperty = typeof(T).GetProperty(nameof(IDomainObject.Id));
+                if (idProperty != null && idProperty.CanWrite)
                 {
-                    var reader = entity as Reader;
-                    if (reader == null)
-                    {
-                        throw new ArgumentException("entity is not of type Reader");
-                    }
-                    insertQuery = $"INSERT INTO \"{_tableName}\" (\"Name\", \"Address\") VALUES (@Name, @Address) RETURNING \"Id\";";
-                    parameters = new
-                    {
-                        Name = reader.Name,
-                        Address = reader.Address
-                    };
-                    reader.Id = dbConnection.QuerySingle<int>(insertQuery, parameters); 
-                    return entity;
+                    idProperty.SetValue(entity, newId);
                 }
-                else
-                {
-                    throw new ArgumentException($"Тип {typeof(T).Name} не поддерживается.");
-                }
+
+                return entity;
             }
         }
+        
 
         public void Delete(int id)
         {
@@ -91,53 +70,18 @@ namespace DataAccessLayer
         {
             using (IDbConnection dbConnection = CreateConnection())
             {
-                string updateQuery = "";
-                object parameters = null;
+                string tableNameWithSchema;
+                tableNameWithSchema = $"\"{_tableName}\"";
 
-                if (typeof(T) == typeof(Book))
-                {
-                    var book = entity as Book;
-                    if (book == null)
-                    {
-                        throw new ArgumentException("entity is not of type Book");
-                    }
+                var properties = typeof(T).GetProperties()
+                    .Where(p => p.CanWrite && p.Name != nameof(IDomainObject.Id))
+                    .ToList();
 
-                    updateQuery = $"UPDATE \"{_tableName}\" SET \"Title\" = @Title, \"Author\" = @Author, \"Genre\" = @Genre, \"IsAvailable\" = @IsAvailable, \"ReaderId\" = @ReaderId WHERE \"Id\" = @Id";
+                var setClauses = properties.Select(p => $"\"{p.Name}\" = @{p.Name}").ToList();
 
-                    parameters = new
-                    {
-                        Id = book.Id,
-                        Title = book.Title,
-                        Author = book.Author,
-                        Genre = book.Genre,
-                        IsAvailable = book.IsAvailable,
-                        ReaderId = book.ReaderId
-                    };
-                    dbConnection.Execute(updateQuery, parameters);
-                    return;
+                string updateQuery = $"UPDATE {tableNameWithSchema} SET {string.Join(", ", setClauses)} WHERE \"Id\" = @Id";
 
-                }
-                else if (typeof(T) == typeof(Reader))
-                {
-                    var reader = entity as Reader;
-                    if (reader == null)
-                    {
-                        throw new ArgumentException("entity is not of type Reader");
-                    }
-                    updateQuery = $"UPDATE \"{_tableName}\" SET \"Name\" = @Name, \"Address\" = @Address WHERE \"Id\" = @Id";
-                    parameters = new
-                    {
-                        Id = reader.Id,
-                        Name = reader.Name,
-                        Address = reader.Address
-                    };
-                    dbConnection.Execute(updateQuery, parameters);
-                    return;
-                }
-                else
-                {
-                    throw new ArgumentException($"Тип {typeof(T).Name} не поддерживается.");
-                }
+                dbConnection.Execute(updateQuery, entity);
             }
         }
 
