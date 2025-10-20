@@ -24,11 +24,22 @@ namespace DataAccessLayer
             _tableName = tableName;
         }
 
+        /// <summary>
+        /// Создает и возвращает новое соединение с базой данных PostgreSQL.
+        /// </summary>
+        /// <returns>Открытое соединение с базой данных.</returns>
         private IDbConnection CreateConnection()
         {
             return new NpgsqlConnection(_connectionString);
         }
 
+        /// <summary>
+        /// Добавляет новую сущность в базу данных.
+        /// Автоматически определяет столбцы для вставки на основе свойств объекта,
+        /// и получает сгенерированный Id из PostgreSQL с помощью RETURNING.
+        /// </summary>
+        /// <param name="entity">Сущность для добавления.</param>
+        /// <returns>Добавленная сущность с установленным Id.</returns>
         public T Add(T entity)
         {
             using (IDbConnection dbConnection = CreateConnection())
@@ -55,8 +66,11 @@ namespace DataAccessLayer
                 return entity;
             }
         }
-        
 
+        /// <summary>
+        /// Удаляет сущность из базы данных по её идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор сущности для удаления.</param>
         public void Delete(int id)
         {
             using (IDbConnection dbConnection = CreateConnection())
@@ -66,6 +80,11 @@ namespace DataAccessLayer
             }
         }
 
+        /// <summary>
+        /// Обновляет существующую сущность в базе данных.
+        /// Автоматически определяет столбцы для обновления на основе свойств объекта (кроме Id).
+        /// </summary>
+        /// <param name="entity">Сущность с обновленными данными. Должна содержать корректный Id.</param>
         public void Update(T entity)
         {
             using (IDbConnection dbConnection = CreateConnection())
@@ -85,6 +104,11 @@ namespace DataAccessLayer
             }
         }
 
+        /// <summary>
+        /// Читает сущность из базы данных по её идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор сущности для чтения.</param>
+        /// <returns>Найденная сущность или null, если сущность с указанным Id не найдена.</returns>
         public T ReadById(int id)
         {
             using (IDbConnection dbConnection = CreateConnection())
@@ -94,6 +118,10 @@ namespace DataAccessLayer
             }
         }
 
+        /// <summary>
+        /// Читает все сущности типа T из базы данных.
+        /// </summary>
+        /// <returns>Коллекция всех сущностей типа T.</returns>
         public IEnumerable<T> ReadAll()
         {
             using (IDbConnection dbConnection = CreateConnection())
