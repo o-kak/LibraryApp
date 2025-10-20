@@ -96,7 +96,6 @@ namespace DataAccessLayer
 
                 if (typeof(T) == typeof(Book))
                 {
-                    // Приводим entity к типу Book
                     var book = entity as Book;
                     if (book == null)
                     {

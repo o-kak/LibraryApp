@@ -195,7 +195,7 @@ namespace WindowsFormsView
                 {
                     libraryManager.DeleteBook(bookToDelete.Id);
                     var updatedBooks = libraryManager.GetAllBooks().ToList();
-                    UpdateBooksListView(books);
+                    UpdateBooksListView(updatedBooks);
                     BookListView.Refresh();
                 }
                 else
