@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Model;
 using BusinessLogic;
+using Ninject;
 
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -21,7 +22,8 @@ namespace WindowsFormsView
         {
             InitializeComponent();
 
-            LibraryManager libraryManager = new LibraryManager();
+            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
+            libraryManager = ninjectKernel.Get<LibraryManager>();
             List<Book> books = libraryManager.GetAllBooks().ToList();
             List<Reader> readers = libraryManager.GetAllReaders().ToList();
             UpdateBooksListView(books);
@@ -29,7 +31,7 @@ namespace WindowsFormsView
             LoadAuthorsAndGenres();
 
         }
-        private LibraryManager libraryManager = new LibraryManager();
+        private LibraryManager libraryManager;
 
         private void LoadAuthorsAndGenres() 
         {

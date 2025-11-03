@@ -4,8 +4,10 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using BusinessLogic;
 using Model;
+using Ninject;
 
 namespace ConsoleView
 {
@@ -13,7 +15,9 @@ namespace ConsoleView
     {
         static void Main(string[] args)
         {
-            LibraryManager manager = new LibraryManager();
+            //LibraryManager manager = new LibraryManager();
+            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
+            LibraryManager manager = ninjectKernel.Get<LibraryManager>();
 
             ShowMainMenu(manager);
         }
