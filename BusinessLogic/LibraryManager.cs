@@ -13,27 +13,8 @@ namespace BusinessLogic
 {
     public class LibraryManager
     {
-        public IRepository<Reader> _readerRepository {  get; set; }
-        public IRepository<Book> _bookRepository { get; set; }
-
-
-        /*public LibraryManager()
-        {
-            AppDbContext context = new AppDbContext();
-            _readerRepository = new EntityRepository<Reader>(context);
-            _bookRepository = new EntityRepository<Book>(context);
-
-
-        }*/
-
-        private readonly string _connectionString;
-        /*public LibraryManager()
-        {
-            _connectionString = "Host=db.prisma.io;Port=5432;Database=postgres;Username=8d4767405025eb1c608cbeadfbfdb7e077c3f0171832fc93ed4c07e11fa6820d;Password=sk_mzVa5M7wDbXc3L0pz16F0;SSL Mode=Require;Trust Server Certificate=true;"; 
-            _readerRepository = new DapperRepository<Reader>(_connectionString, "Readers");
-            _bookRepository = new DapperRepository<Book>(_connectionString, "Books");
-
-        }*/
+        private IRepository<Reader> _readerRepository {  get; set; }
+        private IRepository<Book> _bookRepository { get; set; }
 
         public LibraryManager(IRepository<Reader> readerRepository, IRepository<Book> bookRepository)
         {
