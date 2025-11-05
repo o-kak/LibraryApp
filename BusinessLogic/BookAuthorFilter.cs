@@ -10,16 +10,16 @@ namespace BusinessLogic
 {
     internal class BookAuthorFilter : IFilter<Book>
     {
-        private IRepository<Book> _bookRepository;
+        private IRepository<Book> BookRepository {  get; set; }
 
         public BookAuthorFilter(IRepository<Book> bookRepository)
         {
-            _bookRepository = bookRepository;
+            BookRepository = bookRepository;
         }
 
         public IEnumerable<Book> Filter(string author)
         {
-            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            List<Book> allBooks = BookRepository.ReadAll().ToList();
             return allBooks.Where(book => book.Author == author);
         }
     }

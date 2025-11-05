@@ -10,26 +10,25 @@ namespace BusinessLogic
 {
     public class BookService
     {
-        private IRepository<Book> _bookRepository;
+        private IRepository<Book> BookRepository { get; set; }
 
         public BookService(IRepository<Book> bookRepository)
         {
-            _bookRepository = bookRepository;
+            BookRepository = bookRepository;
         }
 
         public void AddBook(string title, string author, string genre)
         {
             Book book = new Book(title, author, genre);
-            _bookRepository.Add(book);
+            BookRepository.Add(book);
         }
 
-        public void DeleteBook(int bookId) => _bookRepository.Delete(bookId);
+        public void DeleteBook(int bookId) => BookRepository.Delete(bookId);
 
         public IEnumerable<Book> GetAllBooks()
         {
-            return _bookRepository.ReadAll();
+            return BookRepository.ReadAll();
         }
-
 
     }
 }

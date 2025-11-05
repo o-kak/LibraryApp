@@ -10,19 +10,19 @@ namespace BusinessLogic
 {
     public class LoanService
     {
-        private IRepository<Reader> _readerRepository { get; set; }
-        private IRepository<Book> _bookRepository { get; set; }
+        private IRepository<Reader> ReaderRepository { get; set; }
+        private IRepository<Book> BookRepository { get; set; }
 
         public LoanService(IRepository<Reader> readerRepository, IRepository<Book> bookRepository)
         {
-            _readerRepository = readerRepository;
-            _bookRepository = bookRepository;
+            ReaderRepository = readerRepository;
+            BookRepository = bookRepository;
         }
 
         public void GiveBook(int bookId, int readerId)
         {
-            var book = _bookRepository.ReadById(bookId);
-            var reader = _readerRepository.ReadById(readerId);
+            var book = BookRepository.ReadById(bookId);
+            var reader = ReaderRepository.ReadById(readerId);
 
             if (book == null)
                 throw new InvalidOperationException("Книга не найдена!");
@@ -37,14 +37,14 @@ namespace BusinessLogic
             book.UpdateAvailability(false);
             book.ReaderId = readerId;
 
-            _bookRepository.Update(book);
-            _readerRepository.Update(reader);
+            BookRepository.Update(book);
+            ReaderRepository.Update(reader);
         }
 
         public void ReturnBook(int bookId, int readerId)
         {
-            var book = _bookRepository.ReadById(bookId);
-            var reader = _readerRepository.ReadById(readerId);
+            var book = BookRepository.ReadById(bookId);
+            var reader = ReaderRepository.ReadById(readerId);
 
             if (book == null)
                 throw new InvalidOperationException("Книга не найдена!");
@@ -55,25 +55,25 @@ namespace BusinessLogic
             book.UpdateAvailability(true);
             book.ReaderId = null;
 
-            _bookRepository.Update(book);
-            _readerRepository.Update(reader);
+            BookRepository.Update(book);
+            ReaderRepository.Update(reader);
         }
 
         public IEnumerable<Book> GetReadersBorrowedBooks(int readerId)
         {
-            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            List<Book> allBooks = BookRepository.ReadAll().ToList();
             return allBooks.Where(book => book.ReaderId == readerId);
         }
 
         public IEnumerable<Book> GetAvailableBooks()
         {
-            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            List<Book> allBooks = BookRepository.ReadAll().ToList();
             return allBooks.Where(book => book.IsAvailable);
         }
 
         public IEnumerable<Book> GetBorrowedBooks()
         {
-            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            List<Book> allBooks = BookRepository.ReadAll().ToList();
             return allBooks.Where(book => !book.IsAvailable);
         }
     }

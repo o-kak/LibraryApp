@@ -10,38 +10,39 @@ namespace BusinessLogic
 {
     public class ReaderService
     {
-        private IRepository<Reader> _readerRepository { get; set; }
+        private IRepository<Reader> ReaderRepository { get; set; }
 
         public ReaderService(IRepository<Reader> readerRepository)
         {
-            _readerRepository = readerRepository;
+            ReaderRepository = readerRepository;
         }
 
         public void AddReader(string name, string address)
         {
             Reader reader = new Reader(name, address);
-            _readerRepository.Add(reader);
+            ReaderRepository.Add(reader);
         }
 
         public void DeleteReader(int readerId)
         {
-            var readerToDelete = _readerRepository.ReadById(readerId);
+            var readerToDelete = ReaderRepository.ReadById(readerId);
 
             if (readerToDelete != null)
             {
-                _readerRepository.Delete(readerId);
+                ReaderRepository.Delete(readerId);
             }
         }
 
         public IEnumerable<Reader> GetAllReaders()
         {
-            return _readerRepository.ReadAll();
+            return ReaderRepository.ReadAll();
         }
 
         public Reader GetReader(int readerId)
         {
-            return _readerRepository.ReadById(readerId);
+            return ReaderRepository.ReadById(readerId);
         }
+
 
     }
 }

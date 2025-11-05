@@ -13,13 +13,13 @@ namespace BusinessLogic
 {
     public class LibraryManager
     {
-        private IRepository<Reader> _readerRepository {  get; set; }
-        private IRepository<Book> _bookRepository { get; set; }
+        private IRepository<Reader> ReaderRepository {  get; set; }
+        private IRepository<Book> BookRepository { get; set; }
 
         public LibraryManager(IRepository<Reader> readerRepository, IRepository<Book> bookRepository)
         {
-            _readerRepository = readerRepository;
-            _bookRepository = bookRepository;
+            ReaderRepository = readerRepository;
+            BookRepository = bookRepository;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace BusinessLogic
         public void AddReader(string name, string address)
         {
             Reader reader = new Reader(name, address);
-            _readerRepository.Add(reader);
+            ReaderRepository.Add(reader);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace BusinessLogic
         public void AddBook(string title, string author, string genre)
         {
             Book book = new Book(title, author, genre);
-            _bookRepository.Add(book);
+            BookRepository.Add(book);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace BusinessLogic
         /// <param name="readerId">id читателя</param>
         public void DeleteReader(int readerId)
         {
-            var readerToDelete = _readerRepository.ReadById(readerId);
+            var readerToDelete = ReaderRepository.ReadById(readerId);
 
             if (readerToDelete != null)
             {
@@ -68,7 +68,7 @@ namespace BusinessLogic
                     }
                 }
 
-                _readerRepository.Delete(readerId);
+                ReaderRepository.Delete(readerId);
             }
         }
 
@@ -76,7 +76,7 @@ namespace BusinessLogic
         /// удалить книгу
         /// </summary>
         /// <param name="bookId">id книги</param>
-        public void DeleteBook(int bookId) => _bookRepository.Delete(bookId);
+        public void DeleteBook(int bookId) => BookRepository.Delete(bookId);
 
         /// <summary>
         /// выдать книгу
@@ -86,8 +86,8 @@ namespace BusinessLogic
         /// <exception cref="InvalidOperationException"></exception>
         public void GiveBook(int bookId, int readerId)
         {
-            var book = _bookRepository.ReadById(bookId);
-            var reader = _readerRepository.ReadById(readerId);
+            var book = BookRepository.ReadById(bookId);
+            var reader = ReaderRepository.ReadById(readerId);
 
             if (book == null)
                 throw new InvalidOperationException("Книга не найдена!");
@@ -102,8 +102,8 @@ namespace BusinessLogic
             book.UpdateAvailability(false);
             book.ReaderId = readerId;
 
-            _bookRepository.Update(book);
-            _readerRepository.Update(reader);
+            BookRepository.Update(book);
+            ReaderRepository.Update(reader);
         }
 
        /// <summary>
@@ -114,8 +114,8 @@ namespace BusinessLogic
        /// <exception cref="InvalidOperationException"></exception>
         public void ReturnBook(int bookId, int readerId)
         {
-            var book = _bookRepository.ReadById(bookId);
-            var reader = _readerRepository.ReadById(readerId);
+            var book = BookRepository.ReadById(bookId);
+            var reader = ReaderRepository.ReadById(readerId);
 
             if (book == null)
                 throw new InvalidOperationException("Книга не найдена!");
@@ -126,8 +126,8 @@ namespace BusinessLogic
             book.UpdateAvailability(true);
             book.ReaderId = null;
 
-            _bookRepository.Update(book);
-            _readerRepository.Update(reader);
+            BookRepository.Update(book);
+            ReaderRepository.Update(reader);
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace BusinessLogic
         /// <returns>список книг</returns>
         public IEnumerable<Book> GetAllBooks()
         {
-            return _bookRepository.ReadAll();
+            return BookRepository.ReadAll();
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace BusinessLogic
         /// <returns>список читателей</returns>
         public IEnumerable<Reader> GetAllReaders()
         {
-            return _readerRepository.ReadAll();
+            return ReaderRepository.ReadAll();
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace BusinessLogic
         /// <returns>читатель</returns>
         public Reader GetReader(int readerId)
         {
-            return _readerRepository.ReadById(readerId);
+            return ReaderRepository.ReadById(readerId);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace BusinessLogic
         /// <returns>коллекция доступных книг</returns>
         public IEnumerable<Book> GetAvailableBooks()
         {
-            List<Book> allBooks = _bookRepository.ReadAll().ToList(); 
+            List<Book> allBooks = BookRepository.ReadAll().ToList(); 
             return allBooks.Where(book => book.IsAvailable);
         }
 
@@ -175,7 +175,7 @@ namespace BusinessLogic
         /// <returns>список книг</returns>
         public IEnumerable<Book> GetReadersBorrowedBooks(int readerId)
         {
-            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            List<Book> allBooks = BookRepository.ReadAll().ToList();
             return allBooks.Where(book => book.ReaderId == readerId);
         }
 
@@ -185,7 +185,7 @@ namespace BusinessLogic
         /// <returns>коллекция недоступных книг</returns>
         public IEnumerable<Book> GetBorrowedBooks()
         {
-            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            List<Book> allBooks = BookRepository.ReadAll().ToList();
             return allBooks.Where(book => !book.IsAvailable);
         }
 
@@ -196,7 +196,7 @@ namespace BusinessLogic
         /// <returns>коллекция отфильтрованных книг</returns>
         public IEnumerable<Book> FilterBooksByGenre(string genre)
         {
-            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            List<Book> allBooks = BookRepository.ReadAll().ToList();
             return allBooks.Where(book => book.Genre == genre);
         }
 
@@ -207,7 +207,7 @@ namespace BusinessLogic
         /// <returns>коллекция отфильтрованных книг</returns>
         public IEnumerable<Book> FilterBooksByAuthor(string author)
         {
-            List<Book> allBooks = _bookRepository.ReadAll().ToList();
+            List<Book> allBooks = BookRepository.ReadAll().ToList();
             return allBooks.Where(book => book.Author == author);
         }
     }
