@@ -91,7 +91,6 @@
     <Compile Include="BookGenreFilter.cs" />
     <Compile Include="BookService.cs" />
     <Compile Include="IFilter.cs" />
-    <Compile Include="LibraryManager.cs" />
     <Compile Include="LoanService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReaderService.cs" />

@@ -8,7 +8,7 @@ using Model;
 
 namespace BusinessLogic
 {
-    internal class BookAuthorFilter : IFilter<Book>
+    public class BookAuthorFilter : IFilter<Book>
     {
         private IRepository<Book> BookRepository {  get; set; }
 

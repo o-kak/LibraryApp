@@ -8,5 +8,11 @@ namespace ConsoleView
 {
     internal class InputHandler
     {
+        public InputHandler() { }
+
+        public void EnterInt()
+        {
+
+        }
     }
 }
