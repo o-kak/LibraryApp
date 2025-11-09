@@ -154,6 +154,18 @@ namespace WindowsFormsView
                 ListViewItem b_item = new ListViewItem(book.Title);
                 b_item.SubItems.Add(book.Author);
                 b_item.SubItems.Add(book.Genre);
+                string readerName = "Нет читателя"; 
+                if (book.ReaderId.HasValue && book.ReaderId.Value > 0) 
+                {
+                    Reader reader = readerService.GetReader(book.ReaderId.Value);
+                    if (reader != null)
+                    {
+                        readerName = reader.Name; 
+                    }
+                }
+
+                // Добавляем имя читателя в новый столбец
+                b_item.SubItems.Add(readerName);
                 BookListView.Items.Add(b_item);
             }
             BookListView.EndUpdate();

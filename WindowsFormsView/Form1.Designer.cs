@@ -48,6 +48,7 @@
             this.ChangeInfoButton = new System.Windows.Forms.Button();
             this.GenreComboBox1 = new System.Windows.Forms.ComboBox();
             this.AuthorComboBox2 = new System.Windows.Forms.ComboBox();
+            this.BookOwner = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // AddReaderButton
@@ -117,7 +118,8 @@
             this.BookListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.BookName,
             this.BookAuther,
-            this.BookGenre});
+            this.BookGenre,
+            this.BookOwner});
             this.BookListView.FullRowSelect = true;
             this.BookListView.GridLines = true;
             this.BookListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -133,7 +135,7 @@
             // BookName
             // 
             this.BookName.Text = "Название";
-            this.BookName.Width = 200;
+            this.BookName.Width = 150;
             // 
             // BookAuther
             // 
@@ -228,6 +230,11 @@
             this.AuthorComboBox2.Text = "Автор";
             this.AuthorComboBox2.SelectedIndexChanged += new System.EventHandler(this.AuthorComboBox2_SelectedIndexChanged);
             // 
+            // BookOwner
+            // 
+            this.BookOwner.Text = "Владелец книги";
+            this.BookOwner.Width = 163;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -274,6 +281,7 @@
         private System.Windows.Forms.Button ChangeInfoButton;
         private System.Windows.Forms.ComboBox GenreComboBox1;
         private System.Windows.Forms.ComboBox AuthorComboBox2;
+        private System.Windows.Forms.ColumnHeader BookOwner;
     }
 }
 
