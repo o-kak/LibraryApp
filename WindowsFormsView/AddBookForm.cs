@@ -14,10 +14,10 @@ namespace WindowsFormsView
 {
     public partial class AddBookForm : Form
     {
-        private LibraryManager __libraryManager;
-        public AddBookForm(LibraryManager libraryManager)
+        private BookService bookService;
+        public AddBookForm(BookService bookService)
         {
-            this.__libraryManager = libraryManager;
+            this.bookService = bookService;
             InitializeComponent();
         }
 
@@ -32,8 +32,8 @@ namespace WindowsFormsView
                 MessageBox.Show("Пожалуйста, заполните все поля.");
                 return;
             }
-            __libraryManager.AddBook(bookTitle, bookAuthor, bookGenre);
-            var books = __libraryManager.GetAllBooks().ToList();
+            bookService.AddBook(bookTitle, bookAuthor, bookGenre);
+            var books = bookService.GetAllBooks().ToList();
 
             Form1 mainForm = Application.OpenForms.OfType<Form1>().FirstOrDefault();
             if (mainForm != null)

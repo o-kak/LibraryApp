@@ -14,11 +14,15 @@ namespace WindowsFormsView
 {
     public partial class ChangeReaderForm : Form
     {
-        private LibraryManager ___libraryManager;
+        private BookService bookService;
+        private ReaderService readerService;
+        private LoanService loanService;
         private int currentID;
-        public ChangeReaderForm(ListViewItem item, LibraryManager libraryManager)
+        public ChangeReaderForm(ListViewItem item, BookService bookService, ReaderService readerService, LoanService loanService)
         {
-            this.___libraryManager = libraryManager;
+            this.bookService = bookService;
+            this.readerService = readerService;
+            this.loanService = loanService;
             InitializeComponent();
             NeedToUpdateNameTextBox.Text = item.SubItems[0].Text;
             NeedToUpdateAdressTextBox.Text = item.SubItems[1].Text;
@@ -32,7 +36,7 @@ namespace WindowsFormsView
         /// <param name="item">выбранная строка из таблицы читателей</param>
         private void LoadInfo(ListViewItem item) 
         {
-            var books = ___libraryManager.GetAllBooks().ToList();
+            var books = bookService.GetAllBooks().ToList();
             string selectedBooks = item.SubItems[3].Text;
             ReturnOrBorrowBookCheckedListBox.Items.Clear();
             if (selectedBooks == "Нет заимствованных книг")
@@ -61,7 +65,7 @@ namespace WindowsFormsView
         /// </summary>
         private void Savebutton1_Click(object sender, EventArgs e)
         {
-            List<Reader> readers = ___libraryManager.GetAllReaders().ToList();
+            List<Reader> readers = readerService.GetAllReaders().ToList();
             var currentReader = readers.FirstOrDefault(r => r.Id == currentID);
             if (currentReader == null)
             {
@@ -79,11 +83,11 @@ namespace WindowsFormsView
                 {
                     bool isChecked = ReturnOrBorrowBookCheckedListBox.GetItemChecked(ReturnOrBorrowBookCheckedListBox.Items.IndexOf(item));
 
-                    if (!isChecked && ___libraryManager.GetReadersBorrowedBooks(currentReader.Id).Contains(book))
+                    if (!isChecked && loanService.GetReadersBorrowedBooks(currentReader.Id).Contains(book))
                     {
                         try
                         {
-                            ___libraryManager.ReturnBook(book.Id, currentReader.Id);
+                            loanService.ReturnBook(book.Id, currentReader.Id);
                         }
                         catch (InvalidOperationException ex)
                         {
@@ -91,11 +95,11 @@ namespace WindowsFormsView
                         }
                     }
 
-                    else if (isChecked && !___libraryManager.GetReadersBorrowedBooks(currentReader.Id).Contains(book))
+                    else if (isChecked && !loanService.GetReadersBorrowedBooks(currentReader.Id).Contains(book))
                     {
                         try
                         {
-                            ___libraryManager.GiveBook(book.Id, currentReader.Id);
+                            loanService.GiveBook(book.Id, currentReader.Id);
                         }
                         catch (InvalidOperationException ex)
                         {

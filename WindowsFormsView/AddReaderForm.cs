@@ -14,12 +14,16 @@ namespace WindowsFormsView
 {
     public partial class AddReaderForm : Form
     {
-        private LibraryManager _libraryManager;
+        private BookService bookService;
+        private ReaderService readerService; 
+        private LoanService loanService;
 
-        public AddReaderForm(LibraryManager libraryManager)
+        public AddReaderForm(BookService bookService, ReaderService readerService, LoanService loanService)
         {
-            this._libraryManager = libraryManager;
-            List<Book> books = libraryManager.GetAllBooks().ToList();
+            this.bookService = bookService;
+            this.readerService = readerService;
+            this.loanService = loanService;
+            List<Book> books = bookService.GetAllBooks().ToList();
             InitializeComponent();
             FillBorrowedBooksCheckedListBox(books);
         }
@@ -43,10 +47,10 @@ namespace WindowsFormsView
                 return;
             }
 
-            _libraryManager.AddReader(readerName, readerAdress);   
+            readerService.AddReader(readerName, readerAdress);   
 
             bool hasErrors = false;
-            List<Reader> readers = _libraryManager.GetAllReaders().ToList();
+            List<Reader> readers = readerService.GetAllReaders().ToList();
 
             if (readers.Count == 0)
             {
@@ -62,13 +66,13 @@ namespace WindowsFormsView
                     {
                         try
                         {
-                            _libraryManager.GiveBook(selectedBook.Id, readers.Last().Id);
+                            loanService.GiveBook(selectedBook.Id, readers.Last().Id);
                         }
                         catch (InvalidOperationException ex)
                         {
                             MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             hasErrors = true;
-                            _libraryManager.DeleteReader(readers.Last().Id);
+                            readerService.DeleteReader(readers.Last().Id);
                         }
                     }
                 }

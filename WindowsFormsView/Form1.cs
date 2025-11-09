@@ -18,24 +18,34 @@ namespace WindowsFormsView
 {
     public partial class Form1: Form
     {
+        private BookService bookService;
+        private ReaderService readerService; 
+        private BookAuthorFilter bookAuthorFilter;
+        private BookGenreFilter bookGenreFilter;
+        private LoanService loanService;
         public Form1()
         {
             InitializeComponent();
 
             IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
-            libraryManager = ninjectKernel.Get<LibraryManager>();
-            List<Book> books = libraryManager.GetAllBooks().ToList();
-            List<Reader> readers = libraryManager.GetAllReaders().ToList();
+
+            this.bookAuthorFilter = ninjectKernel.Get<BookAuthorFilter>();
+            this.bookGenreFilter = ninjectKernel.Get<BookGenreFilter>();
+            this.bookService = ninjectKernel.Get<BookService>();
+            this.loanService = ninjectKernel.Get<LoanService>();
+            this.readerService = ninjectKernel.Get<ReaderService>();
+
+            List<Book> books = bookService.GetAllBooks().ToList();
+            List<Reader> readers = readerService.GetAllReaders().ToList();
             UpdateBooksListView(books);
             UpdateReaderListView(readers);
             LoadAuthorsAndGenres();
 
         }
-        private LibraryManager libraryManager;
 
         private void LoadAuthorsAndGenres() 
         {
-            var books= libraryManager.GetAllBooks().ToList();
+            var books= bookService.GetAllBooks().ToList();
             var authors = books.Select(x => x.Author).Distinct().ToList();
             AuthorComboBox2.DataSource = authors;
 
@@ -49,7 +59,7 @@ namespace WindowsFormsView
         /// </summary>
         private void AddReaderButton_Click(object sender, EventArgs e)
         {
-            using (AddReaderForm arf = new AddReaderForm(libraryManager)) 
+            using (AddReaderForm arf = new AddReaderForm(bookService, readerService, loanService)) 
             {
                 arf.ShowDialog();
             }
@@ -60,7 +70,7 @@ namespace WindowsFormsView
         /// </summary>
         private void AddBookButton_Click(object sender, EventArgs e)
         {
-            using (AddBookForm abf = new AddBookForm(libraryManager))
+            using (AddBookForm abf = new AddBookForm(bookService))
             {
                 abf.ShowDialog();
             }
@@ -71,7 +81,7 @@ namespace WindowsFormsView
         /// </summary>
         private void UpdateButton_Click(object sender, EventArgs e)
         {
-            var books = libraryManager.GetAllBooks().ToList();
+            var books = bookService.GetAllBooks().ToList();
             BorrowedBookCheckBox1.Checked = false;
             IsAvailableCheckBox.Checked = false;
             AuthorComboBox2.SelectedIndex = -1;
@@ -90,8 +100,8 @@ namespace WindowsFormsView
 
                 if (int.TryParse(selectedItem.SubItems[2].Text, out int readerId))
                 {
-                    libraryManager.DeleteReader(readerId);
-                    var updatedReaders = libraryManager.GetAllReaders().ToList();
+                    readerService.DeleteReader(readerId);
+                    var updatedReaders = readerService.GetAllReaders().ToList();
                     UpdateReaderListView(updatedReaders);
                 }
                 else
@@ -120,8 +130,8 @@ namespace WindowsFormsView
                 item.SubItems.Add(reader.Address);
                 item.SubItems.Add(reader.Id.ToString());
 
-                string borrowedBooks = libraryManager.GetReadersBorrowedBooks(reader.Id) != null && libraryManager.GetReadersBorrowedBooks(reader.Id).Any()
-                    ? String.Join(", ", libraryManager.GetReadersBorrowedBooks(reader.Id).Select(b => b.Title))
+                string borrowedBooks = loanService.GetReadersBorrowedBooks(reader.Id) != null && loanService.GetReadersBorrowedBooks(reader.Id).Any()
+                    ? String.Join(", ", loanService.GetReadersBorrowedBooks(reader.Id).Select(b => b.Title))
                     : "Нет заимствованных книг";
 
                 item.SubItems.Add(borrowedBooks);
@@ -160,7 +170,7 @@ namespace WindowsFormsView
             if (IsAvailableCheckBox.Checked)
             {
                 BorrowedBookCheckBox1.Checked = false;
-                UpdateBooksListView(libraryManager.GetAvailableBooks());
+                UpdateBooksListView(loanService.GetAvailableBooks());
                 
             }
         }
@@ -175,7 +185,7 @@ namespace WindowsFormsView
             if (BorrowedBookCheckBox1.Checked) 
             {
                 IsAvailableCheckBox.Checked = false;
-                UpdateBooksListView(libraryManager.GetBorrowedBooks());
+                UpdateBooksListView(loanService.GetBorrowedBooks());
             }
 
         }
@@ -185,7 +195,7 @@ namespace WindowsFormsView
         /// </summary>
         private void DeleteBookButton_Click(object sender, EventArgs e)
         {
-            var books = libraryManager.GetAllBooks().ToList();
+            var books = bookService.GetAllBooks().ToList();
             if (BookListView.SelectedItems.Count > 0)
             {
                 var selectedItem = BookListView.SelectedItems[0];
@@ -195,8 +205,8 @@ namespace WindowsFormsView
 
                 if (bookToDelete != null)
                 {
-                    libraryManager.DeleteBook(bookToDelete.Id);
-                    var updatedBooks = libraryManager.GetAllBooks().ToList();
+                    bookService.DeleteBook(bookToDelete.Id);
+                    var updatedBooks = bookService.GetAllBooks().ToList();
                     UpdateBooksListView(updatedBooks);
                     BookListView.Refresh();
                 }
@@ -219,7 +229,7 @@ namespace WindowsFormsView
             if (ReaderListView.SelectedItems.Count >0)
             {
                 ListViewItem selectedItem = ReaderListView.SelectedItems[0];
-                using (ChangeReaderForm crf = new ChangeReaderForm(selectedItem, libraryManager)) 
+                using (ChangeReaderForm crf = new ChangeReaderForm(selectedItem, bookService, readerService, loanService)) 
                 {
                     crf.ShowDialog();
                 }
@@ -241,7 +251,7 @@ namespace WindowsFormsView
                 return;
             }
 
-            UpdateBooksListView(libraryManager.FilterBooksByGenre(genre));
+            UpdateBooksListView(bookGenreFilter.Filter(genre));
         }
 
         /// <summary>
@@ -257,7 +267,7 @@ namespace WindowsFormsView
                 AuthorComboBox2.Text = "Авторы";
                 return;
             }
-            UpdateBooksListView(libraryManager.FilterBooksByAuthor(author));
+            UpdateBooksListView(bookAuthorFilter.Filter(author));
         }
     }
 }
