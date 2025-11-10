@@ -23,17 +23,17 @@ namespace WindowsFormsView
         private BookAuthorFilter bookAuthorFilter;
         private BookGenreFilter bookGenreFilter;
         private LoanService loanService;
-        public Form1()
+        public Form1(BookAuthorFilter authorFilter, BookGenreFilter genreFilter, BookService bookService, LoanService loanService, ReaderService readerService)
         {
             InitializeComponent();
 
             IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
 
-            this.bookAuthorFilter = ninjectKernel.Get<BookAuthorFilter>();
-            this.bookGenreFilter = ninjectKernel.Get<BookGenreFilter>();
-            this.bookService = ninjectKernel.Get<BookService>();
-            this.loanService = ninjectKernel.Get<LoanService>();
-            this.readerService = ninjectKernel.Get<ReaderService>();
+            this.bookAuthorFilter = authorFilter;
+            this.bookGenreFilter = genreFilter;
+            this.bookService = bookService;
+            this.loanService = loanService;
+            this.readerService = readerService;
 
             List<Book> books = bookService.GetAllBooks().ToList();
             List<Reader> readers = readerService.GetAllReaders().ToList();
