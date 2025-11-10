@@ -22,6 +22,10 @@ namespace ConsoleView
             LoanService = loanService;
         }
 
+        /// <summary>
+        /// вывести список книг
+        /// </summary>
+        /// <param name="books">список книг</param>
         public void ShowBooks(IEnumerable<Book> books)
         {
             Console.Clear();
@@ -36,6 +40,9 @@ namespace ConsoleView
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// фильтрация книг
+        /// </summary>
         public void FilterBooksMenu()
         {
             Console.Clear();
@@ -67,6 +74,9 @@ namespace ConsoleView
             }
         }
 
+        /// <summary>
+        /// меню действий с книгами
+        /// </summary>
         public void ShowBooksMenu()
         {
             ConsoleKey key;
@@ -105,6 +115,9 @@ namespace ConsoleView
             } while (key != ConsoleKey.Escape);
         }
 
+        /// <summary>
+        /// меню добавления книги
+        /// </summary>
         public void AddBookMenu()
         {
             Console.Clear();
@@ -141,6 +154,9 @@ namespace ConsoleView
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// меню удаления книги
+        /// </summary>
         public void DeleteBookMenu()
         {
             Console.Clear();

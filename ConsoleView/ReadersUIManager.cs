@@ -21,6 +21,9 @@ namespace ConsoleView
             LoanService = loanService;
         }
 
+        /// <summary>
+        /// список всех читателей
+        /// </summary>
         public void ShowReaders()
         {
             int index = 0;
@@ -65,6 +68,10 @@ namespace ConsoleView
             } while (key != ConsoleKey.Escape);
         }
 
+        /// <summary>
+        /// профиль читателя
+        /// </summary>
+        /// <param name="readerId">id читателя</param>
         public void ShowReaderProfile(int readerId)
         {
             Reader reader = ReaderService.GetReader(readerId);
@@ -117,6 +124,9 @@ namespace ConsoleView
             } while (key != ConsoleKey.Escape);
         }
 
+        /// <summary>
+        /// меню добавления читателя
+        /// </summary>
         public void AddReaderMenu()
         {
             Console.Clear();

@@ -17,14 +17,28 @@ namespace BusinessLogic
             BookRepository = bookRepository;
         }
 
+        /// <summary>
+        /// добавить книгу
+        /// </summary>
+        /// <param name="title">название</param>
+        /// <param name="author">автор</param>
+        /// <param name="genre">жанр</param>
         public void AddBook(string title, string author, string genre)
         {
             Book book = new Book(title, author, genre);
             BookRepository.Add(book);
         }
 
+        /// <summary>
+        /// удалить книгу
+        /// </summary>
+        /// <param name="bookId">id книги</param>
         public void DeleteBook(int bookId) => BookRepository.Delete(bookId);
 
+        /// <summary>
+        /// получить все книги
+        /// </summary>
+        /// <returns>список книг</returns>
         public IEnumerable<Book> GetAllBooks()
         {
             return BookRepository.ReadAll();

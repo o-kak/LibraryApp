@@ -17,6 +17,10 @@ namespace ConsoleView
             LoanService = loanService;
         }
 
+        /// <summary>
+        /// выдача книги
+        /// </summary>
+        /// <param name="reader">читатель</param>
         public void GiveBookToReader(Reader reader)
         {
             var books = LoanService.GetAvailableBooks().ToList();
@@ -51,6 +55,10 @@ namespace ConsoleView
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// возврат книги
+        /// </summary>
+        /// <param name="reader">читатаель</param>
         public void ReturnBookFromReader(Reader reader)
         {
             if (!LoanService.GetReadersBorrowedBooks(reader.Id).Any())

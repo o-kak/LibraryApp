@@ -9,6 +9,11 @@ namespace BusinessLogic
 {
     internal interface IFilter<T>
     {
+        /// <summary>
+        /// фильтрация по критерию
+        /// </summary>
+        /// <param name="criteria">критерий</param>
+        /// <returns></returns>
         IEnumerable<T> Filter(string criteria);
     }
 }

@@ -28,7 +28,9 @@ namespace ConsoleView
         /// <summary>
         /// главное меню
         /// </summary>
-        /// <param name="manager">менеджер бибилиотеки</param>
+        /// <param name="b">ui для книг</param>
+        /// <param name="r">ui для читателей</param>
+        /// <param name="l">ui для выдачи и возвратов</param>
         static void ShowMainMenu(BooksUIManager b, ReadersUIManager r, LoanUIManager l)
         {
             ConsoleKey key;

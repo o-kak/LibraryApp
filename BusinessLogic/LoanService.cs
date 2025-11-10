@@ -19,6 +19,12 @@ namespace BusinessLogic
             BookRepository = bookRepository;
         }
 
+        /// <summary>
+        /// выдать книгу
+        /// </summary>
+        /// <param name="bookId">id книги</param>
+        /// <param name="readerId">id читателя</param>
+        /// <exception cref="InvalidOperationException"></exception>
         public void GiveBook(int bookId, int readerId)
         {
             var book = BookRepository.ReadById(bookId);
@@ -41,6 +47,12 @@ namespace BusinessLogic
             ReaderRepository.Update(reader);
         }
 
+        /// <summary>
+        /// вернуть книгу
+        /// </summary>
+        /// <param name="bookId">id книги</param>
+        /// <param name="readerId">id читателя</param>
+        /// <exception cref="InvalidOperationException"></exception>
         public void ReturnBook(int bookId, int readerId)
         {
             var book = BookRepository.ReadById(bookId);
@@ -59,18 +71,31 @@ namespace BusinessLogic
             ReaderRepository.Update(reader);
         }
 
+        /// <summary>
+        /// получить книги, взятые читателем
+        /// </summary>
+        /// <param name="readerId">id читателя</param>
+        /// <returns>список книг</returns>
         public IEnumerable<Book> GetReadersBorrowedBooks(int readerId)
         {
             List<Book> allBooks = BookRepository.ReadAll().ToList();
             return allBooks.Where(book => book.ReaderId == readerId);
         }
 
+        /// <summary>
+        /// получить доступные книги
+        /// </summary>
+        /// <returns>список доступных книг</returns>
         public IEnumerable<Book> GetAvailableBooks()
         {
             List<Book> allBooks = BookRepository.ReadAll().ToList();
             return allBooks.Where(book => book.IsAvailable);
         }
 
+        /// <summary>
+        /// получить недоступные книги
+        /// </summary>
+        /// <returns>список недоступнвх книг</returns>
         public IEnumerable<Book> GetBorrowedBooks()
         {
             List<Book> allBooks = BookRepository.ReadAll().ToList();
