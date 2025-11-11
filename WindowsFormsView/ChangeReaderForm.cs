@@ -14,11 +14,11 @@ namespace WindowsFormsView
 {
     public partial class ChangeReaderForm : Form
     {
-        private BookService bookService;
-        private ReaderService readerService;
-        private LoanService loanService;
+        private IBookService bookService;
+        private IReaderService readerService;
+        private ILoan loanService;
         private int currentID;
-        public ChangeReaderForm(ListViewItem item, BookService bookService, ReaderService readerService, LoanService loanService)
+        public ChangeReaderForm(ListViewItem item, IBookService bookService, IReaderService readerService, ILoan loanService)
         {
             this.bookService = bookService;
             this.readerService = readerService;

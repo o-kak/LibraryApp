@@ -8,7 +8,7 @@ using Model;
 
 namespace BusinessLogic
 {
-    public class LoanService
+    public class LoanService : ILoan
     {
         private IRepository<Reader> ReaderRepository { get; set; }
         private IRepository<Book> BookRepository { get; set; }

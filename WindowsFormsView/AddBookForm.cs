@@ -14,8 +14,8 @@ namespace WindowsFormsView
 {
     public partial class AddBookForm : Form
     {
-        private BookService bookService;
-        public AddBookForm(BookService bookService)
+        private IBookService bookService;
+        public AddBookForm(IBookService bookService)
         {
             this.bookService = bookService;
             InitializeComponent();

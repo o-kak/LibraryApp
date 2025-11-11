@@ -8,7 +8,7 @@ using Model;
 
 namespace BusinessLogic
 {
-    public class ReaderService
+    public class ReaderService : IReaderService
     {
         private IRepository<Reader> ReaderRepository { get; set; }
 

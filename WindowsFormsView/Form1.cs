@@ -18,12 +18,12 @@ namespace WindowsFormsView
 {
     public partial class Form1: Form
     {
-        private BookService bookService;
-        private ReaderService readerService; 
+        private IBookService bookService;
+        private IReaderService readerService; 
         private BookAuthorFilter bookAuthorFilter;
         private BookGenreFilter bookGenreFilter;
-        private LoanService loanService;
-        public Form1(BookAuthorFilter authorFilter, BookGenreFilter genreFilter, BookService bookService, LoanService loanService, ReaderService readerService)
+        private ILoan loanService;
+        public Form1(BookAuthorFilter authorFilter, BookGenreFilter genreFilter, IBookService bookService, ILoan loanService, IReaderService readerService)
         {
             InitializeComponent();
 

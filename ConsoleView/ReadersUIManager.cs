@@ -10,11 +10,11 @@ namespace ConsoleView
 {
     internal class ReadersUIManager
     {
-        private ReaderService ReaderService { get; set; }
+        private IReaderService ReaderService { get; set; }
         private LoanUIManager LoanUIManager { get; set; }
-        private LoanService LoanService { get; set; }
+        private ILoan LoanService { get; set; }
 
-        public ReadersUIManager(ReaderService readerService, LoanUIManager loanUIManager, LoanService loanService)
+        public ReadersUIManager(IReaderService readerService, LoanUIManager loanUIManager, ILoan loanService)
         {
             ReaderService = readerService;
             LoanUIManager = loanUIManager;

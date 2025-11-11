@@ -8,7 +8,7 @@ using DataAccessLayer;
 
 namespace BusinessLogic
 {
-    public class BookService
+    public class BookService : IBookService
     {
         private IRepository<Book> BookRepository { get; set; }
 

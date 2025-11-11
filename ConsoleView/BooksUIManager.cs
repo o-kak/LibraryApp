@@ -10,11 +10,11 @@ namespace ConsoleView
 {
     internal class BooksUIManager
     {
-        private BookService BookService { get; set; }
+        private IBookService BookService { get; set; }
         private BookAuthorFilter BookAuthorFilter { get; set; }
         private BookGenreFilter BookGenreFilter { get; set; }
-        private LoanService LoanService { get; set; }
-        public BooksUIManager(BookService bookService, BookAuthorFilter bookAuthorFilter, BookGenreFilter bookGenreFilter, LoanService loanService)
+        private ILoan LoanService { get; set; }
+        public BooksUIManager(IBookService bookService, BookAuthorFilter bookAuthorFilter, BookGenreFilter bookGenreFilter, ILoan loanService)
         {
             BookService = bookService;
             BookAuthorFilter = bookAuthorFilter;

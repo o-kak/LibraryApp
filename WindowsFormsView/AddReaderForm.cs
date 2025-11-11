@@ -14,11 +14,11 @@ namespace WindowsFormsView
 {
     public partial class AddReaderForm : Form
     {
-        private BookService bookService;
-        private ReaderService readerService; 
-        private LoanService loanService;
+        private IBookService bookService;
+        private IReaderService readerService; 
+        private ILoan loanService;
 
-        public AddReaderForm(BookService bookService, ReaderService readerService, LoanService loanService)
+        public AddReaderForm(IBookService bookService, IReaderService readerService, ILoan loanService)
         {
             this.bookService = bookService;
             this.readerService = readerService;

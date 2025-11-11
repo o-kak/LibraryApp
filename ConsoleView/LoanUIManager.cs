@@ -10,9 +10,9 @@ namespace ConsoleView
 {
     internal class LoanUIManager
     {
-        private LoanService LoanService { get; set; }
+        private ILoan LoanService { get; set; }
 
-        public LoanUIManager(LoanService loanService)
+        public LoanUIManager(ILoan loanService)
         {
             LoanService = loanService;
         }
