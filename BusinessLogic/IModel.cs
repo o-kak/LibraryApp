@@ -13,5 +13,6 @@ namespace BusinessLogic
         void Delete(int id);
         void Add(T entity);
         void Update(T entity);
+        void InvokeDataChanged();
     }
 }

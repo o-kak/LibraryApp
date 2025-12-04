@@ -12,7 +12,5 @@ namespace BusinessLogic
         void GiveBook(int bookId, int readerId);
         void ReturnBook(int bookId, int readerId);
         IEnumerable<Book> GetReadersBorrowedBooks(int readerId);
-        IEnumerable<Book> GetAvailableBooks();
-        IEnumerable<Book> GetBorrowedBooks();
     }
 }

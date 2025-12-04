@@ -9,17 +9,20 @@ using Shared;
 
 namespace ConsoleView
 {
-    internal class BooksUIManager : IView
+    public class BooksUIManager : IBookView
     {
         public event Action<EventArgs> AddDataEvent;
         public event Action<int> DeleteDataEvent;
-        private IBookService BookService { get; set; }
+        public event Action<EventArgs> UpdateDataEvent;
+        public event Action<string> FilterDataByAuthorEvent;
+        public event Action<string> FilterDataByGenreEvent;
+        public event Action GetAvailableBooksEvent;
+        public event Action GetBorrowedBooksEvent;
         private BookAuthorFilter BookAuthorFilter { get; set; }
         private BookGenreFilter BookGenreFilter { get; set; }
         private ILoan LoanService { get; set; }
         public BooksUIManager(IBookService bookService, BookAuthorFilter bookAuthorFilter, BookGenreFilter bookGenreFilter, ILoan loanService)
         {
-            BookService = bookService;
             BookAuthorFilter = bookAuthorFilter;
             BookGenreFilter = bookGenreFilter;
             LoanService = loanService;
@@ -63,7 +66,7 @@ namespace ConsoleView
                 {
                     Console.WriteLine("Введенное значение не должно быть пустым");
                 }
-                ShowBooks(BookGenreFilter.Filter(genre ?? ""));
+                FilterDataByGenreEvent?.Invoke(genre);
             }
             else if (key == ConsoleKey.D2)
             {
@@ -73,7 +76,7 @@ namespace ConsoleView
                 {
                     Console.WriteLine("Введенное значение не должно быть пустым");
                 }
-                ShowBooks(BookAuthorFilter.Filter(author ?? ""));
+                FilterDataByAuthorEvent?.Invoke(author);
             }
         }
 
@@ -100,20 +103,17 @@ namespace ConsoleView
 
                 switch (key)
                 {
-                    case ConsoleKey.D1:
-                        ShowBooks(BookService.GetAllBooks());
-                        break;
                     case ConsoleKey.D2:
-                        ShowBooks(LoanService.GetAvailableBooks());
+                        GetAvailableBooksEvent?.Invoke();
                         break;
                     case ConsoleKey.D3:
-                        ShowBooks(LoanService.GetBorrowedBooks());
+                        GetBorrowedBooksEvent?.Invoke();
                         break;
                     case ConsoleKey.D4:
                         AddBookMenu();
                         break;
                     case ConsoleKey.D5:
-                        DeleteBookMenu();
+                        DeleteBookMenu(data);
                         break;
                 }
 
@@ -152,9 +152,13 @@ namespace ConsoleView
                 title = Console.ReadLine();
             }
 
-            BookService.AddBook(title, author, genre);
             Console.WriteLine("\nКнига добавлена!");
-
+            AddDataEvent?.Invoke(new BookEventArgs()
+            {
+                Title = title,
+                Author = author,
+                Genre = genre
+            });
             Console.WriteLine("\nНажмите любую клавишу для продолжения...");
             Console.ReadKey();
         }
@@ -162,12 +166,12 @@ namespace ConsoleView
         /// <summary>
         /// меню удаления книги
         /// </summary>
-        public void DeleteBookMenu()
+        public void DeleteBookMenu(IEnumerable<EventArgs> data)
         {
             Console.Clear();
             Console.WriteLine("=== УДАЛЕНИЕ КНИГИ ===\n");
 
-            List<Book> books = BookService.GetAllBooks().ToList();
+            List<BookEventArgs> books = (data as IEnumerable<BookEventArgs>).ToList();
             if (!books.Any())
             {
                 Console.WriteLine("Нет книг для удаления.");
@@ -184,8 +188,8 @@ namespace ConsoleView
             Console.Write("\nВведите номер книги для удаления: ");
             if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= books.Count)
             {
-                BookService.DeleteBook(books[choice - 1].Id);
                 Console.WriteLine("\nКнига удалена!");
+                DeleteDataEvent?.Invoke(choice);
             }
             else
             {

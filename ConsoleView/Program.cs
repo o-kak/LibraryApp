@@ -48,7 +48,7 @@ namespace ConsoleView
                 switch (key)
                 {
                     case ConsoleKey.D1: r.ShowReaders(); break;
-                    case ConsoleKey.D2: b.ShowBooksMenu(); break;
+                    case ConsoleKey.D2: Console.WriteLine("Placeholder"); ; break;
                     case ConsoleKey.D3: b.FilterBooksMenu(); break;
                     case ConsoleKey.D4: r.AddReaderMenu(); break;
                 }

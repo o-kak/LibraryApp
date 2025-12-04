@@ -11,10 +11,10 @@ namespace Presenter
 {
     internal class BookPresenter
     {
-        private IModel<Book> BookLogic;
-        private IView View;
+        private IBookService BookLogic;
+        private IBookView View;
 
-        public BookPresenter(IModel<Book> bookLogic, IView view)
+        public BookPresenter(IBookService bookLogic, IBookView view)
         {
             BookLogic = bookLogic;
             View = view;
@@ -23,11 +23,25 @@ namespace Presenter
 
             view.AddDataEvent += OnAddData;
             view.DeleteDataEvent += bookLogic.Delete;
+            view.FilterDataByGenreEvent += OnFilterDataByGenre;
+            view.FilterDataByAuthorEvent += OnFilterDataByAuthor;
+            view.GetAvailableBooksEvent += OnGetAvailableBooks;
+            view.GetBorrowedBooksEvent += OnGetBorrowedBooks;
         }
 
         private void OnModelDataChanged(IEnumerable<Book> books)
         {
-
+            List<BookEventArgs> args = new List<BookEventArgs>();
+            foreach (Book book in books)
+            {
+                args.Add(new BookEventArgs()
+                {
+                    Title = book.Title,
+                    Author = book.Author,
+                    Genre = book.Genre,
+                });
+            }
+            View.Redraw(args);
         }
 
         private void OnAddData(EventArgs data)
@@ -38,6 +52,70 @@ namespace Presenter
             book.Title = args.Title;
             book.Author = args.Author;
             BookLogic.Add(book);
+        }
+
+        private void OnFilterDataByGenre(string genre)
+        {
+            List<BookEventArgs> args = new List<BookEventArgs>();
+            IEnumerable<Book> sortedBooks = BookLogic.FilterByGenre(genre);
+            foreach (Book book in sortedBooks)
+            {
+                args.Add(new BookEventArgs()
+                {
+                    Title = book.Title,
+                    Author = book.Author,
+                    Genre = book.Genre,
+                });
+            }
+            View.Redraw(args);
+        }
+
+        private void OnFilterDataByAuthor(string author)
+        {
+            List<BookEventArgs> args = new List<BookEventArgs>();
+            IEnumerable<Book> sortedBooks = BookLogic.FilterByAuthor(author);
+            foreach (Book book in sortedBooks)
+            {
+                args.Add(new BookEventArgs()
+                {
+                    Title = book.Title,
+                    Author = book.Author,
+                    Genre = book.Genre,
+                });
+            }
+            View.Redraw(args);
+        }
+
+        private void OnGetAvailableBooks()
+        {
+            List<BookEventArgs> args = new List<BookEventArgs>();
+            IEnumerable<Book> sortedBooks = BookLogic.GetAvailableBooks();
+            foreach (Book book in sortedBooks)
+            {
+                args.Add(new BookEventArgs()
+                {
+                    Title = book.Title,
+                    Author = book.Author,
+                    Genre = book.Genre,
+                });
+            }
+            View.Redraw(args);
+        }
+
+        private void OnGetBorrowedBooks()
+        {
+            List<BookEventArgs> args = new List<BookEventArgs>();
+            IEnumerable<Book> sortedBooks = BookLogic.GetBorrowedBooks();
+            foreach (Book book in sortedBooks)
+            {
+                args.Add(new BookEventArgs()
+                {
+                    Title = book.Title,
+                    Author = book.Author,
+                    Genre = book.Genre,
+                });
+            }
+            View.Redraw(args);
         }
     }
 }

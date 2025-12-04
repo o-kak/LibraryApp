@@ -11,10 +11,12 @@ namespace ConsoleView
     internal class LoanUIManager
     {
         private ILoan LoanService { get; set; }
+        private IBookService BookService { get; set; }
 
-        public LoanUIManager(ILoan loanService)
+        public LoanUIManager(ILoan loanService, IBookService bookService)
         {
             LoanService = loanService;
+            BookService = bookService;
         }
 
         /// <summary>
@@ -23,7 +25,7 @@ namespace ConsoleView
         /// <param name="reader">читатель</param>
         public void GiveBookToReader(Reader reader)
         {
-            var books = LoanService.GetAvailableBooks().ToList();
+            var books = BookService.GetAvailableBooks().ToList();
             if (!books.Any())
             {
                 Console.WriteLine("\nНет доступных книг.");

@@ -4,16 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusinessLogic;
-using Ninject;
-using ConsoleView;
+using Shared;
 
 namespace Presenter
 {
-    internal class Program
+    internal class LoanPresenter
     {
-        static void Main(string[] args)
-        {
 
-        }
     }
 }

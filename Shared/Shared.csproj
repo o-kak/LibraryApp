@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BookEventArgs.cs" />
+    <Compile Include="IBookView.cs" />
     <Compile Include="ReaderEventArgs.cs" />
     <Compile Include="IView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

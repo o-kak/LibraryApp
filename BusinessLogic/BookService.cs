@@ -12,9 +12,14 @@ namespace BusinessLogic
     {
         private IRepository<Book> BookRepository { get; set; }
         public event Action<IEnumerable<Book>> DataChanged;
-        public BookService(IRepository<Book> bookRepository)
+
+        private BookAuthorFilter AuthorFilter { get; set; }
+        private BookGenreFilter GenreFilter { get; set; }
+        public BookService(IRepository<Book> bookRepository, BookAuthorFilter authorFilter, BookGenreFilter genreFilter)
         {
             BookRepository = bookRepository;
+            AuthorFilter = authorFilter;
+            GenreFilter = genreFilter;
         }
 
         /// <summary>
@@ -46,18 +51,34 @@ namespace BusinessLogic
             InvokeDataChanged();
         }
 
-        /// <summary>
-        /// получить все книги
-        /// </summary>
-        /// <returns>список книг</returns>
-        public IEnumerable<Book> GetAllBooks()
-        {
-            return BookRepository.ReadAll();
-        }
-
-        private void InvokeDataChanged()
+        public void InvokeDataChanged()
         {
             DataChanged?.Invoke(new List<Book>(BookRepository.ReadAll()));
         }
+
+        public IEnumerable<Book> FilterByAuthor(string author)
+        {
+            List<Book> filteredBooks = AuthorFilter.Filter(author).ToList();
+            return filteredBooks;
+        }
+
+        public IEnumerable<Book> FilterByGenre(string genre)
+        {
+            List<Book> filteredBooks = GenreFilter.Filter(genre).ToList();
+            return filteredBooks;
+        }
+
+        public IEnumerable<Book> GetBorrowedBooks()
+        {
+            List<Book> allBooks = BookRepository.ReadAll().ToList();
+            return allBooks.Where(book => !book.IsAvailable);
+        }
+
+        public IEnumerable<Book> GetAvailableBooks()
+        {
+            List<Book> allBooks = BookRepository.ReadAll().ToList();
+            return allBooks.Where(book => book.IsAvailable);
+        }
+
     }
 }

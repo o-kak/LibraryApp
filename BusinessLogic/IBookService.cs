@@ -7,10 +7,12 @@ using Model;
 
 namespace BusinessLogic
 {
-    public interface IBookService
+    public interface IBookService : IModel<Book>
     {
-        void AddBook(string title, string author, string genre);
-        void DeleteBook(int bookId);
-        IEnumerable<Book> GetAllBooks();
+        IEnumerable<Book> FilterByAuthor(string author);
+        IEnumerable<Book> FilterByGenre(string genre);
+        IEnumerable<Book> GetBorrowedBooks();
+        IEnumerable<Book> GetAvailableBooks();
+
     }
 }
