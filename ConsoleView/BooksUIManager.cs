@@ -5,11 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using BusinessLogic;
 using Model;
+using Shared;
 
 namespace ConsoleView
 {
-    internal class BooksUIManager
+    internal class BooksUIManager : IView
     {
+        public event Action<EventArgs> AddDataEvent;
+        public event Action<int> DeleteDataEvent;
         private IBookService BookService { get; set; }
         private BookAuthorFilter BookAuthorFilter { get; set; }
         private BookGenreFilter BookGenreFilter { get; set; }
@@ -26,7 +29,7 @@ namespace ConsoleView
         /// вывести список книг
         /// </summary>
         /// <param name="books">список книг</param>
-        public void ShowBooks(IEnumerable<Book> books)
+        public void ShowBooks(IEnumerable<BookEventArgs> books)
         {
             Console.Clear();
             Console.WriteLine("=== СПИСОК КНИГ ===\n");
@@ -77,9 +80,11 @@ namespace ConsoleView
         /// <summary>
         /// меню действий с книгами
         /// </summary>
-        public void ShowBooksMenu()
+        public void Redraw(IEnumerable<EventArgs> data)
         {
             ConsoleKey key;
+            IEnumerable<BookEventArgs> books = data as IEnumerable<BookEventArgs>;
+            ShowBooks(books);
             do
             {
                 Console.Clear();

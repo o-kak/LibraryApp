@@ -93,6 +93,7 @@
     <Compile Include="IBookService.cs" />
     <Compile Include="IFilter.cs" />
     <Compile Include="ILoan.cs" />
+    <Compile Include="IModel.cs" />
     <Compile Include="IReaderService.cs" />
     <Compile Include="LoanService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -16,7 +16,7 @@ namespace BusinessLogic
             Bind<AppDbContext>().ToSelf().InSingletonScope();
             Bind<IRepository<Book>>().To<EntityRepository<Book>>().InSingletonScope();
             Bind<IRepository<Reader>>().To<EntityRepository<Reader>>().InSingletonScope();
-            Bind<IBookService>().To<BookService>().InSingletonScope();
+            Bind<IModel<Book>>().To<BookService>().InSingletonScope();
             Bind<IReaderService>().To<ReaderService>().InSingletonScope();
             Bind<ILoan>().To<LoanService>().InSingletonScope();
             Bind<BookAuthorFilter>().ToSelf().InSingletonScope();

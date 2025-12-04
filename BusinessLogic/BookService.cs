@@ -8,10 +8,10 @@ using DataAccessLayer;
 
 namespace BusinessLogic
 {
-    public class BookService : IBookService
+    public class BookService : IModel<Book>
     {
         private IRepository<Book> BookRepository { get; set; }
-
+        public event Action<IEnumerable<Book>> DataChanged;
         public BookService(IRepository<Book> bookRepository)
         {
             BookRepository = bookRepository;
@@ -23,17 +23,28 @@ namespace BusinessLogic
         /// <param name="title">название</param>
         /// <param name="author">автор</param>
         /// <param name="genre">жанр</param>
-        public void AddBook(string title, string author, string genre)
+        public void Add(Book book)
         {
-            Book book = new Book(title, author, genre);
             BookRepository.Add(book);
+            InvokeDataChanged();
+            
         }
 
         /// <summary>
         /// удалить книгу
         /// </summary>
         /// <param name="bookId">id книги</param>
-        public void DeleteBook(int bookId) => BookRepository.Delete(bookId);
+        public void Delete(int bookId)
+        {
+            BookRepository.Delete(bookId);
+            InvokeDataChanged();
+        }
+
+        public void Update(Book book)
+        {
+            BookRepository.Update(book);
+            InvokeDataChanged();
+        }
 
         /// <summary>
         /// получить все книги
@@ -44,5 +55,9 @@ namespace BusinessLogic
             return BookRepository.ReadAll();
         }
 
+        private void InvokeDataChanged()
+        {
+            DataChanged?.Invoke(new List<Book>(BookRepository.ReadAll()));
+        }
     }
 }
