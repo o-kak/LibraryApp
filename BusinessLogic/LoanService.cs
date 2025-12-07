@@ -81,25 +81,5 @@ namespace BusinessLogic
             List<Book> allBooks = BookRepository.ReadAll().ToList();
             return allBooks.Where(book => book.ReaderId == readerId);
         }
-
-        /// <summary>
-        /// получить доступные книги
-        /// </summary>
-        /// <returns>список доступных книг</returns>
-        public IEnumerable<Book> GetAvailableBooks()
-        {
-            List<Book> allBooks = BookRepository.ReadAll().ToList();
-            return allBooks.Where(book => book.IsAvailable);
-        }
-
-        /// <summary>
-        /// получить недоступные книги
-        /// </summary>
-        /// <returns>список недоступнвх книг</returns>
-        public IEnumerable<Book> GetBorrowedBooks()
-        {
-            List<Book> allBooks = BookRepository.ReadAll().ToList();
-            return allBooks.Where(book => !book.IsAvailable);
-        }
     }
 }

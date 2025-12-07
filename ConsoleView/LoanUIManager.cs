@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using BusinessLogic;
 using Model;
+using Shared;
 
 namespace ConsoleView
 {
-    internal class LoanUIManager
+    internal class LoanUIManager : ILoanView
     {
-        private ILoan LoanService { get; set; }
-        private IBookService BookService { get; set; }
+        public event Action<int, int> GiveBookEvent;
+        public event Action<int, int> ReturnBookEvent;
+        public event Action<int> GetReadersBorrowedBooksEvent;
+ 
+        IBookService BookService { get; set; }
 
-        public LoanUIManager(ILoan loanService, IBookService bookService)
+        public LoanUIManager(IBookService bookService)
         {
-            LoanService = loanService;
             BookService = bookService;
         }
 
@@ -23,15 +27,16 @@ namespace ConsoleView
         /// выдача книги
         /// </summary>
         /// <param name="reader">читатель</param>
-        public void GiveBookToReader(Reader reader)
+        public void GiveBookToReader(EventArgs data)
         {
+            ReaderEventArgs reader = data as ReaderEventArgs;
             var books = BookService.GetAvailableBooks().ToList();
-            if (!books.Any())
-            {
-                Console.WriteLine("\nНет доступных книг.");
-                Console.ReadKey();
-                return;
-            }
+            //if (!books.Any())
+            //{
+            //    Console.WriteLine("\nНет доступных книг.");
+            //    Console.ReadKey();
+            //    return;
+            //}
 
             Console.WriteLine("\nДоступные книги:");
             for (int i = 0; i < books.Count; i++)
@@ -42,7 +47,7 @@ namespace ConsoleView
             {
                 try
                 {
-                    LoanService.GiveBook(books[choice - 1].Id, reader.Id);
+                    GiveBookEvent?.Invoke(books[choice - 1].Id, reader.Id);
                     Console.WriteLine("\nКнига выдана!");
                 }
                 catch (InvalidOperationException ex)
@@ -61,37 +66,47 @@ namespace ConsoleView
         /// возврат книги
         /// </summary>
         /// <param name="reader">читатаель</param>
-        public void ReturnBookFromReader(Reader reader)
+        public void ReturnBookFromReader(EventArgs data)
         {
-            if (!LoanService.GetReadersBorrowedBooks(reader.Id).Any())
-            {
-                Console.WriteLine("\nУ читателя нет книг.");
-                Console.ReadKey();
-                return;
-            }
+            ReaderEventArgs reader = data as ReaderEventArgs;
+            //if (!LoanService.GetReadersBorrowedBooks(reader.Id).Any())
+            //{
+            //    Console.WriteLine("\nУ читателя нет книг.");
+            //    Console.ReadKey();
+            //    return;
+            //}
 
             Console.WriteLine("\nКниги у читателя:");
-            for (int i = 0; i < LoanService.GetReadersBorrowedBooks(reader.Id).ToList().Count; i++)
-                Console.WriteLine($"[{i + 1}] {LoanService.GetReadersBorrowedBooks(reader.Id).ToList()[i].Title}");
+            GetReadersBorrowedBooksEvent.Invoke(reader.Id);
 
             Console.Write("\nВведите номер книги: ");
-            if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= LoanService.GetReadersBorrowedBooks(reader.Id).ToList().Count)
+            //if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= LoanService.GetReadersBorrowedBooks(reader.Id).ToList().Count)
+            //{
+            //    try
+            //    {
+            //        LoanService.ReturnBook(LoanService.GetReadersBorrowedBooks(reader.Id).ToList()[choice - 1].Id, reader.Id);
+            //        Console.WriteLine("\nКнига возвращена!");
+            //    }
+            //    catch (InvalidOperationException ex)
+            //    {
+            //        Console.WriteLine(ex.Message);
+            //    }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("\nНеверный выбор.");
+            //}
+            //Console.ReadKey();
+        }
+
+        public void ShowReadersBorrowedBooks(IEnumerable<EventArgs> books)
+        {
+            IEnumerable<BookEventArgs> bookArgs = books as IEnumerable<BookEventArgs>;
+            if (bookArgs.Any())
             {
-                try
-                {
-                    LoanService.ReturnBook(LoanService.GetReadersBorrowedBooks(reader.Id).ToList()[choice - 1].Id, reader.Id);
-                    Console.WriteLine("\nКнига возвращена!");
-                }
-                catch (InvalidOperationException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                Console.Write(string.Join(", ", bookArgs.Select(b => b.Title)));
             }
-            else
-            {
-                Console.WriteLine("\nНеверный выбор.");
-            }
-            Console.ReadKey();
+            else Console.Write("нет");
         }
     }
 }

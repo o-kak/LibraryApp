@@ -15,15 +15,14 @@ namespace ConsoleView
         public event Action<int> DeleteDataEvent;
         public event Action<EventArgs> UpdateDataEvent;
         public event Action<int> ReadByIdEvent;
-        private IReaderService ReaderService { get; set; }
-        private LoanUIManager LoanUIManager { get; set; }
-        private ILoan LoanService { get; set; }
+        public event Action GetAvailableBooksEvent;
+        public event Action<int> GetReadersBorrowedBooksEvent;
 
-        public ReadersUIManager(IReaderService readerService, LoanUIManager loanUIManager, ILoan loanService)
+        private ILoanView LoanUIManager { get; set; }
+
+        public ReadersUIManager(ILoanView loanUIManager)
         {
-            ReaderService = readerService;
             LoanUIManager = loanUIManager;
-            LoanService = loanService;
         }
 
         /// <summary>
@@ -87,7 +86,8 @@ namespace ConsoleView
                 Console.WriteLine($"ID: {reader.Id}");
                 Console.WriteLine($"Имя: {reader.Name}");
                 Console.WriteLine($"Адрес: {reader.Address}");
-                Console.WriteLine($"Книги на руках: {(LoanService.GetReadersBorrowedBooks(reader.Id).Any() ? string.Join(", ", LoanService.GetReadersBorrowedBooks(reader.Id).Select(b => b.Title)) : "нет")}");
+                Console.WriteLine($"Книги на руках: ");
+                GetReadersBorrowedBooksEvent?.Invoke(reader.Id);
                 Console.WriteLine("\n[1] Изменить данные");
                 Console.WriteLine("[2] Удалить читателя");
                 Console.WriteLine("[3] Взять книгу");

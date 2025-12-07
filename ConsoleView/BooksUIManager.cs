@@ -17,15 +17,6 @@ namespace ConsoleView
         public event Action<string> FilterDataByGenreEvent;
         public event Action GetAvailableBooksEvent;
         public event Action GetBorrowedBooksEvent;
-        private BookAuthorFilter BookAuthorFilter { get; set; }
-        private BookGenreFilter BookGenreFilter { get; set; }
-        private ILoan LoanService { get; set; }
-        public BooksUIManager(IBookService bookService, BookAuthorFilter bookAuthorFilter, BookGenreFilter bookGenreFilter, ILoan loanService)
-        {
-            BookAuthorFilter = bookAuthorFilter;
-            BookGenreFilter = bookGenreFilter;
-            LoanService = loanService;
-        }
 
         /// <summary>
         /// вывести список книг

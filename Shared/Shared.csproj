@@ -43,10 +43,17 @@
   <ItemGroup>
     <Compile Include="BookEventArgs.cs" />
     <Compile Include="IBookView.cs" />
+    <Compile Include="ILoanView.cs" />
     <Compile Include="IReaderView.cs" />
     <Compile Include="ReaderEventArgs.cs" />
     <Compile Include="IView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{25885a40-921a-49f7-80bb-ebb76344d398}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
