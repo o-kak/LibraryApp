@@ -5,11 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using BusinessLogic;
 using Model;
+using Shared;
 
 namespace ConsoleView
 {
-    internal class ReadersUIManager
+    internal class ReadersUIManager : IReaderView
     {
+        public event Action<EventArgs> AddDataEvent;
+        public event Action<int> DeleteDataEvent;
+        public event Action<EventArgs> UpdateDataEvent;
+        public event Action<int> ReadByIdEvent;
         private IReaderService ReaderService { get; set; }
         private LoanUIManager LoanUIManager { get; set; }
         private ILoan LoanService { get; set; }
@@ -24,7 +29,7 @@ namespace ConsoleView
         /// <summary>
         /// список всех читателей
         /// </summary>
-        public void ShowReaders()
+        public void Redraw(IEnumerable<EventArgs> data)
         {
             int index = 0;
             ConsoleKey key;
@@ -34,7 +39,7 @@ namespace ConsoleView
                 Console.Clear();
                 Console.WriteLine("=== СПИСОК ЧИТАТЕЛЕЙ ===\n");
 
-                List<Reader> readers = ReaderService.GetAllReaders().ToList();
+                List<ReaderEventArgs> readers = (data as IEnumerable<ReaderEventArgs>).ToList();
 
                 if (!readers.Any())
                 {
@@ -63,7 +68,7 @@ namespace ConsoleView
                 else if (key == ConsoleKey.DownArrow)
                     index = (index + 1) % readers.Count;
                 else if (key == ConsoleKey.Enter)
-                    ShowReaderProfile(readers[index].Id);
+                    ReadByIdEvent?.Invoke(readers[index].Id);
 
             } while (key != ConsoleKey.Escape);
         }
@@ -72,9 +77,8 @@ namespace ConsoleView
         /// профиль читателя
         /// </summary>
         /// <param name="readerId">id читателя</param>
-        public void ShowReaderProfile(int readerId)
+        public void ShowReaderProfile(ReaderEventArgs reader)
         {
-            Reader reader = ReaderService.GetReader(readerId);
             ConsoleKey key;
             do
             {
@@ -107,8 +111,8 @@ namespace ConsoleView
                         break;
 
                     case ConsoleKey.D2:
-                        ReaderService.DeleteReader(reader.Id);
                         Console.WriteLine("\nЧитатель удалён.");
+                        DeleteDataEvent?.Invoke(reader.Id);
                         Console.ReadKey();
                         return;
 
@@ -148,8 +152,12 @@ namespace ConsoleView
                 address = Console.ReadLine();
             }
 
-            ReaderService.AddReader(name, address);
             Console.WriteLine("\nЧитатель добавлен!");
+            AddDataEvent?.Invoke(new ReaderEventArgs()
+            {
+                Name = name,
+                Address = address
+            });
 
             Console.WriteLine("\nНажмите любую клавишу для продолжения...");
             Console.ReadKey();

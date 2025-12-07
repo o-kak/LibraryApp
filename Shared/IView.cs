@@ -10,7 +10,6 @@ namespace Shared
     {
         event Action<EventArgs> AddDataEvent;
         event Action<int> DeleteDataEvent;
-        event Action<EventArgs> UpdateDataEvent;
         void Redraw(IEnumerable<EventArgs> data);
     }
 }

@@ -13,7 +13,6 @@ namespace ConsoleView
     {
         public event Action<EventArgs> AddDataEvent;
         public event Action<int> DeleteDataEvent;
-        public event Action<EventArgs> UpdateDataEvent;
         public event Action<string> FilterDataByAuthorEvent;
         public event Action<string> FilterDataByGenreEvent;
         public event Action GetAvailableBooksEvent;

@@ -7,11 +7,9 @@ using Model;
 
 namespace BusinessLogic
 {
-    public interface IReaderService
+    public interface IReaderService : IModel<Reader>
     {
-        void AddReader(string name, string address);
-        void DeleteReader(int readerId);
-        IEnumerable<Reader> GetAllReaders();
+        void Update(Reader reader);
         Reader GetReader(int readerId);
     }
 }

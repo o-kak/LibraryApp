@@ -45,12 +45,6 @@ namespace BusinessLogic
             InvokeDataChanged();
         }
 
-        public void Update(Book book)
-        {
-            BookRepository.Update(book);
-            InvokeDataChanged();
-        }
-
         public void InvokeDataChanged()
         {
             DataChanged?.Invoke(new List<Book>(BookRepository.ReadAll()));

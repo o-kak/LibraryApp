@@ -10,6 +10,7 @@ namespace BusinessLogic
 {
     public class ReaderService : IReaderService
     {
+        public event Action<IEnumerable<Reader>> DataChanged;
         private IRepository<Reader> ReaderRepository { get; set; }
 
         public ReaderService(IRepository<Reader> readerRepository)
@@ -22,17 +23,17 @@ namespace BusinessLogic
         /// </summary>
         /// <param name="name">имя</param>
         /// <param name="address">адрес</param>
-        public void AddReader(string name, string address)
+        public void Add(Reader reader)
         {
-            Reader reader = new Reader(name, address);
             ReaderRepository.Add(reader);
+            InvokeDataChanged();
         }
 
         /// <summary>
         /// удалить читателя
         /// </summary>
         /// <param name="readerId">id читателя</param>
-        public void DeleteReader(int readerId)
+        public void Delete(int readerId)
         {
             var readerToDelete = ReaderRepository.ReadById(readerId);
 
@@ -40,6 +41,13 @@ namespace BusinessLogic
             {
                 ReaderRepository.Delete(readerId);
             }
+            InvokeDataChanged();
+        }
+
+        public void Update(Reader reader)
+        {
+            ReaderRepository.Update(reader);
+            InvokeDataChanged();
         }
 
         /// <summary>
@@ -59,6 +67,11 @@ namespace BusinessLogic
         public Reader GetReader(int readerId)
         {
             return ReaderRepository.ReadById(readerId);
+        }
+
+        public void InvokeDataChanged()
+        {
+            DataChanged?.Invoke(new List<Reader>(ReaderRepository.ReadAll()));
         }
     }
 }
