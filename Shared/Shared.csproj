@@ -45,8 +45,9 @@
     <Compile Include="IBookView.cs" />
     <Compile Include="ILoanView.cs" />
     <Compile Include="IReaderView.cs" />
-    <Compile Include="ReaderEventArgs.cs" />
     <Compile Include="IView.cs" />
+    <Compile Include="ReaderEventArgs.cs" />
+    <Compile Include="IEntityView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

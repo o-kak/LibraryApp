@@ -13,7 +13,6 @@ namespace ConsoleView
 {
     class Program
     {
-
         static void Main(string[] args)
         {
             //LibraryManager manager = new LibraryManager();
@@ -38,7 +37,7 @@ namespace ConsoleView
             {
                 Console.Clear();
                 Console.WriteLine("=== СИСТЕМА УПРАВЛЕНИЯ БИБИЛИОТЕКОЙ ===");
-                Console.WriteLine("[1] Список читателй");
+                Console.WriteLine("[1] Список читателей");
                 Console.WriteLine("[2] Список книг");
                 Console.WriteLine("[3] Поиск книг по жанру/автору");
                 Console.WriteLine("[4] Добавить читателя");

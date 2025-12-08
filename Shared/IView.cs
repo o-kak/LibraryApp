@@ -8,8 +8,8 @@ namespace Shared
 {
     public interface IView
     {
-        event Action<EventArgs> AddDataEvent;
-        event Action<int> DeleteDataEvent;
-        void Redraw(IEnumerable<EventArgs> data);
+        event Action StartupEvent;
+
+        void Start();
     }
 }

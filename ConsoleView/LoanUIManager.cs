@@ -10,12 +10,11 @@ using Shared;
 
 namespace ConsoleView
 {
-    internal class LoanUIManager : ILoanView
+    public class LoanUIManager : ILoanView
     {
         public event Action<int, int> GiveBookEvent;
         public event Action<int, int> ReturnBookEvent;
         public event Action<int> GetReadersBorrowedBooksEvent;
- 
         IBookService BookService { get; set; }
 
         public LoanUIManager(IBookService bookService)

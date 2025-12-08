@@ -25,6 +25,12 @@ namespace Presenter
             view.DeleteDataEvent += readerLogic.Delete;
             view.UpdateDataEvent += OnUpdateData;
             view.ReadByIdEvent += OnReadById;
+            view.StartupEvent += Start;
+        }
+
+        private void Start()
+        {
+            ReaderLogic.InvokeDataChanged();
         }
 
         private void OnModelDataChanged(IEnumerable<Reader> readers)

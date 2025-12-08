@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared
 {
-    public interface IReaderView : IView
+    public interface IReaderView : IEntityView
     {
         event Action<EventArgs> UpdateDataEvent;
         event Action<int> ReadByIdEvent;

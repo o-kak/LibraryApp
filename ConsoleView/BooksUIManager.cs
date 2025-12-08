@@ -17,6 +17,12 @@ namespace ConsoleView
         public event Action<string> FilterDataByGenreEvent;
         public event Action GetAvailableBooksEvent;
         public event Action GetBorrowedBooksEvent;
+        public event Action StartupEvent;
+
+        public void Start()
+        {
+            StartupEvent?.Invoke();
+        }
 
         /// <summary>
         /// вывести список книг

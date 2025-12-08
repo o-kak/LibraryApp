@@ -23,17 +23,20 @@ namespace Presenter
                 Console.WriteLine("0. Выход");
                 Console.Write("Выберите вариант (0, 1 или 2): ");
 
-                string choice = Console.ReadLine();
-
-                IApplicationStartup startup = null;
+                string choice = Console.ReadLine();;
 
                 switch (choice)
                 {
                     case "1":
-                        // Создаем экземпляры всех нужных частей для Консоли
-                        startup = new ConsoleBookView();
-                        // Если ваш BookPresenter требует подписки на событие ConsoleBookView, 
-                        // то запуск должен быть немного сложнее (см. ниже)
+
+                        IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
+
+                        BooksUIManager booksUIManager = new BooksUIManager();
+                        LoanUIManager loanUIManager = new LoanUIManager();
+                        ReadersUIManager readersUIManager = new ReadersUIManager(loanUIManager);
+
+                        ReaderPresenter
+                        MainMenu mainMenu = new MainMenu(booksUIManager, readersUIManager, loanUIManager);
                         break;
 
                     case "2":

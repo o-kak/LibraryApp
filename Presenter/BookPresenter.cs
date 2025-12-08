@@ -27,6 +27,12 @@ namespace Presenter
             view.FilterDataByAuthorEvent += OnFilterDataByAuthor;
             view.GetAvailableBooksEvent += OnGetAvailableBooks;
             view.GetBorrowedBooksEvent += OnGetBorrowedBooks;
+            view.StartupEvent += Start;
+        }
+
+        private void Start()
+        {
+            BookLogic.InvokeDataChanged();
         }
 
         private void OnModelDataChanged(IEnumerable<Book> books)

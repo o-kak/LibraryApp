@@ -128,6 +128,7 @@
   <ItemGroup>
     <Compile Include="BooksUIManager.cs" />
     <Compile Include="LoanUIManager.cs" />
+    <Compile Include="MainMenu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadersUIManager.cs" />

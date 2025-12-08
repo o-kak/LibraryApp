@@ -9,7 +9,7 @@ using Shared;
 
 namespace ConsoleView
 {
-    internal class ReadersUIManager : IReaderView
+    public class ReadersUIManager : IReaderView
     {
         public event Action<EventArgs> AddDataEvent;
         public event Action<int> DeleteDataEvent;
@@ -17,9 +17,14 @@ namespace ConsoleView
         public event Action<int> ReadByIdEvent;
         public event Action GetAvailableBooksEvent;
         public event Action<int> GetReadersBorrowedBooksEvent;
+        public event Action StartupEvent;
 
         private ILoanView LoanUIManager { get; set; }
 
+        public void Start()
+        {
+            StartupEvent?.Invoke();
+        }
         public ReadersUIManager(ILoanView loanUIManager)
         {
             LoanUIManager = loanUIManager;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared
 {
-    public interface IBookView : IView
+    public interface IBookView : IEntityView
     {
         event Action<string> FilterDataByAuthorEvent;
         event Action<string> FilterDataByGenreEvent;
