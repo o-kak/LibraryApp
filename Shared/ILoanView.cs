@@ -14,5 +14,7 @@ namespace Shared
         void GiveBookToReader(EventArgs reader);
         void ReturnBookFromReader(EventArgs reader);
         void ShowReadersBorrowedBooks(IEnumerable<EventArgs> books);
+        void ShowAvailableBooks(IEnumerable<EventArgs> books);
+        void ShowMessage(string message);
     }
 }

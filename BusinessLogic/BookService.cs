@@ -8,7 +8,7 @@ using DataAccessLayer;
 
 namespace BusinessLogic
 {
-    public class BookService : IModel<Book>
+    public class BookService : IBookService
     {
         private IRepository<Book> BookRepository { get; set; }
         public event Action<IEnumerable<Book>> DataChanged;

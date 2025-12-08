@@ -30,19 +30,24 @@ namespace Presenter
                     case "1":
 
                         IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
+                        BookService bookService = ninjectKernel.Get<BookService>();
+                        ReaderService readerService = ninjectKernel.Get<ReaderService>();
+                        LoanService loanService = ninjectKernel.Get<LoanService>();
 
                         BooksUIManager booksUIManager = new BooksUIManager();
                         LoanUIManager loanUIManager = new LoanUIManager();
                         ReadersUIManager readersUIManager = new ReadersUIManager(loanUIManager);
 
-                        ReaderPresenter
+                        ReaderPresenter readerPresenter = new ReaderPresenter(readerService, readersUIManager);
+                        BookPresenter bookPresenter = new BookPresenter(bookService, booksUIManager);
+                        LoanPresenter loanPresenter = new LoanPresenter(loanService, loanUIManager, readersUIManager, bookService);
                         MainMenu mainMenu = new MainMenu(booksUIManager, readersUIManager, loanUIManager);
+                        mainMenu.ShowMainMenu();
                         break;
 
                     case "2":
-                        // Создаем экземпляры всех нужных частей для WinForms
-                        // NOTE: Запуск WinForms из консоли может потребовать дополнительных настроек потока!
-                        startup = new WinFormsBookForm();
+                        Console.WriteLine("пипипу");
+                        Console.ReadKey();
                         break;
 
                     case "0":
@@ -53,19 +58,6 @@ namespace Presenter
                         Console.WriteLine("Неверный выбор. Попробуйте снова.");
                         Console.ReadKey();
                         continue;
-                }
-
-                if (startup != null)
-                {
-                    Console.Clear();
-                    Console.WriteLine($"Запуск {startup.GetType().Name}...");
-
-                    // Запускаем выбранный UI-слой
-                    startup.Run();
-
-                    // Возвращаемся в главное меню после завершения работы UI
-                    Console.WriteLine("Сессия UI завершена. Возврат в главное меню.");
-                    Console.ReadKey();
                 }
             }
         }

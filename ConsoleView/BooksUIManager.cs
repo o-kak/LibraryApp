@@ -195,7 +195,5 @@ namespace ConsoleView
             Console.WriteLine("\nНажмите любую клавишу для продолжения...");
             Console.ReadKey();
         }
-
-
     }
 }

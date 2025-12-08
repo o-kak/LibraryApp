@@ -9,7 +9,6 @@ namespace Shared
     public interface IView
     {
         event Action StartupEvent;
-
         void Start();
     }
 }
