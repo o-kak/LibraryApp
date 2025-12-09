@@ -38,9 +38,9 @@ namespace Presenter
                         LoanUIManager loanUIManager = new LoanUIManager();
                         ReadersUIManager readersUIManager = new ReadersUIManager(loanUIManager);
 
-                        ReaderPresenter readerPresenter = new ReaderPresenter(readerService, readersUIManager);
+                        ReaderPresenter readerPresenter = new ReaderPresenter(readerService, readersUIManager, loanService);
                         BookPresenter bookPresenter = new BookPresenter(bookService, booksUIManager);
-                        LoanPresenter loanPresenter = new LoanPresenter(loanService, loanUIManager, readersUIManager, bookService);
+                        LoanPresenter loanPresenter = new LoanPresenter(loanService, loanUIManager, bookService);
                         MainMenu mainMenu = new MainMenu(booksUIManager, readersUIManager, loanUIManager);
                         mainMenu.ShowMainMenu();
                         break;

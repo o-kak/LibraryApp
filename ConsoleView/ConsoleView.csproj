@@ -138,14 +138,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj">
-      <Project>{4f387aa3-bacb-4728-a72a-c9e476100825}</Project>
-      <Name>BusinessLogic</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Model\Model.csproj">
-      <Project>{25885a40-921a-49f7-80bb-ebb76344d398}</Project>
-      <Name>Model</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Shared\Shared.csproj">
       <Project>{8abdcb49-e882-41fb-8c45-7224fc02ef91}</Project>
       <Name>Shared</Name>

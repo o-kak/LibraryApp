@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BusinessLogic;
-using Model;
 using Shared;
 
 namespace ConsoleView
@@ -35,7 +33,7 @@ namespace ConsoleView
 
             foreach (var book in books)
             {
-                Console.WriteLine($"{book.Title} — {book.Author} [{book.Genre}] ");
+                Console.WriteLine($"Id: {book.Id} {book.Title} — {book.Author} [{book.Genre}] ");
             }
 
             Console.WriteLine("\nНажмите любую клавишу для продолжения...");

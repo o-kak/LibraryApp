@@ -42,6 +42,7 @@ namespace Presenter
             {
                 args.Add(new BookEventArgs()
                 {
+                    Id = book.Id,
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,
@@ -57,6 +58,7 @@ namespace Presenter
             book.Id = args.Id;
             book.Title = args.Title;
             book.Author = args.Author;
+            book.Genre = args.Genre;
             BookLogic.Add(book);
         }
 
@@ -68,6 +70,7 @@ namespace Presenter
             {
                 args.Add(new BookEventArgs()
                 {
+                    Id = book.Id,
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,
@@ -84,6 +87,7 @@ namespace Presenter
             {
                 args.Add(new BookEventArgs()
                 {
+                    Id = book.Id,
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,
@@ -100,6 +104,7 @@ namespace Presenter
             {
                 args.Add(new BookEventArgs()
                 {
+                    Id = book.Id,
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,
@@ -116,6 +121,7 @@ namespace Presenter
             {
                 args.Add(new BookEventArgs()
                 {
+                    Id = book.Id,
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,

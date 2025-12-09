@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BusinessLogic;
-using Model;
 using Shared;
 
 namespace ConsoleView
@@ -16,7 +14,7 @@ namespace ConsoleView
         public event Action<EventArgs> UpdateDataEvent;
         public event Action<int> ReadByIdEvent;
         public event Action GetAvailableBooksEvent;
-        public event Action<int> GetReadersBorrowedBooksEvent;
+        public event Action<int> GetBorrowedBooksEvent;
         public event Action StartupEvent;
 
         private ILoanView LoanUIManager { get; set; }
@@ -92,11 +90,10 @@ namespace ConsoleView
                 Console.WriteLine($"Имя: {reader.Name}");
                 Console.WriteLine($"Адрес: {reader.Address}");
                 Console.WriteLine($"Книги на руках: ");
-                GetReadersBorrowedBooksEvent?.Invoke(reader.Id);
+                GetBorrowedBooksEvent?.Invoke(reader.Id);
                 Console.WriteLine("\n[1] Изменить данные");
                 Console.WriteLine("[2] Удалить читателя");
-                Console.WriteLine("[3] Взять книгу");
-                Console.WriteLine("[4] Вернуть книгу");
+                Console.WriteLine("[3] Взять/вернуть книгу");
                 Console.WriteLine("[Esc] Назад в список");
 
                 key = Console.ReadKey().Key;
@@ -122,11 +119,7 @@ namespace ConsoleView
                         return;
 
                     case ConsoleKey.D3:
-                        LoanUIManager.GiveBookToReader(reader);
-                        break;
-
-                    case ConsoleKey.D4:
-                        LoanUIManager.ReturnBookFromReader(reader);
+                        LoanUIManager.StartLoanMenu(reader.Id);
                         break;
                 }
 
@@ -166,6 +159,15 @@ namespace ConsoleView
 
             Console.WriteLine("\nНажмите любую клавишу для продолжения...");
             Console.ReadKey();
+        }
+
+        public void ShowBorrowedBooks(IEnumerable<EventArgs> args)
+        {
+            List<BookEventArgs> books = args as List<BookEventArgs>;
+            for (int i = 0; i < books.Count; i++)
+            {
+                Console.WriteLine($"[{i + 1}] {books[i].Title} — {books[i].Author}");
+            }
         }
     }
 }

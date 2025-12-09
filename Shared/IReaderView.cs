@@ -11,7 +11,8 @@ namespace Shared
         event Action<EventArgs> UpdateDataEvent;
         event Action<int> ReadByIdEvent;
         event Action GetAvailableBooksEvent;
-        event Action<int> GetReadersBorrowedBooksEvent;
+        event Action<int> GetBorrowedBooksEvent;
         void ShowReaderProfile(ReaderEventArgs reader);
+        void ShowBorrowedBooks(IEnumerable<EventArgs> books);
     }
 }
