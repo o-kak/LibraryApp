@@ -27,13 +27,13 @@ namespace ConsoleView
             {
                 Console.Clear();
                 Console.WriteLine($"--- Управление займами (Читатель ID: {_currentReaderId}) ---");
-                Console.WriteLine("[1] Выдать книгу (использует данные из предыдущего экрана)");
-                Console.WriteLine("[2] Вернуть книгу (использует данные из предыдущего экрана)");
+                Console.WriteLine("[1] Выдать книгу");
+                Console.WriteLine("[2] Вернуть книгу");
                 Console.WriteLine("[E] Сбросить и выйти в Главное меню");
                 Console.Write("Выберите действие: ");
 
                 key = Console.ReadKey().Key;
-                Console.WriteLine(); // Новая строка после чтения
+                Console.WriteLine();
 
                 switch (key)
                 {
@@ -46,7 +46,7 @@ namespace ConsoleView
                         break;
 
                     case ConsoleKey.E:
-                        active = false; // Выход из цикла LoanMenu
+                        active = false;
                         break;
                     default:
                         ShowMessage("Неверный ввод.");

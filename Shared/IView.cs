@@ -8,7 +8,13 @@ namespace Shared
 {
     public interface IView
     {
+        /// <summary>
+        /// собыие запуска
+        /// </summary>
         event Action StartupEvent;
+        /// <summary>
+        /// запуск
+        /// </summary>
         void Start();
     }
 }

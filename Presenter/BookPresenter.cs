@@ -30,11 +30,18 @@ namespace Presenter
             view.StartupEvent += Start;
         }
 
+        /// <summary>
+        /// Запуск вида
+        /// </summary>
         private void Start()
         {
             BookLogic.InvokeDataChanged();
         }
 
+        /// <summary>
+        /// метод при изменении даных в модели
+        /// </summary>
+        /// <param name="books">список с данными</param>
         private void OnModelDataChanged(IEnumerable<Book> books)
         {
             List<BookEventArgs> args = new List<BookEventArgs>();
@@ -51,6 +58,10 @@ namespace Presenter
             View.Redraw(args);
         }
 
+        /// <summary>
+        /// добавление данных пользователем
+        /// </summary>
+        /// <param name="data">данные</param>
         private void OnAddData(EventArgs data)
         {
             BookEventArgs args = data as BookEventArgs;
@@ -62,6 +73,10 @@ namespace Presenter
             BookLogic.Add(book);
         }
 
+        /// <summary>
+        /// фильтрация по жанру
+        /// </summary>
+        /// <param name="genre">жанр</param>
         private void OnFilterDataByGenre(string genre)
         {
             List<BookEventArgs> args = new List<BookEventArgs>();
@@ -79,6 +94,10 @@ namespace Presenter
             View.Redraw(args);
         }
 
+        /// <summary>
+        /// фильтрация по автору
+        /// </summary>
+        /// <param name="author">автор</param>
         private void OnFilterDataByAuthor(string author)
         {
             List<BookEventArgs> args = new List<BookEventArgs>();
@@ -96,6 +115,9 @@ namespace Presenter
             View.Redraw(args);
         }
 
+        /// <summary>
+        /// получить доступные книги
+        /// </summary>
         private void OnGetAvailableBooks()
         {
             List<BookEventArgs> args = new List<BookEventArgs>();
@@ -113,6 +135,9 @@ namespace Presenter
             View.Redraw(args);
         }
 
+        /// <summary>
+        /// получить недоступные книги
+        /// </summary>
         private void OnGetBorrowedBooks()
         {
             List<BookEventArgs> args = new List<BookEventArgs>();

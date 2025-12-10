@@ -32,11 +32,18 @@ namespace Presenter
             view.GetBorrowedBooksEvent += OnGetReadersBorrowedBooks;
         }
 
+        /// <summary>
+        /// хапуск вида
+        /// </summary>
         private void Start()
         {
             ReaderLogic.InvokeDataChanged();
         }
 
+        /// <summary>
+        /// удаление данных
+        /// </summary>
+        /// <param name="id">Id сущности</param>
         private void OnDeleteData(int id)
         {
             List<Book> books = LoanLogic.GetReadersBorrowedBooks(id).ToList();
@@ -50,6 +57,10 @@ namespace Presenter
             ReaderLogic.Delete(id);
         }
 
+        /// <summary>
+        /// на изменения данных в модели
+        /// </summary>
+        /// <param name="readers">список данных</param>
         private void OnModelDataChanged(IEnumerable<Reader> readers)
         {
             List<ReaderEventArgs> args = new List<ReaderEventArgs>();
@@ -65,6 +76,10 @@ namespace Presenter
             View.Redraw(args);
         }
 
+        /// <summary>
+        /// добавление данных
+        /// </summary>
+        /// <param name="data">данные</param>
         private void OnAddData(EventArgs data)
         {
             ReaderEventArgs args = data as ReaderEventArgs;
@@ -75,16 +90,25 @@ namespace Presenter
             ReaderLogic.Add(reader);
         }
 
+        /// <summary>
+        /// обновление данных
+        /// </summary>
+        /// <param name="data">данные</param>
         private void OnUpdateData(EventArgs data)
         {
             ReaderEventArgs args = data as ReaderEventArgs;
-            Reader reader = new Reader();
-            reader.Id = args.Id;
-            reader.Name = args.Name;
-            reader.Address = args.Address;
+            Reader reader = ReaderLogic.GetReader(args.Id);
+            if (args.Name != null)
+                reader.Name = args.Name;
+            if (args.Address != null) 
+                reader.Address = args.Address;
             ReaderLogic.Update(reader);
         }
 
+        /// <summary>
+        /// чтение пользователя и открытие его профиля
+        /// </summary>
+        /// <param name="id">Id читателя</param>
         private void OnReadById(int id)
         {
             Reader reader = ReaderLogic.GetReader(id);
@@ -97,6 +121,10 @@ namespace Presenter
             View.ShowReaderProfile(args);
         }
 
+        /// <summary>
+        /// получить книги на руках у читателя
+        /// </summary>
+        /// <param name="id">Id читателя</param>
         private void OnGetReadersBorrowedBooks(int id)
         {
             List<Book> books = LoanLogic.GetReadersBorrowedBooks(id).ToList();

@@ -101,17 +101,20 @@ namespace ConsoleView
                 switch (key)
                 {
                     case ConsoleKey.D1:
+                        ReaderEventArgs args = new ReaderEventArgs();
+                        args.Id = reader.Id;
                         Console.Write("\nНовое имя (пусто — без изменений): ");
                         string newName = Console.ReadLine();
                         if (!string.IsNullOrWhiteSpace(newName))
-                            reader.Name = newName;
+                            args.Name = newName;
 
                         Console.Write("Новый адрес (пусто — без изменений): ");
                         string newAddress = Console.ReadLine();
                         if (!string.IsNullOrWhiteSpace(newAddress))
-                            reader.Address = newAddress;
-                        break;
-
+                            args.Address = newAddress;
+                        UpdateDataEvent?.Invoke(args);
+                        Console.ReadKey();
+                        return;
                     case ConsoleKey.D2:
                         Console.WriteLine("\nЧитатель удалён.");
                         DeleteDataEvent?.Invoke(reader.Id);

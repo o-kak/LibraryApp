@@ -86,27 +86,26 @@ namespace ConsoleView
             {
                 Console.Clear();
                 Console.WriteLine("=== КНИГИ ===\n");
-                Console.WriteLine("[1] Показать все книги");
-                Console.WriteLine("[2] Показать доступные книги");
-                Console.WriteLine("[3] Показать выданные книги");
-                Console.WriteLine("[4] Добавить книгу");
-                Console.WriteLine("[5] Удалить книгу");
+                Console.WriteLine("[1] Показать доступные книги");
+                Console.WriteLine("[2] Показать выданные книги");
+                Console.WriteLine("[3] Добавить книгу");
+                Console.WriteLine("[4] Удалить книгу");
                 Console.WriteLine("[Esc] Назад");
 
                 key = Console.ReadKey().Key;
 
                 switch (key)
                 {
-                    case ConsoleKey.D2:
+                    case ConsoleKey.D1:
                         GetAvailableBooksEvent?.Invoke();
                         break;
-                    case ConsoleKey.D3:
+                    case ConsoleKey.D2:
                         GetBorrowedBooksEvent?.Invoke();
                         break;
-                    case ConsoleKey.D4:
+                    case ConsoleKey.D3:
                         AddBookMenu();
                         break;
-                    case ConsoleKey.D5:
+                    case ConsoleKey.D4:
                         DeleteBookMenu(data);
                         break;
                 }
