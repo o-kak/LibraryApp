@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,49 +13,33 @@ namespace WindowsFormsView
 {
     public partial class ChangeReaderForm : Form
     {
-        
+        private readonly BookView _bookView;
+        private readonly ReaderView _readerView;
+        private readonly LoanView _loanView;
 
         private int currentID;
-        public ChangeReaderForm(ListViewItem item, IBookService bookService, IReaderService readerService, ILoan loanService)
+        private List<BookEventArgs> _borrowedBooks = new List<BookEventArgs>();
+
+        public ChangeReaderForm(ListViewItem item, BookView bookService, ReaderView readerService, LoanView loanService)
         {
-            this.bookService = bookService;
-            this.readerService = readerService;
-            this.loanService = loanService;
+            
+            _bookView = bookService;
+            _readerView = readerService;
+            _loanView = loanService;
             InitializeComponent();
             NeedToUpdateNameTextBox.Text = item.SubItems[0].Text;
             NeedToUpdateAdressTextBox.Text = item.SubItems[1].Text;
             currentID = int.Parse(item.SubItems[2].Text);
-            LoadInfo(item);
+            LoadBorrowedBooks();
         }
 
-        /// <summary>
-        /// Перемещение списка книг из таблицы из Главной формы в ListCheckBox этой формы. Если в списке из таблицы были книги, то они автоматически отмечаются.
-        /// </summary>
-        /// <param name="item">выбранная строка из таблицы читателей</param>
-        private void LoadInfo(ListViewItem item) 
+        private void LoadBorrowedBooks()
         {
-            var books = bookService.GetAllBooks().ToList();
-            string selectedBooks = item.SubItems[3].Text;
             ReturnOrBorrowBookCheckedListBox.Items.Clear();
-            if (selectedBooks == "Нет заимствованных книг")
-            {
-                foreach (var book in books)
-                {
-                    ReturnOrBorrowBookCheckedListBox.Items.Add(book, false); 
-                }
-            }
-            else 
-            {
-                var selectedBooksList = selectedBooks.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                          .Select(b => b.Trim())
-                                          .ToList();
+            ReturnOrBorrowBookCheckedListBox.Items.Add("Загрузка книг...");
 
-                foreach (var book in books)
-                {
-                    bool isChecked = selectedBooksList.Contains(book.Title);
-                    ReturnOrBorrowBookCheckedListBox.Items.Add(book, isChecked);
-                }
-            }
+            // Запрашиваем книги читателя через LoanView
+            _loanView.TriggerGetReadersBorrowedBooks(currentID);
         }
 
         /// <summary>
@@ -62,58 +47,50 @@ namespace WindowsFormsView
         /// </summary>
         private void Savebutton1_Click(object sender, EventArgs e)
         {
-            List<Reader> readers = readerService.GetAllReaders().ToList();
-            var currentReader = readers.FirstOrDefault(r => r.Id == currentID);
-            if (currentReader == null)
+            string newName = NeedToUpdateNameTextBox.Text;
+            string newAddress = NeedToUpdateAdressTextBox.Text;
+
+            if (string.IsNullOrWhiteSpace(newName) || string.IsNullOrWhiteSpace(newAddress))
             {
-                MessageBox.Show("Читатель не найден!");
+                MessageBox.Show("Пожалуйста, заполните все поля.",
+                              "Ошибка",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Warning);
                 return;
             }
 
-            currentReader.UpdateName(NeedToUpdateNameTextBox.Text);
-            currentReader.UpdateAddress(NeedToUpdateAdressTextBox.Text);
-
-            foreach (var item in ReturnOrBorrowBookCheckedListBox.Items)
+            var readerEventArgs = new ReaderEventArgs 
             {
-                var book = item as Book;
-                if (book != null)
+                Id = currentID,
+                Name = newName,
+                Address = newAddress
+            };
+
+            _readerView.TriggerUpdateData(readerEventArgs);
+            ProcessBookReturns();
+
+
+            _loanView.ShowMessage("Информация о читателе успешно обновлена!");
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void ProcessBookReturns()
+        {
+
+            for (int i = 0; i < ReturnOrBorrowBookCheckedListBox.Items.Count; i++)
+            {
+                if (ReturnOrBorrowBookCheckedListBox.Items[i] is BookEventArgs book)
                 {
-                    bool isChecked = ReturnOrBorrowBookCheckedListBox.GetItemChecked(ReturnOrBorrowBookCheckedListBox.Items.IndexOf(item));
+                    bool isChecked = ReturnOrBorrowBookCheckedListBox.GetItemChecked(i);
 
-                    if (!isChecked && loanService.GetReadersBorrowedBooks(currentReader.Id).Contains(book))
+                    if (!isChecked)
                     {
-                        try
-                        {
-                            loanService.ReturnBook(book.Id, currentReader.Id);
-                        }
-                        catch (InvalidOperationException ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                        }
-                    }
-
-                    else if (isChecked && !loanService.GetReadersBorrowedBooks(currentReader.Id).Contains(book))
-                    {
-                        try
-                        {
-                            loanService.GiveBook(book.Id, currentReader.Id);
-                        }
-                        catch (InvalidOperationException ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                        }
+                        _loanView.TriggerReturnBook(book.Id, currentID);
                     }
                 }
             }
+        }
 
-            MessageBox.Show("Информация о читателе успешно обновлена!");
-            Form1 mainForm = Application.OpenForms.OfType<Form1>().FirstOrDefault();
-            if (mainForm != null)
-            {
-                mainForm.UpdateReaderListView(readers);
-            }
-
-            this.Close();
-        }        
     }
 }

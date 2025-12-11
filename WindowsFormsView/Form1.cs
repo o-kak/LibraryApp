@@ -18,9 +18,9 @@ namespace WindowsFormsView
 {
     public partial class Form1: Form
     {
-        private BookView _bookView;
-        private ReaderView _readerView;
-        private LoanView _loanView;
+        public BookView _bookView;
+        public ReaderView _readerView;
+        public LoanView _loanView;
 
         public Form1()
         {
@@ -33,16 +33,6 @@ namespace WindowsFormsView
             _bookView = new BookView(this);
             _readerView = new ReaderView(this);
             _loanView = new LoanView(this);
-        }
-
-        private void LoadAuthorsAndGenres() 
-        {
-            var books= bookService.GetAllBooks().ToList();
-            var authors = books.Select(x => x.Author).Distinct().ToList();
-            AuthorComboBox2.DataSource = authors;
-
-            var genres = books.Select(x => x.Genre).Distinct().ToList();
-            GenreComboBox1.DataSource = genres;
         }
 
 

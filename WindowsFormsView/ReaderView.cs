@@ -35,13 +35,13 @@ namespace WindowsFormsView
         }
         public void ShowReaderProfile(ReaderEventArgs reader)
         {
-            _form.Invoke(new Action(() => _form.ShowReaderProfileDialog(reader)));
+            //_form.Invoke(new Action(() => _form.ShowReaderProfileDialog(reader)));
         }
 
         public void ShowBorrowedBooks(IEnumerable<EventArgs> books)
         {
             var bookEvents = books.OfType<BookEventArgs>();
-            _form.Invoke(new Action(() => _form.ShowBorrowedBooksDialog(bookEvents)));
+            //_form.Invoke(new Action(() => _form.ShowBorrowedBooksDialog(bookEvents)));
         }
 
         public void TriggerAddData(EventArgs data)

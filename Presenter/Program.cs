@@ -1,16 +1,20 @@
-﻿using System;
+﻿using BusinessLogic;
+using ConsoleView;
+using Ninject;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BusinessLogic;
-using Ninject;
-using ConsoleView;
+using WindowsFormsView;
+using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Presenter
 {
     internal class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
             bool running = true;
@@ -29,25 +33,11 @@ namespace Presenter
                 {
                     case "1":
 
-                        IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
-                        BookService bookService = ninjectKernel.Get<BookService>();
-                        ReaderService readerService = ninjectKernel.Get<ReaderService>();
-                        LoanService loanService = ninjectKernel.Get<LoanService>();
-
-                        BooksUIManager booksUIManager = new BooksUIManager();
-                        LoanUIManager loanUIManager = new LoanUIManager();
-                        ReadersUIManager readersUIManager = new ReadersUIManager(loanUIManager);
-
-                        ReaderPresenter readerPresenter = new ReaderPresenter(readerService, readersUIManager, loanService);
-                        BookPresenter bookPresenter = new BookPresenter(bookService, booksUIManager);
-                        LoanPresenter loanPresenter = new LoanPresenter(loanService, loanUIManager, bookService);
-                        MainMenu mainMenu = new MainMenu(booksUIManager, readersUIManager, loanUIManager);
-                        mainMenu.ShowMainMenu();
+                        RunConsoleMode();
                         break;
 
                     case "2":
-                        Console.WriteLine("пипипу");
-                        Console.ReadKey();
+                        RunWinFormsMode();
                         break;
 
                     case "0":
@@ -60,6 +50,53 @@ namespace Presenter
                         continue;
                 }
             }
+        }
+
+        static void RunConsoleMode() 
+        {
+            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
+            BookService bookService = ninjectKernel.Get<BookService>();
+            ReaderService readerService = ninjectKernel.Get<ReaderService>();
+            LoanService loanService = ninjectKernel.Get<LoanService>();
+
+            BooksUIManager booksUIManager = new BooksUIManager();
+            LoanUIManager loanUIManager = new LoanUIManager();
+            ReadersUIManager readersUIManager = new ReadersUIManager(loanUIManager);
+
+            ReaderPresenter readerPresenter = new ReaderPresenter(readerService, readersUIManager, loanService);
+            BookPresenter bookPresenter = new BookPresenter(bookService, booksUIManager);
+            LoanPresenter loanPresenter = new LoanPresenter(loanService, loanUIManager, bookService);
+            ConsoleView.MainMenu mainMenu = new ConsoleView.MainMenu(booksUIManager, readersUIManager, loanUIManager);
+            mainMenu.ShowMainMenu();
+        }
+
+        [STAThread]
+        static void RunWinFormsMode() 
+        {
+            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
+            BookService winFormsBookService = ninjectKernel.Get<BookService>();
+            ReaderService winFormsReaderService = ninjectKernel.Get<ReaderService>();
+            LoanService winFormsLoanService = ninjectKernel.Get<LoanService>();
+
+            // Запускаем WinForms приложение
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+
+            // Создаем главную форму
+            var form1 = new Form1();
+
+            // Получаем View из формы
+            var bookView = form1._bookView; 
+            var readerView = form1._readerView; 
+            var loanView = form1._loanView; 
+
+            // Создаем Presenter'ы и связываем их с View
+            var bookPresenter = new BookPresenter(winFormsBookService, bookView);
+            var readerPresenter = new ReaderPresenter(winFormsReaderService, readerView, winFormsLoanService);
+            var loanPresenter = new LoanPresenter(winFormsLoanService, loanView, winFormsBookService);
+
+            // Запускаем приложение
+            System.Windows.Forms.Application.Run(form1);
         }
     }
 }

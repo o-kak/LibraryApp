@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using BusinessLogic;
 using Ninject;
 
 namespace WindowsFormsView
@@ -16,10 +15,6 @@ namespace WindowsFormsView
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
-            Application.Run(ninjectKernel.Get<Form1>());
         }
     }
 }

@@ -19,7 +19,7 @@ namespace WindowsFormsView
         private readonly LoanView _loanView;
 
         private List<BookEventArgs> _availableBooks = new List<BookEventArgs>();
-        private List<int> _selectedBooksIds = new List<int>();
+        
 
         public AddReaderForm(BookView bookView, ReaderView readerView, LoanView loanView)
         {
@@ -59,19 +59,30 @@ namespace WindowsFormsView
                 return;
             }
 
-            _selectedBooksIds.Clear();
+            var readerEventArgs = new ReaderEventArgs
+            {
+                Id = 0, // Будет установлен в бизнес-логике
+                Name = readerName,
+                Address = readerAdress
+            };
+
+            var _selectedBooksIds = new List<int>();
             for (int i = 0; i < BorrowedBooksCheckedListBox.Items.Count; i++)
             {
                 if (BorrowedBooksCheckedListBox.GetItemChecked(i))
                 {
-                    if (BorrowedBooksCheckedListBox.Items[i].Tag is int bookId)
+                    if (BorrowedBooksCheckedListBox.Items[i] is BookEventArgs bookEvent)
                     {
-                        _selectedBooksIds.Add(bookId);
+                        _selectedBooksIds.Add(bookEvent.Id);
                     }
+
                 }
             }
+            _readerView.TriggerAddData(readerEventArgs);
 
-
+            _loanView.ShowMessage($"Читатель '{readerName}' успешно добавлен.");
+            this.DialogResult = DialogResult.OK;
+            this.Close();
 
         }
     }

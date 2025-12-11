@@ -24,12 +24,12 @@ namespace WindowsFormsView
         public void ShowReadersBorrowedBooks(IEnumerable<EventArgs> books) 
         {
             var bookEvents = books.OfType<BookEventArgs>();
-            _form.Invoke(new Action(() => _form.ShowBorrowedBooksDialog(bookEvents)));
+            //_form.Invoke(new Action(() => _form.ShowBorrowedBooksDialog(bookEvents)));
         }
         public void ShowAvailableBooks(IEnumerable<EventArgs> books)
         {
             var bookEvents = books.OfType<BookEventArgs>();
-            _form.Invoke(new Action(() => _form.ShowAvailableBooksDialog(bookEvents)));
+            //_form.Invoke(new Action(() => _form.ShowAvailableBooksDialog(bookEvents)));
         }
         public void ShowMessage(string message)
         {
@@ -39,7 +39,7 @@ namespace WindowsFormsView
 
         public void StartLoanMenu(int id)
         {
-            _form.Invoke(new Action(() => _form.ShowLoanMenuDialog(id)));
+            //_form.Invoke(new Action(() => _form.ShowLoanMenuDialog(id)));
         }
 
         public void TriggerGiveBook(int bookId, int readerId)

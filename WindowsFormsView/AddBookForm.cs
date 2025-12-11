@@ -1,10 +1,11 @@
-﻿using Model;
+﻿using Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -31,14 +32,17 @@ namespace WindowsFormsView
                 MessageBox.Show("Пожалуйста, заполните все поля.");
                 return;
             }
-            bookView.Tri
-            var books = bookService.GetAllBooks().ToList();
 
-            Form1 mainForm = Application.OpenForms.OfType<Form1>().FirstOrDefault();
-            if (mainForm != null)
+            var bookEventArgs = new BookEventArgs
             {
-                mainForm.UpdateBooksListView(books);
-            }
+                Id = 0,
+                Title = bookTitle,
+                Author = bookAuthor,
+                Genre = bookGenre,
+                ReaderId = null
+            };
+
+            _bookView.TriggerAddData(bookEventArgs);
             this.Close();
         }
     }
