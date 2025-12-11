@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,34 +8,45 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Model;
-using BusinessLogic;
 
 namespace WindowsFormsView
 {
     public partial class AddReaderForm : Form
     {
-        private IBookService bookService;
-        private IReaderService readerService; 
-        private ILoan loanService;
 
-        public AddReaderForm(IBookService bookService, IReaderService readerService, ILoan loanService)
+        private readonly BookView _bookView;
+        private readonly ReaderView _readerView;
+        private readonly LoanView _loanView;
+
+        private List<BookEventArgs> _availableBooks = new List<BookEventArgs>();
+        private List<int> _selectedBooksIds = new List<int>();
+
+        public AddReaderForm(BookView bookView, ReaderView readerView, LoanView loanView)
         {
-            this.bookService = bookService;
-            this.readerService = readerService;
-            this.loanService = loanService;
-            List<Book> books = bookService.GetAllBooks().ToList();
+            _bookView = bookView;
+            _readerView = readerView;
+            _loanView = loanView;
+
             InitializeComponent();
-            FillBorrowedBooksCheckedListBox(books);
+            LoadAvailableBooks();
         }
-        private void FillBorrowedBooksCheckedListBox(List<Book> books)
+
+        private void LoadAvailableBooks() 
+        {
+            _availableBooks.Clear();
+            _loanView.TriggerGetAvailableBooks();
+            FillBorrowedBooksCheckedListBox();
+        }
+
+        private void FillBorrowedBooksCheckedListBox()
         {
             BorrowedBooksCheckedListBox.Items.Clear();
-            foreach (var book in books)
+            foreach (var book in _availableBooks)
             {
                 BorrowedBooksCheckedListBox.Items.Add(book); 
             }
         }
+
         private void SaveReaderButton_Click(object sender, EventArgs e)
         {
             
@@ -47,47 +59,20 @@ namespace WindowsFormsView
                 return;
             }
 
-            readerService.AddReader(readerName, readerAdress);   
-
-            bool hasErrors = false;
-            List<Reader> readers = readerService.GetAllReaders().ToList();
-
-            if (readers.Count == 0)
+            _selectedBooksIds.Clear();
+            for (int i = 0; i < BorrowedBooksCheckedListBox.Items.Count; i++)
             {
-                MessageBox.Show("Не удалось получить список читателей.");
-                return;
-            }
-            if (BorrowedBooksCheckedListBox.CheckedItems.Count > 0)
-            {
-                foreach (var item in BorrowedBooksCheckedListBox.CheckedItems)
+                if (BorrowedBooksCheckedListBox.GetItemChecked(i))
                 {
-                    Book selectedBook = item as Book;
-                    if (selectedBook != null)
+                    if (BorrowedBooksCheckedListBox.Items[i].Tag is int bookId)
                     {
-                        try
-                        {
-                            loanService.GiveBook(selectedBook.Id, readers.Last().Id);
-                        }
-                        catch (InvalidOperationException ex)
-                        {
-                            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            hasErrors = true;
-                            readerService.DeleteReader(readers.Last().Id);
-                        }
+                        _selectedBooksIds.Add(bookId);
                     }
                 }
             }
 
-            if (!hasErrors)
-            {
-                Form1 mainForm = Application.OpenForms.OfType<Form1>().FirstOrDefault();
-                if (mainForm != null)
-                {
-                    mainForm.UpdateReaderListView(readers); 
-                }
 
-                this.Close();
-            }
+
         }
     }
 }

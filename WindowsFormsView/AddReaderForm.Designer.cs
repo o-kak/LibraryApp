@@ -40,7 +40,6 @@ namespace WindowsFormsView
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.BorrowedBooksCheckedListBox = new System.Windows.Forms.CheckedListBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -113,13 +112,6 @@ namespace WindowsFormsView
             this.BorrowedBooksCheckedListBox.Size = new System.Drawing.Size(268, 142);
             this.BorrowedBooksCheckedListBox.TabIndex = 9;
             // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(125, 342);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(268, 26);
-            this.textBox3.TabIndex = 2;
-            // 
             // AddReaderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -131,7 +123,6 @@ namespace WindowsFormsView
             this.Controls.Add(this.label1);
             this.Controls.Add(this.SaveReaderButton);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.textBox3);
             this.Controls.Add(this.ReaderAdressTextBox);
             this.Controls.Add(this.ReaderNamTextBox);
             this.Name = "AddReaderForm";
@@ -152,6 +143,5 @@ namespace WindowsFormsView
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckedListBox BorrowedBooksCheckedListBox;
-        private System.Windows.Forms.TextBox textBox3;
     }
 }

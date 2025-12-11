@@ -5,12 +5,12 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Model;
-using BusinessLogic;
 using Ninject;
+using Shared;
 
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -18,29 +18,21 @@ namespace WindowsFormsView
 {
     public partial class Form1: Form
     {
-        private IBookService bookService;
-        private IReaderService readerService; 
-        private BookAuthorFilter bookAuthorFilter;
-        private BookGenreFilter bookGenreFilter;
-        private ILoan loanService;
-        public Form1(BookAuthorFilter authorFilter, BookGenreFilter genreFilter, IBookService bookService, ILoan loanService, IReaderService readerService)
+        private BookView _bookView;
+        private ReaderView _readerView;
+        private LoanView _loanView;
+
+        public Form1()
         {
             InitializeComponent();
-
-            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
-
-            this.bookAuthorFilter = authorFilter;
-            this.bookGenreFilter = genreFilter;
-            this.bookService = bookService;
-            this.loanService = loanService;
-            this.readerService = readerService;
-
-            List<Book> books = bookService.GetAllBooks().ToList();
-            List<Reader> readers = readerService.GetAllReaders().ToList();
-            UpdateBooksListView(books);
-            UpdateReaderListView(readers);
-            LoadAuthorsAndGenres();
-
+            InitializeViews();
+            
+        }
+        public void InitializeViews() 
+        {
+            _bookView = new BookView(this);
+            _readerView = new ReaderView(this);
+            _loanView = new LoanView(this);
         }
 
         private void LoadAuthorsAndGenres() 
@@ -54,39 +46,38 @@ namespace WindowsFormsView
         }
 
 
-        /// <summary>
-        /// Кнопка, для открытия окна для создания нового читателя
-        /// </summary>
-        private void AddReaderButton_Click(object sender, EventArgs e)
-        {
-            using (AddReaderForm arf = new AddReaderForm(bookService, readerService, loanService)) 
-            {
-                arf.ShowDialog();
-            }
-        }
+        //РАБОТА С ТАБЛИЦАМИ
+
+        //-------------------------------------------------------------------------------------------------ЧИТАТЕЛИ---------------------------------------------------------------------------- 
 
         /// <summary>
-        /// Кнопка, для открытия окна для создания новой книги
+        /// Обновление таблицы читателей
         /// </summary>
-        private void AddBookButton_Click(object sender, EventArgs e)
+        /// <param name="readers">список читателей</param>
+        public void RedrawReader(IEnumerable<EventArgs> readerEventArgs)
         {
-            using (AddBookForm abf = new AddBookForm(bookService))
-            {
-                abf.ShowDialog();
-            }
-        }
+            var readerEvents = readerEventArgs.OfType<ReaderEventArgs>();
 
-        /// <summary>
-        /// Кнопка, для обновления таблицы с книгами
-        /// </summary>
-        private void UpdateButton_Click(object sender, EventArgs e)
-        {
-            var books = bookService.GetAllBooks().ToList();
-            BorrowedBookCheckBox1.Checked = false;
-            IsAvailableCheckBox.Checked = false;
-            AuthorComboBox2.SelectedIndex = -1;
-            GenreComboBox1.SelectedIndex = -1;
-            UpdateBooksListView(books);
+            if (ReaderListView.InvokeRequired)
+            {
+                ReaderListView.Invoke(new Action(() => RedrawReader(readerEventArgs)));
+                return;
+            }
+
+            ReaderListView.BeginUpdate();
+            ReaderListView.Items.Clear();
+
+            foreach (var readerEvent in readerEvents)
+            {
+                ListViewItem item = new ListViewItem(readerEvent.Name);
+                item.SubItems.Add(readerEvent.Address);
+                item.SubItems.Add(readerEvent.Id.ToString());
+
+                item.Tag = readerEvent.Id;
+
+                ReaderListView.Items.Add(item);
+            }
+            ReaderListView.EndUpdate();
         }
 
         /// <summary>
@@ -98,11 +89,16 @@ namespace WindowsFormsView
             {
                 var selectedItem = ReaderListView.SelectedItems[0];
 
-                if (int.TryParse(selectedItem.SubItems[2].Text, out int readerId))
+                if (selectedItem.Tag is int readerId)
                 {
-                    readerService.DeleteReader(readerId);
-                    var updatedReaders = readerService.GetAllReaders().ToList();
-                    UpdateReaderListView(updatedReaders);
+                    var result = MessageBox.Show("Вы уверены, что хотите удалить читателя?",
+                                                "Подтверждение удаления",
+                                                MessageBoxButtons.YesNo,
+                                                MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        _readerView.TriggerDeleteData(readerId);
+                    }
                 }
                 else
                 {
@@ -115,61 +111,84 @@ namespace WindowsFormsView
             }
         }
 
-        /// <summary>
-        /// Обновление таблицы читателей
-        /// </summary>
-        /// <param name="readers">список читателей</param>
-        public void UpdateReaderListView(IEnumerable<Reader> readers)
-        {
-            ReaderListView.BeginUpdate(); 
-            ReaderListView.Items.Clear(); 
 
-            foreach (var reader in readers)
-            {
-                ListViewItem item = new ListViewItem(reader.Name);
-                item.SubItems.Add(reader.Address);
-                item.SubItems.Add(reader.Id.ToString());
-
-                string borrowedBooks = loanService.GetReadersBorrowedBooks(reader.Id) != null && loanService.GetReadersBorrowedBooks(reader.Id).Any()
-                    ? String.Join(", ", loanService.GetReadersBorrowedBooks(reader.Id).Select(b => b.Title))
-                    : "Нет заимствованных книг";
-
-                item.SubItems.Add(borrowedBooks);
-
-                ReaderListView.Items.Add(item);
-            }
-            ReaderListView.EndUpdate(); 
-        }
+        //-------------------------------------------------------------------------------------КНИГИ----------------------------------------------------------------------------------------
 
         /// <summary>
         /// Обновление таблицы с книгами
         /// </summary>
         /// <param name="books">список книг</param>
-        public void UpdateBooksListView(IEnumerable<Book> books) 
+        public void RedrawBook(IEnumerable<EventArgs> bookEventArgs)
         {
+            var bookEvents = bookEventArgs.OfType<BookEventArgs>();
+            if (BookListView.InvokeRequired)
+            {
+                BookListView.Invoke(new Action(() => RedrawBook(bookEventArgs)));
+                return;
+            }
             BookListView.BeginUpdate();
             BookListView.Items.Clear();
-            foreach (Book book in books) 
+
+            foreach (var bookEvent in bookEvents)
             {
-                ListViewItem b_item = new ListViewItem(book.Title);
-                b_item.SubItems.Add(book.Author);
-                b_item.SubItems.Add(book.Genre);
-                string readerName = "Нет читателя"; 
-                if (book.ReaderId.HasValue && book.ReaderId.Value > 0) 
+                ListViewItem b_item = new ListViewItem(bookEvent.Title);
+                b_item.SubItems.Add(bookEvent.Author);
+                b_item.SubItems.Add(bookEvent.Genre);
+                string readerName = "Нет читателя";
+                if (bookEvent.ReaderId.HasValue && bookEvent.ReaderId.Value > 0)
                 {
-                    Reader reader = readerService.GetReader(book.ReaderId.Value);
-                    if (reader != null)
-                    {
-                        readerName = reader.Name; 
-                    }
+                    readerName = $"Читатель ID: {bookEvent.ReaderId.Value}";
                 }
 
-                // Добавляем имя читателя в новый столбец
                 b_item.SubItems.Add(readerName);
                 BookListView.Items.Add(b_item);
             }
             BookListView.EndUpdate();
         }
+
+        /// <summary>
+        /// Кнопка, для удаления выделенной книги из таблицы
+        /// </summary>
+        private void DeleteBookButton_Click(object sender, EventArgs e)
+        {
+            if (BookListView.SelectedItems.Count > 0)
+            {
+                var selectedItem = BookListView.SelectedItems[0];
+                if (selectedItem.Tag is int bookId)
+                {
+                    var result = MessageBox.Show("Вы уверены, что хотите удалить книгу?",
+                                                "Подтверждение удаления",
+                                                MessageBoxButtons.YesNo,
+                                                MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        _bookView.TriggerDeleteData(bookId);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Книга не найдена.");
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Пожалуйста, выберите элемент для удаления.");
+            }
+
+        }
+
+        /// <summary>
+        /// Кнопка, для обновления таблицы с книгами
+        /// </summary>
+        private void UpdateButton_Click(object sender, EventArgs e)
+        {
+            BorrowedBookCheckBox1.Checked = false;
+            IsAvailableCheckBox.Checked = false;
+            AuthorComboBox2.SelectedIndex = -1;
+            GenreComboBox1.SelectedIndex = -1;
+            _bookView.TriggerStartup();
+        }
+
 
 
         /// <summary>
@@ -182,8 +201,8 @@ namespace WindowsFormsView
             if (IsAvailableCheckBox.Checked)
             {
                 BorrowedBookCheckBox1.Checked = false;
-                UpdateBooksListView(loanService.GetAvailableBooks());
-                
+                _bookView.TriggerGetAvailableBooks();
+
             }
         }
 
@@ -194,60 +213,13 @@ namespace WindowsFormsView
         /// <param name="e"></param>
         private void BorrowedBookCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (BorrowedBookCheckBox1.Checked) 
+            if (BorrowedBookCheckBox1.Checked)
             {
                 IsAvailableCheckBox.Checked = false;
-                UpdateBooksListView(loanService.GetBorrowedBooks());
+                _bookView.TriggerGetBorrowedBooks();
             }
 
         }
-
-        /// <summary>
-        /// Кнопка, для удаления выделенной книги из таблицы
-        /// </summary>
-        private void DeleteBookButton_Click(object sender, EventArgs e)
-        {
-            var books = bookService.GetAllBooks().ToList();
-            if (BookListView.SelectedItems.Count > 0)
-            {
-                var selectedItem = BookListView.SelectedItems[0];
-                string bookTitle = selectedItem.SubItems[0].Text;
-
-                var bookToDelete = books.FirstOrDefault(x => x.Title == bookTitle);
-
-                if (bookToDelete != null)
-                {
-                    bookService.DeleteBook(bookToDelete.Id);
-                    var updatedBooks = bookService.GetAllBooks().ToList();
-                    UpdateBooksListView(updatedBooks);
-                    BookListView.Refresh();
-                }
-                else
-                {
-                    MessageBox.Show("Книга не найдена.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Пожалуйста, выберите элемент для удаления.");
-            }
-
-        }
-        /// <summary>
-        /// Кнопка для перехода к новому окну, для изменения данных выбранного пользователя
-        /// </summary>
-        private void ChangeInfoButton_Click(object sender, EventArgs e)
-        {
-            if (ReaderListView.SelectedItems.Count >0)
-            {
-                ListViewItem selectedItem = ReaderListView.SelectedItems[0];
-                using (ChangeReaderForm crf = new ChangeReaderForm(selectedItem, bookService, readerService, loanService)) 
-                {
-                    crf.ShowDialog();
-                }
-            }
-        }
-
 
         /// <summary>
         /// при выборе жанра в комбобокс происходит фильтрация книг по жанру
@@ -263,7 +235,7 @@ namespace WindowsFormsView
                 return;
             }
 
-            UpdateBooksListView(bookGenreFilter.Filter(genre));
+            _bookView.TriggerFilterByGenre(genre);
         }
 
         /// <summary>
@@ -274,12 +246,54 @@ namespace WindowsFormsView
         private void AuthorComboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             string author = AuthorComboBox2.SelectedItem?.ToString();
-            if (string.IsNullOrEmpty(author)) 
+            if (string.IsNullOrEmpty(author))
             {
                 AuthorComboBox2.Text = "Авторы";
                 return;
             }
-            UpdateBooksListView(bookAuthorFilter.Filter(author));
+            _bookView.TriggerFilterByAuthor(author);
         }
+
+
+        //-------------------------------------------------------------------------КНОПКИ ДЛЯ ПЕРЕХОДА НА ДРУГИЕ ОКНА-----------------------------------------------------
+
+
+        /// <summary>
+        /// Кнопка, для открытия окна для создания нового читателя
+        /// </summary>
+        private void AddReaderButton_Click(object sender, EventArgs e)
+        {
+            using (AddReaderForm arf = new AddReaderForm(_bookView, _readerView, _loanView))
+            {
+                arf.ShowDialog();
+            }
+        }
+
+        /// <summary>
+        /// Кнопка, для открытия окна для создания новой книги
+        /// </summary>
+        private void AddBookButton_Click(object sender, EventArgs e)
+        {
+            using (AddBookForm abf = new AddBookForm(_bookView))
+            {
+                abf.ShowDialog();
+            }
+        }
+        
+        /// <summary>
+        /// Кнопка для перехода к новому окну, для изменения данных выбранного пользователя
+        /// </summary>
+        private void ChangeInfoButton_Click(object sender, EventArgs e)
+        {
+            if (ReaderListView.SelectedItems.Count >0)
+            {
+                ListViewItem selectedItem = ReaderListView.SelectedItems[0];
+                using (ChangeReaderForm crf = new ChangeReaderForm(selectedItem, _bookView, _readerView, _loanView)) 
+                {
+                    crf.ShowDialog();
+                }
+            }
+        }
+
     }
 }

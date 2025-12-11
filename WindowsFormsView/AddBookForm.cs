@@ -8,16 +8,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using BusinessLogic;
 
 namespace WindowsFormsView
 {
     public partial class AddBookForm : Form
     {
-        private IBookService bookService;
-        public AddBookForm(IBookService bookService)
+        private readonly BookView _bookView;
+        public AddBookForm(BookView bookView)
         {
-            this.bookService = bookService;
+            _bookView = bookView;
             InitializeComponent();
         }
 
@@ -32,7 +31,7 @@ namespace WindowsFormsView
                 MessageBox.Show("Пожалуйста, заполните все поля.");
                 return;
             }
-            bookService.AddBook(bookTitle, bookAuthor, bookGenre);
+            bookView.Tri
             var books = bookService.GetAllBooks().ToList();
 
             Form1 mainForm = Application.OpenForms.OfType<Form1>().FirstOrDefault();

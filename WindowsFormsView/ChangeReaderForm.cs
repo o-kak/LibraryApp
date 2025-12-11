@@ -7,16 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Model;
-using BusinessLogic;
 
 namespace WindowsFormsView
 {
     public partial class ChangeReaderForm : Form
     {
-        private IBookService bookService;
-        private IReaderService readerService;
-        private ILoan loanService;
+        
+
         private int currentID;
         public ChangeReaderForm(ListViewItem item, IBookService bookService, IReaderService readerService, ILoan loanService)
         {
