@@ -26,6 +26,7 @@ namespace WindowsFormsView
         {
             InitializeComponent();
             InitializeViews();
+            StartDataLoading();
             
         }
         public void InitializeViews() 
@@ -33,6 +34,12 @@ namespace WindowsFormsView
             _bookView = new BookView(this);
             _readerView = new ReaderView(this);
             _loanView = new LoanView(this);
+        }
+
+        private void StartDataLoading()
+        {
+            _bookView.Start(); 
+            _readerView.Start();
         }
 
 
@@ -46,6 +53,7 @@ namespace WindowsFormsView
         /// <param name="readers">список читателей</param>
         public void RedrawReader(IEnumerable<EventArgs> readerEventArgs)
         {
+            ReaderListView.BeginUpdate();
             var readerEvents = readerEventArgs.OfType<ReaderEventArgs>();
 
             if (ReaderListView.InvokeRequired)
@@ -54,7 +62,6 @@ namespace WindowsFormsView
                 return;
             }
 
-            ReaderListView.BeginUpdate();
             ReaderListView.Items.Clear();
 
             foreach (var readerEvent in readerEvents)
@@ -110,13 +117,13 @@ namespace WindowsFormsView
         /// <param name="books">список книг</param>
         public void RedrawBook(IEnumerable<EventArgs> bookEventArgs)
         {
+            BookListView.BeginUpdate();
             var bookEvents = bookEventArgs.OfType<BookEventArgs>();
             if (BookListView.InvokeRequired)
             {
                 BookListView.Invoke(new Action(() => RedrawBook(bookEventArgs)));
                 return;
             }
-            BookListView.BeginUpdate();
             BookListView.Items.Clear();
 
             foreach (var bookEvent in bookEvents)
@@ -218,6 +225,7 @@ namespace WindowsFormsView
         /// <param name="e"></param>
         private void GenreComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            
             string genre = GenreComboBox1.SelectedItem?.ToString();
             if (string.IsNullOrEmpty(genre))
             {

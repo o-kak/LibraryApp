@@ -78,25 +78,21 @@ namespace Presenter
             ReaderService winFormsReaderService = ninjectKernel.Get<ReaderService>();
             LoanService winFormsLoanService = ninjectKernel.Get<LoanService>();
 
-            // Запускаем WinForms приложение
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
-            // Создаем главную форму
             var form1 = new Form1();
 
-            // Получаем View из формы
             var bookView = form1._bookView; 
             var readerView = form1._readerView; 
             var loanView = form1._loanView; 
 
-            // Создаем Presenter'ы и связываем их с View
             var bookPresenter = new BookPresenter(winFormsBookService, bookView);
             var readerPresenter = new ReaderPresenter(winFormsReaderService, readerView, winFormsLoanService);
             var loanPresenter = new LoanPresenter(winFormsLoanService, loanView, winFormsBookService);
 
-            // Запускаем приложение
             System.Windows.Forms.Application.Run(form1);
+    
         }
     }
 }
