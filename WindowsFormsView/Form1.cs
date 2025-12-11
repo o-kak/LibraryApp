@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Ninject;
+using Shared;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,11 +9,9 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ninject;
-using Shared;
-
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace WindowsFormsView
@@ -22,12 +22,29 @@ namespace WindowsFormsView
         public ReaderView _readerView;
         public LoanView _loanView;
 
+        private StatusStrip _statusStrip;
+        private ToolStripStatusLabel _statusLabel;
+        private ToolStripProgressBar _progressBar;
+
         public Form1()
         {
             InitializeComponent();
+            InitializeStatusBar();
             InitializeViews();
             StartDataLoading();
             
+        }
+        private void InitializeStatusBar()
+        {
+            _statusStrip = new StatusStrip();
+            _statusLabel = new ToolStripStatusLabel("Инициализация...");
+            _progressBar = new ToolStripProgressBar();
+            _progressBar.Style = ProgressBarStyle.Marquee; // Бегущая строка
+
+            _statusStrip.Items.Add(_statusLabel);
+            _statusStrip.Items.Add(_progressBar);
+
+            this.Controls.Add(_statusStrip);
         }
         public void InitializeViews() 
         {
@@ -38,8 +55,38 @@ namespace WindowsFormsView
 
         private void StartDataLoading()
         {
-            _bookView.Start(); 
-            _readerView.Start();
+            UpdateStatus("Начало загрузки данных...");
+            Task.Run(() =>
+            {
+                UpdateStatus("Загрузка книг...");
+                _bookView.Start();
+
+
+                Thread.Sleep(100);
+                UpdateStatus("Загрузка читателей...");
+                _readerView.Start();
+
+
+                UpdateStatus("Данные загружены");
+                Thread.Sleep(500); 
+                UpdateStatus("Готово");
+
+                this.Invoke(new Action(() => _progressBar.Visible = false));
+            });
+        }
+
+        private void UpdateStatus(string message)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => UpdateStatus(message)));
+            }
+            else
+            {
+                _statusLabel.Text = message;
+                Application.DoEvents(); // Принудительно обновляем UI
+                Console.WriteLine($"[STATUS] {message}"); // Также пишем в консоль
+            }
         }
 
 
