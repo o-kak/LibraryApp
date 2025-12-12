@@ -182,7 +182,7 @@ namespace ConsoleView
             if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= books.Count)
             {
                 Console.WriteLine("\nКнига удалена!");
-                DeleteDataEvent?.Invoke(choice);
+                DeleteDataEvent?.Invoke(books[choice - 1].Id);
             }
             else
             {

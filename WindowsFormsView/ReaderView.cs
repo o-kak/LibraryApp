@@ -26,7 +26,6 @@ namespace WindowsFormsView
         public void Start() 
         {
             TriggerStartup();
-
         }
 
         public void Redraw(IEnumerable<EventArgs> data)

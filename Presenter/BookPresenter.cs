@@ -53,6 +53,7 @@ namespace Presenter
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,
+                    ReaderId = book.ReaderId,
                 });
             }
             View.Redraw(args);
@@ -89,6 +90,7 @@ namespace Presenter
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,
+                    ReaderId = book.ReaderId,
                 });
             }
             View.Redraw(args);
@@ -110,6 +112,7 @@ namespace Presenter
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,
+                    ReaderId= book.ReaderId,
                 });
             }
             View.Redraw(args);
@@ -130,6 +133,7 @@ namespace Presenter
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,
+                    ReaderId = book.ReaderId,
                 });
             }
             View.Redraw(args);
@@ -150,6 +154,7 @@ namespace Presenter
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,
+                    ReaderId = book.ReaderId,
                 });
             }
             View.Redraw(args);
