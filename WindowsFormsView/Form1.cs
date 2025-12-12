@@ -116,12 +116,53 @@ namespace WindowsFormsView
                 ListViewItem item = new ListViewItem(readerEvent.Name);
                 item.SubItems.Add(readerEvent.Address);
                 item.SubItems.Add(readerEvent.Id.ToString());
+                item.SubItems.Add("");
 
                 item.Tag = readerEvent.Id;
 
                 ReaderListView.Items.Add(item);
+                _readerView.TriggerGetBorrowedBooks(readerEvent.Id);
             }
             ReaderListView.EndUpdate();
+        }
+
+        public void ShowBorrowedBooksDialog(IEnumerable<BookEventArgs> books)
+        {
+            if (ReaderListView.InvokeRequired)
+            {
+                ReaderListView.Invoke(new Action(() => ShowBorrowedBooksDialog(books)));
+                return;
+            }
+            foreach (var book in books) 
+            {
+                    Console.WriteLine($"{book.Title} — {book.Author} - {book.ReaderId}");
+               
+            }
+            var firstBookWithReaderId = books.FirstOrDefault(b => b.ReaderId.HasValue);
+
+            if (firstBookWithReaderId == null)
+            {
+                return;
+            }
+
+            int readerId = firstBookWithReaderId.ReaderId.Value;
+
+            if (books != null && books.Any())
+            {
+                var bookTitles = books.Select(b => b.Title).ToList();
+                string booksText;
+                booksText = string.Join(", ", bookTitles);
+                foreach (ListViewItem item in ReaderListView.Items)
+                {
+                    
+                    if (item.Tag is int id && id == readerId)
+                    {
+                        item.SubItems[3].Text = booksText;
+
+                        break;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -200,18 +241,7 @@ namespace WindowsFormsView
                 var selectedItem = BookListView.SelectedItems[0];
                 if (selectedItem.Tag is int bookId)
                 {
-                    var result = MessageBox.Show("Вы уверены, что хотите удалить книгу?",
-                                                "Подтверждение удаления",
-                                                MessageBoxButtons.YesNo,
-                                                MessageBoxIcon.Question);
-                    if (result == DialogResult.Yes)
-                    {
-                        _bookView.TriggerDeleteData(bookId);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Книга не найдена.");
-                    }
+                    _bookView.TriggerDeleteData(bookId);
                 }
             }
             else

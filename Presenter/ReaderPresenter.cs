@@ -137,6 +137,8 @@ namespace Presenter
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,
+                    ReaderId = id
+
                 });
             }
             View.ShowBorrowedBooks(args);

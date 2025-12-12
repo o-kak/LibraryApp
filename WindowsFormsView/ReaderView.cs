@@ -30,6 +30,7 @@ namespace WindowsFormsView
 
         public void Redraw(IEnumerable<EventArgs> data)
         {
+
             var readerEvents = data.OfType<ReaderEventArgs>();
             _form.Invoke(new Action(() => _form.RedrawReader(readerEvents)));
         }
@@ -41,7 +42,7 @@ namespace WindowsFormsView
         public void ShowBorrowedBooks(IEnumerable<EventArgs> books)
         {
             var bookEvents = books.OfType<BookEventArgs>();
-            //_form.Invoke(new Action(() => _form.ShowBorrowedBooksDialog(bookEvents)));
+            _form.Invoke(new Action(() => _form.ShowBorrowedBooksDialog(bookEvents)));
         }
 
         public void TriggerAddData(EventArgs data)
