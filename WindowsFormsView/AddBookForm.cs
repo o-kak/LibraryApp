@@ -21,6 +21,9 @@ namespace WindowsFormsView
             InitializeComponent();
         }
 
+        /// <summary>
+        ///  Кнопка, сохраняющая информацию о новой книге
+        /// </summary>
         private void Button1_Click(object sender, EventArgs e)
         {
             string bookTitle = this.TitleText.Text;

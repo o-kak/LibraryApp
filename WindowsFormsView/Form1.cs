@@ -34,6 +34,10 @@ namespace WindowsFormsView
             StartDataLoading();
             
         }
+
+        /// <summary>
+        /// Инициализирует строку состояния и индикатор прогресса
+        /// </summary>
         private void InitializeStatusBar()
         {
             _statusStrip = new StatusStrip();
@@ -46,6 +50,10 @@ namespace WindowsFormsView
 
             this.Controls.Add(_statusStrip);
         }
+
+        /// <summary>
+        /// Инициализирует представления для работы с книгами, читателями и выдачами
+        /// </summary>
         public void InitializeViews() 
         {
             _bookView = new BookView(this);
@@ -53,6 +61,9 @@ namespace WindowsFormsView
             _loanView = new LoanView(this);
         }
 
+        /// <summary>
+        /// Запускает асинхронную загрузку данных с отображением прогресса
+        /// </summary>
         private void StartDataLoading()
         {
             UpdateStatus("Начало загрузки данных...");
@@ -75,6 +86,10 @@ namespace WindowsFormsView
             });
         }
 
+        /// <summary>
+        /// Обновляет текст в строке состояния
+        /// </summary>
+        /// <param name="message">Сообщение для отображения</param>
         private void UpdateStatus(string message)
         {
             if (this.InvokeRequired)
@@ -126,6 +141,10 @@ namespace WindowsFormsView
             ReaderListView.EndUpdate();
         }
 
+        /// <summary>
+        /// Отображает список взятых книг для выбранного читателя в соответствующей колонке таблицы
+        /// </summary>
+        /// <param name="books">Коллекция книг, взятых читателем</param>
         public void ShowBorrowedBooksDialog(IEnumerable<BookEventArgs> books)
         {
             if (ReaderListView.InvokeRequired)
@@ -246,7 +265,6 @@ namespace WindowsFormsView
             {
                 MessageBox.Show("Пожалуйста, выберите элемент для удаления.");
             }
-
         }
 
         /// <summary>
@@ -291,6 +309,10 @@ namespace WindowsFormsView
 
         }
 
+        /// <summary>
+        /// Заполняет комбобоксы авторами и жанрами на основе предоставленного списка книг
+        /// </summary>
+        /// <param name="books">Коллекция книг для извлечения уникальных авторов и жанров</param>
         private void FillComboBoxesWithAuthorsAndGenres(IEnumerable<BookEventArgs> books) 
         {
                                     
@@ -373,6 +395,10 @@ namespace WindowsFormsView
             }
         }
 
+        /// <summary>
+        /// Отображает профиль читателя на основе переданных данных
+        /// </summary>
+        /// <param name="reader">Данные читателя для отображения</param>
         public void ShowReaderProfileDialog(ReaderEventArgs reader) 
         {
 

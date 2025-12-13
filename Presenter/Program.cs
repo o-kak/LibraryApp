@@ -91,8 +91,7 @@ namespace Presenter
             var readerPresenter = new ReaderPresenter(winFormsReaderService, readerView, winFormsLoanService);
             var loanPresenter = new LoanPresenter(winFormsLoanService, loanView, winFormsBookService);
 
-            System.Windows.Forms.Application.Run(form1);
-    
+            System.Windows.Forms.Application.Run(form1);    
         }
     }
 }

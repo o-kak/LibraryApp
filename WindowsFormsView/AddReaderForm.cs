@@ -25,6 +25,9 @@ namespace WindowsFormsView
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Метод создающий нового пользователя
+        /// </summary>
         private void SaveReaderButton_Click(object sender, EventArgs e)
         {
             
@@ -47,7 +50,6 @@ namespace WindowsFormsView
             _loanView.ShowMessage($"Читатель '{readerName}' успешно добавлен.");
             this.DialogResult = DialogResult.OK;
             this.Close();
-
         }
     }
 }

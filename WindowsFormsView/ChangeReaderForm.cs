@@ -42,18 +42,27 @@ namespace WindowsFormsView
             _loanView.TriggerGetReadersBorrowedBooks(currentID);
         }
 
+        /// <summary>
+        /// Метод обновляющий список доступных книг, для отображения в ЛистЧекБокс для взятия книг
+        /// </summary>
         public void UpdateAllBooks(IEnumerable<EventArgs> books) 
         {
             _allBooks = books.OfType<BookEventArgs>().ToList();
             UpdateBorrowBooksListBox();
         }
 
+        /// <summary>
+        /// Метод обновляющий список книг взятых пользователем, для отображения в ЛистЧекБокс для возврата книг
+        /// </summary>
         public void UpdateReaderBooks(IEnumerable<EventArgs> books)
         {
             _borrowedBooks = books.OfType<BookEventArgs>().ToList();
             UpdateReturnBooksListBox();
         }
 
+        /// <summary>
+        /// Метод добавляющий доступные книги в ЛистЧекБокс для взятия книг 
+        /// </summary>
         private void UpdateBorrowBooksListBox() 
         {
             if (BorrowBookCheckedListBox.InvokeRequired)
@@ -81,6 +90,10 @@ namespace WindowsFormsView
                 ReturnBookscheckedListBox1.Enabled = true;
             }
         }
+
+        /// <summary>
+        /// Метод добавляющий книги пользователя в ЛистЧекБокс для возварата книг 
+        /// </summary>
         private void UpdateReturnBooksListBox()
         {
             if (ReturnBookscheckedListBox1.InvokeRequired)
@@ -137,6 +150,10 @@ namespace WindowsFormsView
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
+        /// <summary>
+        /// Метод, который для каждого ЛистЧекБокса либо возвращает книги, либо дает книги читателю
+        /// </summary>
         private void ProcessBookOperations() 
         {
 
