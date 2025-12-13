@@ -214,6 +214,8 @@ namespace WindowsFormsView
             }
             BookListView.Items.Clear();
 
+            FillComboBoxesWithAuthorsAndGenres(bookEvents);
+
             foreach (var bookEvent in bookEvents)
             {
                 ListViewItem b_item = new ListViewItem(bookEvent.Title);
@@ -226,6 +228,7 @@ namespace WindowsFormsView
                 }
 
                 b_item.SubItems.Add(readerName);
+                b_item.Tag = bookEvent.Id;
                 BookListView.Items.Add(b_item);
             }
             BookListView.EndUpdate();
@@ -295,6 +298,29 @@ namespace WindowsFormsView
 
         }
 
+        private void FillComboBoxesWithAuthorsAndGenres(IEnumerable<BookEventArgs> books) 
+        {
+                                    
+            var selectedGenre = GenreComboBox1.SelectedItem?.ToString();
+            var selectedAuthor = AuthorComboBox2.SelectedItem?.ToString();
+
+            GenreComboBox1.Items.Clear();
+            AuthorComboBox2.Items.Clear();
+
+            var genres = books.Select(b => b.Genre).Distinct().Where(g => !string.IsNullOrWhiteSpace(g)).OrderBy(g => g);
+            var authors = books.Select(b => b.Author).Distinct().Where(a => !string.IsNullOrWhiteSpace(a)).OrderBy(a => a);
+
+            foreach (var genre in genres)
+            {
+                GenreComboBox1.Items.Add(genre);
+            }
+
+            foreach (var author in authors)
+            {
+                AuthorComboBox2.Items.Add(author);
+            }
+        }
+
         /// <summary>
         /// при выборе жанра в комбобокс происходит фильтрация книг по жанру
         /// </summary>
@@ -332,6 +358,8 @@ namespace WindowsFormsView
 
         //-------------------------------------------------------------------------КНОПКИ ДЛЯ ПЕРЕХОДА НА ДРУГИЕ ОКНА-----------------------------------------------------
 
+
+        
 
         /// <summary>
         /// Кнопка, для открытия окна для создания нового читателя
