@@ -71,6 +71,7 @@ namespace Presenter
             book.Title = args.Title;
             book.Author = args.Author;
             book.Genre = args.Genre;
+            book.IsAvailable = true;
             BookLogic.Add(book);
         }
 
@@ -91,6 +92,7 @@ namespace Presenter
                     Author = book.Author,
                     Genre = book.Genre,
                     ReaderId = book.ReaderId,
+                    IsAvailable = book.IsAvailable,
                 });
             }
             View.Redraw(args);
@@ -113,6 +115,7 @@ namespace Presenter
                     Author = book.Author,
                     Genre = book.Genre,
                     ReaderId= book.ReaderId,
+                    IsAvailable = book.IsAvailable,
                 });
             }
             View.Redraw(args);
@@ -134,6 +137,7 @@ namespace Presenter
                     Author = book.Author,
                     Genre = book.Genre,
                     ReaderId = book.ReaderId,
+                    IsAvailable = book.IsAvailable,
                 });
             }
             View.Redraw(args);
@@ -155,6 +159,7 @@ namespace Presenter
                     Author = book.Author,
                     Genre = book.Genre,
                     ReaderId = book.ReaderId,
+                    IsAvailable = book.IsAvailable,
                 });
             }
             View.Redraw(args);
