@@ -18,7 +18,10 @@ namespace WindowsFormsView
         private readonly LoanView _loanView;
 
         private int currentID;
+        private List<BookEventArgs> _allBooks = new List<BookEventArgs>();
         private List<BookEventArgs> _borrowedBooks = new List<BookEventArgs>();
+
+        public static ChangeReaderForm CurrentInstance { get; private set; }
 
         public ChangeReaderForm(ListViewItem item, BookView bookService, ReaderView readerService, LoanView loanService)
         {
@@ -26,20 +29,81 @@ namespace WindowsFormsView
             _bookView = bookService;
             _readerView = readerService;
             _loanView = loanService;
+
             InitializeComponent();
+
             NeedToUpdateNameTextBox.Text = item.SubItems[0].Text;
             NeedToUpdateAdressTextBox.Text = item.SubItems[1].Text;
             currentID = int.Parse(item.SubItems[2].Text);
-            LoadBorrowedBooks();
+
+            CurrentInstance = this;
+
+            _loanView.TriggerGetAvailableBooks();
+            _loanView.TriggerGetReadersBorrowedBooks(currentID);
         }
 
-        private void LoadBorrowedBooks()
+        public void UpdateAllBooks(IEnumerable<EventArgs> books) 
         {
-            ReturnOrBorrowBookCheckedListBox.Items.Clear();
-            ReturnOrBorrowBookCheckedListBox.Items.Add("Загрузка книг...");
+            _allBooks = books.OfType<BookEventArgs>().ToList();
+            UpdateBorrowBooksListBox();
+        }
 
-            // Запрашиваем книги читателя через LoanView
-            _loanView.TriggerGetReadersBorrowedBooks(currentID);
+        public void UpdateReaderBooks(IEnumerable<EventArgs> books)
+        {
+            _borrowedBooks = books.OfType<BookEventArgs>().ToList();
+            UpdateReturnBooksListBox();
+        }
+
+        private void UpdateBorrowBooksListBox() 
+        {
+            if (BorrowBookCheckedListBox.InvokeRequired)
+            {
+                BorrowBookCheckedListBox.Invoke(new Action(() => UpdateBorrowBooksListBox()));
+                return;
+            }
+
+            BorrowBookCheckedListBox.Items.Clear();
+            foreach (var book in _allBooks) 
+            {
+                if (!_borrowedBooks.Any(b => b.Id == book.Id))
+                {
+                    BorrowBookCheckedListBox.Items.Add(book.Title, false);
+                }
+            }
+
+            if (_allBooks.Count == 0)
+            {
+                BorrowBookCheckedListBox.Items.Add("Нет книг в библиотеке");
+                ReturnBookscheckedListBox1.Enabled = false;
+            }
+            else 
+            {
+                ReturnBookscheckedListBox1.Enabled = true;
+            }
+        }
+        private void UpdateReturnBooksListBox()
+        {
+            if (ReturnBookscheckedListBox1.InvokeRequired)
+            {
+                ReturnBookscheckedListBox1.Invoke(new Action(() => UpdateReturnBooksListBox()));
+                return;
+            }
+
+            ReturnBookscheckedListBox1.Items.Clear();
+            foreach (var book in _borrowedBooks)
+            {
+                ReturnBookscheckedListBox1.Items.Add(book.Title, false);
+            }
+
+            if (ReturnBookscheckedListBox1.Items.Count == 0)
+            {
+                ReturnBookscheckedListBox1.Items.Add("Нет книг для возврата");
+                ReturnBookscheckedListBox1.Enabled = false;
+            }
+            else
+            {
+                ReturnBookscheckedListBox1.Enabled = true;
+            }
         }
 
         /// <summary>
@@ -66,31 +130,49 @@ namespace WindowsFormsView
                 Address = newAddress
             };
 
+            ProcessBookOperations();
             _readerView.TriggerUpdateData(readerEventArgs);
-            ProcessBookReturns();
-
-
+            
             _loanView.ShowMessage("Информация о читателе успешно обновлена!");
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
-
-        private void ProcessBookReturns()
+        private void ProcessBookOperations() 
         {
 
-            for (int i = 0; i < ReturnOrBorrowBookCheckedListBox.Items.Count; i++)
+            for (int i = 0; i < ReturnBookscheckedListBox1.Items.Count; i++)
             {
-                if (ReturnOrBorrowBookCheckedListBox.Items[i] is BookEventArgs book)
-                {
-                    bool isChecked = ReturnOrBorrowBookCheckedListBox.GetItemChecked(i);
+                if (ReturnBookscheckedListBox1.Items[i].ToString() == "Нет книг для возврата")
+                    continue;
 
-                    if (!isChecked)
+                if (ReturnBookscheckedListBox1.GetItemChecked(i))
+                {
+                    string bookTitle = ReturnBookscheckedListBox1.Items[i].ToString();
+                    var book = _borrowedBooks.FirstOrDefault(b => b.Title == bookTitle);
+
+                    if (book != null)
                     {
                         _loanView.TriggerReturnBook(book.Id, currentID);
                     }
                 }
             }
-        }
 
+            for (int i = 0; i < BorrowBookCheckedListBox.Items.Count; i++)
+            {
+                if (BorrowBookCheckedListBox.Items[i].ToString() == "Нет книг в библиотеке")
+                    continue;
+
+                if (BorrowBookCheckedListBox.GetItemChecked(i))
+                {
+                    string bookTitle = BorrowBookCheckedListBox.Items[i].ToString();
+                    var book = _allBooks.FirstOrDefault(b => b.Title == bookTitle);
+
+                    if (book != null)
+                    {
+                        _loanView.TriggerGiveBook(book.Id, currentID);
+                    }
+                }
+            }
+        }
     }
 }

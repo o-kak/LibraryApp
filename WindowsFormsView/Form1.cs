@@ -39,7 +39,7 @@ namespace WindowsFormsView
             _statusStrip = new StatusStrip();
             _statusLabel = new ToolStripStatusLabel("Инициализация...");
             _progressBar = new ToolStripProgressBar();
-            _progressBar.Style = ProgressBarStyle.Marquee; // Бегущая строка
+            _progressBar.Style = ProgressBarStyle.Marquee; 
 
             _statusStrip.Items.Add(_statusLabel);
             _statusStrip.Items.Add(_progressBar);
@@ -84,8 +84,8 @@ namespace WindowsFormsView
             else
             {
                 _statusLabel.Text = message;
-                Application.DoEvents(); // Принудительно обновляем UI
-                Console.WriteLine($"[STATUS] {message}"); // Также пишем в консоль
+                Application.DoEvents(); 
+                Console.WriteLine($"[STATUS] {message}"); 
             }
         }
 
@@ -132,11 +132,6 @@ namespace WindowsFormsView
             {
                 ReaderListView.Invoke(new Action(() => ShowBorrowedBooksDialog(books)));
                 return;
-            }
-            foreach (var book in books) 
-            {
-                    Console.WriteLine($"{book.Title} — {book.Author} - {book.ReaderId}");
-               
             }
             var firstBookWithReaderId = books.FirstOrDefault(b => b.ReaderId.HasValue);
 
@@ -266,8 +261,6 @@ namespace WindowsFormsView
             _bookView.TriggerStartup();
         }
 
-
-
         /// <summary>
         /// показать доступные книги
         /// </summary>
@@ -357,16 +350,13 @@ namespace WindowsFormsView
 
 
         //-------------------------------------------------------------------------КНОПКИ ДЛЯ ПЕРЕХОДА НА ДРУГИЕ ОКНА-----------------------------------------------------
-
-
         
-
         /// <summary>
         /// Кнопка, для открытия окна для создания нового читателя
         /// </summary>
         private void AddReaderButton_Click(object sender, EventArgs e)
         {
-            using (AddReaderForm arf = new AddReaderForm(_bookView, _readerView, _loanView))
+            using (AddReaderForm arf = new AddReaderForm(_readerView, _loanView))
             {
                 arf.ShowDialog();
             }
@@ -382,19 +372,53 @@ namespace WindowsFormsView
                 abf.ShowDialog();
             }
         }
-        
+
+        public void ShowReaderProfileDialog(ReaderEventArgs reader) 
+        {
+
+            if (reader == null || reader.Id == 0)
+            {
+                MessageBox.Show("Не удалось загрузить данные читателя.");
+                return;
+            }
+
+            ListViewItem readerItem = null;
+            foreach (ListViewItem item in ReaderListView.Items)
+            {
+                if (item.Tag is int id && id == reader.Id)
+                {
+                    readerItem = item;
+                    break;
+                }
+            }
+
+            if (ReaderListView.SelectedItems.Count > 0)
+            {
+                ListViewItem selectedItem = ReaderListView.SelectedItems[0];
+                using (ChangeReaderForm crf = new ChangeReaderForm(selectedItem, _bookView, _readerView, _loanView))
+                {
+                    crf.ShowDialog();
+                }
+            }
+        }
+
         /// <summary>
         /// Кнопка для перехода к новому окну, для изменения данных выбранного пользователя
         /// </summary>
         private void ChangeInfoButton_Click(object sender, EventArgs e)
         {
-            if (ReaderListView.SelectedItems.Count >0)
+            if (ReaderListView.SelectedItems.Count > 0)
             {
                 ListViewItem selectedItem = ReaderListView.SelectedItems[0];
-                using (ChangeReaderForm crf = new ChangeReaderForm(selectedItem, _bookView, _readerView, _loanView)) 
+
+                if (selectedItem.Tag is int readerId)
                 {
-                    crf.ShowDialog();
+                    _readerView.TriggerReadById(readerId);
                 }
+            }
+            else
+            {
+                MessageBox.Show("Пожалуйста, выберите читателя.");
             }
         }
 

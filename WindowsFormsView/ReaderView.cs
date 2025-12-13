@@ -36,7 +36,7 @@ namespace WindowsFormsView
         }
         public void ShowReaderProfile(ReaderEventArgs reader)
         {
-            //_form.Invoke(new Action(() => _form.ShowReaderProfileDialog(reader)));
+            _form.Invoke(new Action(() => _form.ShowReaderProfileDialog(reader)));
         }
 
         public void ShowBorrowedBooks(IEnumerable<EventArgs> books)

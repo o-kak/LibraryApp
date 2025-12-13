@@ -24,12 +24,18 @@ namespace WindowsFormsView
         public void ShowReadersBorrowedBooks(IEnumerable<EventArgs> books) 
         {
             var bookEvents = books.OfType<BookEventArgs>();
-            //_form.Invoke(new Action(() => _form.ShowBorrowedBooksDialog(bookEvents)));
+            if (ChangeReaderForm.CurrentInstance != null && !ChangeReaderForm.CurrentInstance.IsDisposed)
+            {
+                _form.Invoke(new Action(() => ChangeReaderForm.CurrentInstance.UpdateReaderBooks(books)));
+            }
         }
         public void ShowAvailableBooks(IEnumerable<EventArgs> books)
         {
             var bookEvents = books.OfType<BookEventArgs>();
-            //_form.Invoke(new Action(() => _form.ShowAvailableBooksDialog(bookEvents)));
+            if(ChangeReaderForm.CurrentInstance != null && !ChangeReaderForm.CurrentInstance.IsDisposed)
+    {
+                _form.Invoke(new Action(() => ChangeReaderForm.CurrentInstance.UpdateAllBooks(books)));
+            }
         }
         public void ShowMessage(string message)
         {
