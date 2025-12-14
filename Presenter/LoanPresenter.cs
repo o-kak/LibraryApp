@@ -43,7 +43,7 @@ namespace Presenter
                     Title = book.Title,
                     Author = book.Author,
                     Genre = book.Genre,
-                });
+                });                                                             у 
                 LoanView.ShowReadersBorrowedBooks(args);
             }
         }
