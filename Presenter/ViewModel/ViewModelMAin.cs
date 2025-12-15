@@ -1,4 +1,5 @@
 ﻿using BusinessLogic;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +57,8 @@ namespace Presenter.ViewModel
             ShowLoanCommand = new RelayCommand(() => ShowLoans());
            
         }
+
+        
 
         private void ShowBooks() 
         {
