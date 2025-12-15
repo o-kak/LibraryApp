@@ -16,10 +16,13 @@ namespace Presenter.ViewModel
     {
         private readonly IBookService _bookService;
         private BindingList<BookEventArgs> _books;
+
+        private BookEventArgs _selectedBook;
+
         private string _newBookTitle;
         private string _newBookAuthor;
         private string _newBookGenre;
-        private BookEventArgs _selectedBook;
+
         private string _searchAuthor;
         private string _searchGenre;
 
@@ -72,6 +75,9 @@ namespace Presenter.ViewModel
         public ICommand LoadBooksCommand { get; }
         public ICommand DeleteBookCommand { get; }
         public ICommand AddBookCommand { get; }
+
+        public ICommand GetBorrowedBooks { get; }
+        public ICommand GetAvailableBooks { get; }
         public ICommand FilterByAuthorCommand { get; }
         public ICommand FilterByGenreCommand { get; }
 
@@ -82,14 +88,14 @@ namespace Presenter.ViewModel
 
             LoadBooksCommand = new RelayCommand(LoadBooks);
             DeleteBookCommand = new RelayCommand(DeleteBook, () => SelectedBook != null);
-            AddBookCommand = new RelayCommand(AddBook, CanAddBook);
+            AddBookCommand = new RelayCommand(AddBook);
             FilterByAuthorCommand = new RelayCommand(FilterByAuthor);
             FilterByGenreCommand = new RelayCommand(FilterByGenre);
 
             LoadBooks();
         }
 
-        // Конвертация Model -> BookEventArgs (DTO)
+
         private BookEventArgs ConvertToEventArgs(Book model)
         {
             return new BookEventArgs
@@ -103,21 +109,7 @@ namespace Presenter.ViewModel
             };
         }
 
-        // Конвертация BookEventArgs (DTO) -> Model
-        private Book ConvertToModel(BookEventArgs dto)
-        {
-            return new Book
-            {
-                Id = dto.Id,
-                Title = dto.Title,
-                Author = dto.Author,
-                Genre = dto.Genre,
-                IsAvailable = dto.IsAvailable,
-                ReaderId = dto.ReaderId
-            };
-        }
-
-        private void LoadBooks()
+        private void LoadBooks() 
         {
             var availableBooks = _bookService.GetAvailableBooks();
             var borrowedBooks = _bookService.GetBorrowedBooks();
@@ -128,19 +120,39 @@ namespace Presenter.ViewModel
             {
                 Books.Add(ConvertToEventArgs(book));
             }
+
         }
 
-        private void DeleteBook()
+        private void AddBook()
         {
-            if (SelectedBook != null)
+            Book book = new Book();
+            book.Id = 0;
+            book.Title = NewBookTitle.Trim();
+            book.Author = NewBookAuthor.Trim();
+            book.Genre = NewBookGenre.Trim();
+            book.IsAvailable = true;
+            _bookService.Add(book);
+
+            var newDto = ConvertToEventArgs(book);
+            Books.Add(newDto);
+
+            NewBookTitle = string.Empty;
+            NewBookAuthor = string.Empty;
+            NewBookGenre = string.Empty;
+        }
+
+        private void DeleteBook() 
+        {
+            if (SelectedBook != null) 
             {
                 _bookService.Delete(SelectedBook.Id);
                 Books.Remove(SelectedBook);
                 SelectedBook = null;
             }
+
         }
 
-        private void FilterByAuthor()
+        private void FilterByAuthor() 
         {
             if (!string.IsNullOrEmpty(SearchAuthor))
             {
@@ -153,7 +165,7 @@ namespace Presenter.ViewModel
             }
         }
 
-        private void FilterByGenre()
+        private void FilterByGenre() 
         {
             if (!string.IsNullOrEmpty(SearchGenre))
             {
@@ -164,41 +176,8 @@ namespace Presenter.ViewModel
                     Books.Add(ConvertToEventArgs(book));
                 }
             }
+
         }
 
-        private void AddBook()
-        {
-            if (!CanAddBook())
-            {
-                return;
-            }
-
-            var newBook = new Book
-            {
-                Title = NewBookTitle.Trim(),
-                Author = NewBookAuthor.Trim(),
-                Genre = NewBookGenre.Trim(),
-                IsAvailable = true
-            };
-
-            _bookService.Add(newBook);
-
-            // Добавляем в коллекцию
-            var newDto = ConvertToEventArgs(newBook);
-            Books.Add(newDto);
-
-            // Очищаем поля
-            NewBookTitle = string.Empty;
-            NewBookAuthor = string.Empty;
-            NewBookGenre = string.Empty;
-        }
-
-
-        private bool CanAddBook()
-        {
-            return !string.IsNullOrWhiteSpace(NewBookTitle) &&
-                   !string.IsNullOrWhiteSpace(NewBookAuthor) &&
-                   !string.IsNullOrWhiteSpace(NewBookGenre);
-        }
     }
 }
