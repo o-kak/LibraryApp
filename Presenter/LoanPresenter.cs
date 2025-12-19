@@ -82,8 +82,8 @@ namespace Presenter
         /// <summary>
         /// вернуть книгу
         /// </summary>
-        /// <param name="readerId"></param>
-        /// <param name="bookId"></param>
+        /// <param name="readerId">айди читателя который хочет вернуть книгу</param>
+        /// <param name="bookId">айди книги которую хотят вернуть</param>
         public void ReturnBook(int readerId, int bookId)
         {
             LoanLogic.ReturnBook(readerId, bookId);

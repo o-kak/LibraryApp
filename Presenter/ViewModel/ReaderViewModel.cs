@@ -61,6 +61,9 @@ namespace Presenter.ViewModel
             }
         }
         public bool CanUpdateReader => SelectedReader != null;
+        public bool CanDeleteReader => SelectedReader != null;
+        public bool CanAddReader => !string.IsNullOrWhiteSpace(NewReaderName) &&
+                                    !string.IsNullOrWhiteSpace(NewReaderAddress);
 
         public ICommand LoadReadersCommand { get; }
         public ICommand DeleteReaderCommand { get; }
@@ -68,19 +71,21 @@ namespace Presenter.ViewModel
         public ICommand UpdateReaderCommand { get; }
         public ICommand ShowReaderProfileCommand { get; }
         public ICommand ShowBorrowedBooksCommand { get; }
-            
-        
 
-        public ReaderViewModel(IReaderService readerService)
+
+
+        public ReaderViewModel(IReaderService readerService, ILoan loanService)
         {
             _readerService = readerService;
+            _loanService = loanService;
+
             Readers = new BindingList<ReaderEventArgs>();
 
-            _readerService.DataChanged += OnInitialDataLoad;
+            _readerService.DataChanged += OnReaderDataChanged;
             _readerService.InvokeDataChanged();
 
-            LoadReadersCommand = new RelayCommand(LoadReaders);
-            AddReaderCommand = new RelayCommand(AddReader, CanAddReader);
+            LoadReadersCommand = new RelayCommand(() => _readerService.InvokeDataChanged());
+            AddReaderCommand = new RelayCommand(AddReader, () => CanAddReader);
             DeleteReaderCommand = new RelayCommand(DeleteReader, () => SelectedReader != null);
             UpdateReaderCommand = new RelayCommand(UpdateReader, () => SelectedReader != null);
             ShowReaderProfileCommand = new RelayCommand(ShowReaderProfile, () => SelectedReader != null);
@@ -90,32 +95,99 @@ namespace Presenter.ViewModel
         }
 
 
-        private void OnInitialDataLoad(IEnumerable<Reader> readers)
+        private void OnReaderDataChanged(IEnumerable<Reader> readers)
         {
-            if (!_isInitialized)
-            {
-                _isInitialized = true;
-                _readerService.DataChanged -= OnInitialDataLoad; // Отписываемся!
-
-                // Загружаем начальные данные
-                RefreshReaders(readers);
-            }
+            RefreshReaders(readers);
         }
 
         private void RefreshReaders(IEnumerable<Reader> readers)
         {
+            var previousSelectedId = SelectedReader?.Id;
+
             Readers.Clear();
             foreach (var reader in readers)
             {
-                Readers.Add(new ReaderEventArgs
+                var readerDto = new ReaderEventArgs
                 {
                     Id = reader.Id,
                     Name = reader.Name,
                     Address = reader.Address
-                });
+                };
+                Readers.Add(readerDto);
+
             }
         }
 
+        private void AddReader()
+        {
+            if (!CanAddReader) return;
+
+            try
+            {
+                var reader = new Reader
+                {
+                    Id = 0,
+                    Name = NewReaderName.Trim(),
+                    Address = NewReaderAddress.Trim()
+                };
+
+                _readerService.Add(reader);
+                NewReaderName = string.Empty;
+                NewReaderAddress = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage($"Ошибка при добавлении читателя: {ex.Message}");
+
+            }
+        }
+
+        private void DeleteReader()
+        {
+            if (!CanDeleteReader) return;
+
+            var result = ShowConfirmationDialog();
+            if (result == System.Windows.MessageBoxResult.Yes)
+            {
+                try
+                {
+                    _readerService.Delete(SelectedReader.Id);
+                }
+                catch (Exception ex)
+                {
+                    ShowErrorMessage($"Ошибка при удалении читателя: {ex.Message}");
+                }
+            }
+        }
+
+        private void UpdateReader() 
+        {
+            if (!CanUpdateReader) return;
+
+            try
+            {
+                var reader = new Reader
+                {
+                    Id = SelectedReader.Id,
+                    Name = SelectedReader.Name,
+                    Address = SelectedReader.Address
+                };
+                _readerService.Update(reader);
+            }
+            catch (Exception ex) 
+            {
+                ShowErrorMessage($"Ошибка при обновлении читателя: {ex.Message}");
+            }
+        }
+
+        private void ShowReaderProfile() 
+        {
+            if (SelectedReader != null) 
+            {
+
+            }
+
+        }
 
 
     }
