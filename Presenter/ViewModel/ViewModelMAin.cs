@@ -58,20 +58,21 @@ namespace Presenter.ViewModel
            
         }
 
-        
-
-        private void ShowBooks() 
+        private void ShowBooks()
         {
             CurrentViewModel = new BookViewModel(_bookService);
+            View.ViewManager.ShowWindow(bookViewModel);
         }
 
         private void ShowReaders() 
         {
-            CurrentViewModel = new ReaderViewModel(_readerService);
+            CurrentViewModel = new ReaderViewModel(_readerService, _loanService);
+            View.ViewManager.ShowWindow(readerViewModel);
         }
         private void ShowLoans()
         {
             CurrentViewModel = new LoanViewModel(_loanService, _bookService, _readerService);
+            View.ViewManager.ShowWindow(loanViewModel);
         }
 
     }

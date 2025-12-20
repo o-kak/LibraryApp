@@ -31,7 +31,7 @@ namespace Presenter.ViewModel
             set
             {
                 _availableBooks = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(AvailableBooks));
             }
         }
 
@@ -41,7 +41,7 @@ namespace Presenter.ViewModel
             set
             {
                 _readers = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Readers));
             }
         }
 
@@ -51,7 +51,7 @@ namespace Presenter.ViewModel
             set
             {
                 _borrowedBooks = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(BorrowedBooks));
             }
         }
 
@@ -63,7 +63,7 @@ namespace Presenter.ViewModel
                 if (_selectedBookToLoan != value)
                 {
                     _selectedBookToLoan = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SelectedBookToLoan));
                     OnPropertyChanged(nameof(CanGiveBook));
                 }
             }
@@ -77,9 +77,13 @@ namespace Presenter.ViewModel
                 if (_selectedReader != value)
                 {
                     _selectedReader = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SelectedReader));
                     OnPropertyChanged(nameof(CanGiveBook));
-                    LoadReadersBorrowedBooks();
+
+                    if (value != null)
+                    {
+                        LoadReadersBorrowedBooks(value.Id);
+                    }
                 }
             }
         }
@@ -92,18 +96,18 @@ namespace Presenter.ViewModel
                 if (_selectedBookToReturn != value)
                 {
                     _selectedBookToReturn = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SelectedBookToLoan));
                     OnPropertyChanged(nameof(CanReturnBook));
                 }
             }
         }
 
         public bool CanGiveBook => SelectedBookToLoan != null && SelectedReader != null;
-        public bool CanReturnBook => SelectedBookToReturn != null;
+        public bool CanReturnBook => SelectedBookToReturn != null && _selectedBookToReturn.ReaderId.HasValue;
 
         public ICommand GiveBookCommand { get; }
         public ICommand ReturnBookCommand { get; }
-        public ICommand LoadDataCommand { get; }
+        public ICommand StartupCommand { get; }
         public ICommand ClearSelectionCommand { get; }
 
         public LoanViewModel(ILoan loanService, IBookService bookService, IReaderService readerService)
@@ -116,16 +120,14 @@ namespace Presenter.ViewModel
             Readers = new BindingList<ReaderEventArgs>();
             BorrowedBooks = new BindingList<BookEventArgs>();
 
-            // Подписываемся на события изменения данных
-            _bookService.DataChanged += OnBookDataChanged;
             _readerService.DataChanged += OnReaderDataChanged;
 
             GiveBookCommand = new RelayCommand(GiveBook, () => CanGiveBook);
             ReturnBookCommand = new RelayCommand(ReturnBook, () => CanReturnBook);
-            LoadDataCommand = new RelayCommand(LoadData);
+            StartupCommand = new RelayCommand(Startup);
             ClearSelectionCommand = new RelayCommand(ClearSelection);
 
-            LoadData();
+            Startup();
         }
 
         private void OnBookDataChanged(IEnumerable<Book> books)
@@ -136,84 +138,86 @@ namespace Presenter.ViewModel
 
         private void OnReaderDataChanged(IEnumerable<Reader> readers)
         {
-            LoadReaders();
+            LoadReaders(readers.ToList());
         }
 
-        private BookEventArgs ConvertToBookEventArgs(Book book)
+        
+
+        private void Startup()
         {
-            return new BookEventArgs
+            _readerService.InvokeDataChanged();
+        }
+
+        private void LoadReaders(List<Reader> readers)
+        {
+            var dtos = new List<ReaderEventArgs>();
+
+            foreach (var reader in readers.OrderBy(r => r.Name))
             {
-                Id = book.Id,
-                Title = book.Title,
-                Author = book.Author,
-                Genre = book.Genre,
-                IsAvailable = book.IsAvailable,
-                ReaderId = book.ReaderId
-            };
-        }
+                dtos.Add(new ReaderEventArgs
+                {
+                    Id = reader.Id,
+                    Name = reader.Name,
+                    Address = reader.Address
+                });
+            }
 
-        private ReaderEventArgs ConvertToReaderEventArgs(Reader reader)
-        {
-            return new ReaderEventArgs
-            {
-                Id = reader.Id,
-                Name = reader.Name,
-                Address = reader.Address
-            };
-        }
-
-        private void LoadData()
-        {
-            LoadAvailableBooks();
-            LoadReaders();
-            LoadBorrowedBooks();
+            Readers = new BindingList<ReaderEventArgs>(dtos);
         }
 
         private void LoadAvailableBooks()
         {
-            var books = _bookService.GetAvailableBooks();
-            AvailableBooks.Clear();
+            var availableBooks = _bookService.GetAvailableBooks().ToList();
+            var dtos = new List<BookEventArgs>();
 
-            foreach (var book in books)
+            foreach (var book in availableBooks.OrderBy(b => b.Title))
             {
-                AvailableBooks.Add(ConvertToBookEventArgs(book));
+                dtos.Add(new BookEventArgs
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    Author = book.Author,
+                    Genre = book.Genre,
+                    IsAvailable = book.IsAvailable
+                });
             }
-        }
 
-        private void LoadReaders()
-        {
-            var readers = _readerService.GetAllReaders();
-            Readers.Clear();
-
-            foreach (var reader in readers)
-            {
-                Readers.Add(ConvertToReaderEventArgs(reader));
-            }
+            AvailableBooks = new BindingList<BookEventArgs>(dtos);
         }
 
         private void LoadBorrowedBooks()
         {
-            var books = _bookService.GetBorrowedBooks();
-            BorrowedBooks.Clear();
+            var borrowedBooks = _bookService.GetBorrowedBooks().ToList();
+            var dtos = new List<BookEventArgs>();
 
-            foreach (var book in books)
+            foreach (var book in borrowedBooks.OrderBy(b => b.Title))
             {
-                BorrowedBooks.Add(ConvertToBookEventArgs(book));
+                dtos.Add(new BookEventArgs
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    Author = book.Author,
+                    Genre = book.Genre,
+                    ReaderId = book.ReaderId,
+                    IsAvailable = book.IsAvailable
+                });
             }
+            BorrowedBooks = new BindingList<BookEventArgs>(dtos);
         }
 
-        private void LoadReadersBorrowedBooks()
+        private void LoadReadersBorrowedBooks(int readerId)
         {
-            if (SelectedReader != null)
+            var books = _loanService.GetReadersBorrowedBooks(readerId).ToList();
+            var dtos = books.Select(b => new BookEventArgs
             {
-                var borrowedBooks = _loanService.GetReadersBorrowedBooks(SelectedReader.Id);
-                BorrowedBooks.Clear();
+                Id = b.Id,
+                Title = b.Title,
+                Author = b.Author,
+                Genre = b.Genre,
+                ReaderId = readerId
+            }).ToList();
 
-                foreach (var book in borrowedBooks)
-                {
-                    BorrowedBooks.Add(ConvertToBookEventArgs(book));
-                }
-            }
+            BorrowedBooks = new BindingList<BookEventArgs>(dtos);
         }
 
         private void GiveBook()
@@ -223,19 +227,8 @@ namespace Presenter.ViewModel
                 return;
             }
 
-            try
-            {
-                _loanService.GiveBook(SelectedBookToLoan.Id, SelectedReader.Id);
-
-                // Данные обновятся автоматически через события DataChanged
-                ClearSelection();
-            }
-            catch (InvalidOperationException ex)
-            {
-                // Здесь можно показать сообщение об ошибке
-                System.Windows.MessageBox.Show(ex.Message, "Ошибка",
-                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
-            }
+            _loanService.GiveBook(_selectedBookToLoan.Id, SelectedReader.Id);
+            ClearSelection();
         }
 
         private void ReturnBook()
@@ -245,19 +238,8 @@ namespace Presenter.ViewModel
                 return;
             }
 
-            try
-            {
-                _loanService.ReturnBook(SelectedBookToReturn.Id, SelectedBookToReturn.ReaderId.Value);
-
-                // Данные обновятся автоматически через события DataChanged
-                SelectedBookToReturn = null;
-            }
-            catch (InvalidOperationException ex)
-            {
-                // Здесь можно показать сообщение об ошибке
-                System.Windows.MessageBox.Show(ex.Message, "Ошибка",
-                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
-            }
+            _loanService.ReturnBook(_selectedBookToReturn.Id, _selectedBookToReturn.ReaderId.Value);
+            _selectedBookToReturn = null;
         }
 
         private void ClearSelection()

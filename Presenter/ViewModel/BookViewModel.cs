@@ -8,7 +8,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows;
 
 namespace Presenter.ViewModel
 {
@@ -23,8 +25,13 @@ namespace Presenter.ViewModel
         private string _newBookAuthor;
         private string _newBookGenre;
 
+        private bool _showAvailableOnly;
+        private bool _showBorrowedOnly;
+
         private string _searchAuthor;
         private string _searchGenre;
+
+        
 
         public BindingList<BookEventArgs> Books
         {
@@ -39,13 +46,13 @@ namespace Presenter.ViewModel
         public string NewBookTitle
         {
             get => _newBookTitle;
-            set { _newBookTitle = value; OnPropertyChanged(); }
+            set { _newBookTitle = value; OnPropertyChanged();}
         }
 
         public string NewBookAuthor
         {
             get => _newBookAuthor;
-            set { _newBookAuthor = value; OnPropertyChanged(); }
+            set { _newBookAuthor = value; OnPropertyChanged();}
         }
 
         public string NewBookGenre
@@ -72,69 +79,97 @@ namespace Presenter.ViewModel
             set { _searchGenre = value; OnPropertyChanged(); }
         }
 
+
+        public bool CanAddBook => !string.IsNullOrWhiteSpace(NewBookTitle) &&
+                                 !string.IsNullOrWhiteSpace(NewBookAuthor) &&
+                                 !string.IsNullOrWhiteSpace(NewBookGenre);
+        public bool CanDeleteBook => SelectedBook != null;
+
+        public ICommand StartupCommand { get; }
         public ICommand LoadBooksCommand { get; }
         public ICommand DeleteBookCommand { get; }
         public ICommand AddBookCommand { get; }
 
-        public ICommand GetBorrowedBooks { get; }
-        public ICommand GetAvailableBooks { get; }
+        public ICommand GetBorrowedBooksCommand { get; }
+        public ICommand GetAvailableBooksCommand { get; }
+
+
         public ICommand FilterByAuthorCommand { get; }
         public ICommand FilterByGenreCommand { get; }
 
         public BookViewModel(IBookService bookService)
         {
             _bookService = bookService;
-            Books = new BindingList<BookEventArgs>();
+            Books = new BindingList<BookEventArgs>();    
 
-            LoadBooksCommand = new RelayCommand(LoadBooks);
+            _bookService.DataChanged += OnModelDataChanged;
+
+            StartupCommand = new RelayCommand(Startup);
             DeleteBookCommand = new RelayCommand(DeleteBook, () => SelectedBook != null);
             AddBookCommand = new RelayCommand(AddBook);
+            GetBorrowedBooksCommand = new RelayCommand(GetBorrowedBooks);
+            GetAvailableBooksCommand = new RelayCommand(GetAvailableBooks);
             FilterByAuthorCommand = new RelayCommand(FilterByAuthor);
             FilterByGenreCommand = new RelayCommand(FilterByGenre);
 
-            LoadBooks();
+            Startup();
         }
 
-
-        private BookEventArgs ConvertToEventArgs(Book model)
+        private void Startup()
         {
-            return new BookEventArgs
+            _bookService.InvokeDataChanged();
+        }
+
+        private void OnModelDataChanged(IEnumerable<Book> books)
+        {
+            var bookList = books.ToList();
+            SyncModelToDTO(bookList);
+        }
+
+        private void SyncModelToDTO(List<Book> modelBooks)
+        {
+            var dtos = new List<BookEventArgs>();
+            foreach (var model in modelBooks)
             {
-                Id = model.Id,
-                Title = model.Title,
-                Author = model.Author,
-                Genre = model.Genre,
-                IsAvailable = model.IsAvailable,
-                ReaderId = model.ReaderId
+                dtos.Add(new BookEventArgs
+                {
+                    Id = model.Id,
+                    Title = model.Title,
+                    Author = model.Author,
+                    Genre = model.Genre,
+                    IsAvailable = model.IsAvailable,
+                    ReaderId = model.ReaderId
+                });
+            }
+
+            Books = new BindingList<BookEventArgs>(dtos);
+        }
+
+        private Book ConvertDTOToModel(BookEventArgs dto) 
+        {
+            return new Book
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Author = dto.Author,
+                Genre = dto.Genre,
+                IsAvailable = dto.IsAvailable,
+                ReaderId = dto.ReaderId
             };
         }
 
-        private void LoadBooks() 
-        {
-            var availableBooks = _bookService.GetAvailableBooks();
-            var borrowedBooks = _bookService.GetBorrowedBooks();
-            var allBooks = availableBooks.Concat(borrowedBooks);
-
-            Books.Clear();
-            foreach (var book in allBooks)
-            {
-                Books.Add(ConvertToEventArgs(book));
-            }
-
-        }
 
         private void AddBook()
         {
-            Book book = new Book();
-            book.Id = 0;
-            book.Title = NewBookTitle.Trim();
-            book.Author = NewBookAuthor.Trim();
-            book.Genre = NewBookGenre.Trim();
-            book.IsAvailable = true;
-            _bookService.Add(book);
+            var book = new Book
+            {
+                Title = NewBookTitle?.Trim(),
+                Author = NewBookAuthor?.Trim(),
+                Genre = NewBookGenre?.Trim(),
+                IsAvailable = true
+            };
 
-            var newDto = ConvertToEventArgs(book);
-            Books.Add(newDto);
+            _bookService.Add(book);
 
             NewBookTitle = string.Empty;
             NewBookAuthor = string.Empty;
@@ -143,40 +178,57 @@ namespace Presenter.ViewModel
 
         private void DeleteBook() 
         {
-            if (SelectedBook != null) 
+            if (SelectedBook != null)
             {
                 _bookService.Delete(SelectedBook.Id);
-                Books.Remove(SelectedBook);
-                SelectedBook = null;
             }
-
         }
 
         private void FilterByAuthor() 
         {
-            if (!string.IsNullOrEmpty(SearchAuthor))
+            if (string.IsNullOrWhiteSpace(SearchGenre))
             {
-                var modelBooks = _bookService.FilterByAuthor(SearchAuthor);
-                Books.Clear();
-                foreach (var book in modelBooks)
-                {
-                    Books.Add(ConvertToEventArgs(book));
-                }
+                Startup();
+                return;
             }
+
+            var filteredBooks = _bookService.FilterByGenre(SearchGenre.Trim());
+            SyncModelToDTO(filteredBooks.ToList());
         }
 
         private void FilterByGenre() 
         {
-            if (!string.IsNullOrEmpty(SearchGenre))
+            if (string.IsNullOrWhiteSpace(SearchAuthor))
             {
-                var modelBooks = _bookService.FilterByGenre(SearchGenre);
-                Books.Clear();
-                foreach (var book in modelBooks)
-                {
-                    Books.Add(ConvertToEventArgs(book));
-                }
+                Startup();
+                return;
             }
 
+            var filteredBooks = _bookService.FilterByAuthor(SearchAuthor.Trim());
+            SyncModelToDTO(filteredBooks.ToList());
+        }
+
+        /// <summary>
+        /// получить доступные книги
+        /// </summary>
+        private void GetAvailableBooks()
+        {
+            var availableBooks = _bookService.GetAvailableBooks();
+            SyncModelToDTO(availableBooks.ToList());
+        }
+
+        /// <summary>
+        /// получить недоступные книги
+        /// </summary>
+        private void GetBorrowedBooks()
+        {
+            var borrowedBooks = _bookService.GetBorrowedBooks();
+            SyncModelToDTO(borrowedBooks.ToList());
+        }
+
+        public void Dispose()
+        {
+            _bookService.DataChanged -= OnModelDataChanged;
         }
 
     }
