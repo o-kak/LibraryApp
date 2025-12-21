@@ -5,8 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfView"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="800">
+    
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         
+        
+        
+        <TabControl Grid.Row="1" Margin="10,194,10,10">
+            <TabItem Header="Читатели">
+                <DataGrid x:Name="ReadersGrid" AutoGenerateColumns="False" Margin="5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                        <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="200"/>
+                        <DataGridTextColumn Header="Адрес" Binding="{Binding Address}" Width="200"/>
+                        <DataGridTextColumn Header="Книги на руках" Binding="{Binding BooksCount}" Width="300"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Книги">
+                <DataGrid x:Name="BooksGrid" AutoGenerateColumns="False" Margin="5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="70"/>
+                        <DataGridTextColumn Header="Название" Binding="{Binding Title}" Width="220"/>
+                        <DataGridTextColumn Header="Автор" Binding="{Binding Author}" Width="170"/>
+                        <DataGridTextColumn Header="Жанр" Binding="{Binding Genre}" Width="120"/>
+                        <DataGridTextColumn Header="Владелец" Binding="{Binding OwnerName}" Width="170"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+
+
+
     </Grid>
 </Window>

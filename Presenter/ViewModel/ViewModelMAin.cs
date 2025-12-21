@@ -14,19 +14,8 @@ namespace Presenter.ViewModel
         private readonly IBookService _bookService;
         private readonly IReaderService _readerService;
         private readonly ILoan _loanService;
+        private readonly VMManager _vmManager;
 
-        private ViewModelBase _currentViewModel; 
-        public ViewModelBase CurrentViewModel 
-        {
-            get => _currentViewModel;
-            set 
-            {
-                if (_currentViewModel == value)
-                    return;
-                _currentViewModel = value;
-                OnPropertyChanged();
-            }
-        }
         private string _statusMessage;
         public string StatusMessage 
         {
@@ -45,11 +34,12 @@ namespace Presenter.ViewModel
         public ICommand ShowLoanCommand { get; }
         public ICommand ExitCommand { get; }
 
-        public ViewModelMAin(IBookService bookService, IReaderService readerService, ILoan loanService)
+        public ViewModelMAin(IBookService bookService, IReaderService readerService, ILoan loanService, VMManager vmManager = null)
         {
             _bookService = bookService;
             _readerService = readerService;
             _loanService = loanService;
+            _vmManager = vmManager ?? new VMManager();
 
 
             ShowBooksCommand = new RelayCommand(() => ShowBooks());
@@ -57,22 +47,23 @@ namespace Presenter.ViewModel
             ShowLoanCommand = new RelayCommand(() => ShowLoans());
            
         }
+        public VMManager Manager => _vmManager;
 
         private void ShowBooks()
         {
-            CurrentViewModel = new BookViewModel(_bookService);
-            View.ViewManager.ShowWindow(bookViewModel);
+            var bookViewModel = new BookViewModel(_bookService);
+            _vmManager.CurrentViewModel = bookViewModel;
         }
 
         private void ShowReaders() 
         {
-            CurrentViewModel = new ReaderViewModel(_readerService, _loanService);
-            View.ViewManager.ShowWindow(readerViewModel);
+            var readerViewModel = new ReaderViewModel(_readerService, _loanService);
+            _vmManager.CurrentViewModel = readerViewModel;
         }
         private void ShowLoans()
         {
-            CurrentViewModel = new LoanViewModel(_loanService, _bookService, _readerService);
-            View.ViewManager.ShowWindow(loanViewModel);
+            var loanViewModel = new LoanViewModel(_loanService, _bookService, _readerService);
+            _vmManager.CurrentViewModel = loanViewModel;
         }
 
     }

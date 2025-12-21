@@ -135,6 +135,7 @@
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\ViewModelMAin.cs" />
+    <Compile Include="ViewModel\VMManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
