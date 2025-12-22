@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using WindowsFormsView;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
+using Presenter.ViewModel;
 
 namespace Presenter
 {
@@ -101,7 +102,15 @@ namespace Presenter
 
         static void RunWPFMode() 
         {
+            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
+            
+            IBookService bookService = ninjectKernel.Get<BookService>();
+            IReaderService readerService = ninjectKernel.Get<ReaderService>();
+            ILoan loanService = ninjectKernel.Get<LoanService>();
 
+            ServiceLocator.Initialize(bookService, readerService, loanService);
+
+            var vmManager = new VMManager();
         }
     }
 }

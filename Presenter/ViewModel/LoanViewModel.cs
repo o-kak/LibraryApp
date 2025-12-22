@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Presenter.ViewModel
 {
-    public class LoanViewModel : ViewModelBase
+    public class LoanViewModel : ViewModelBase, IDisposable
     {
         private readonly ILoan _loanService;
         private readonly IBookService _bookService;
@@ -110,11 +110,11 @@ namespace Presenter.ViewModel
         public ICommand StartupCommand { get; }
         public ICommand ClearSelectionCommand { get; }
 
-        public LoanViewModel(ILoan loanService, IBookService bookService, IReaderService readerService)
+        public LoanViewModel()
         {
-            _loanService = loanService;
-            _bookService = bookService;
-            _readerService = readerService;
+            _readerService = ServiceLocator.ReaderService;
+            _loanService = ServiceLocator.LoanService;
+            _bookService = ServiceLocator.BookService;
 
             AvailableBooks = new BindingList<BookEventArgs>();
             Readers = new BindingList<ReaderEventArgs>();

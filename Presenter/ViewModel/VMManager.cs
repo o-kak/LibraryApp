@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessLogic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Presenter.ViewModel
 {
     public class VMManager : ViewModelBase
     {
-        public event EventHandler<ViewModelBase> ViewModelChanged;
+        public event Action<ViewModelBase> VMMReadyEvent;
 
         private ViewModelBase _currentViewModel;
         public ViewModelBase CurrentViewModel
@@ -19,10 +20,42 @@ namespace Presenter.ViewModel
                 if (_currentViewModel == value)
                     return;
 
+
                 _currentViewModel = value;
                 OnPropertyChanged();
-                ViewModelChanged?.Invoke(this, value);
+                VMMReadyEvent?.Invoke(value);
             }
         }
+
+        public VMManager()
+        {
+         
+        }
+
+        public void Start() 
+        {
+            CurrentViewModel = new ViewModelMAin(this);
+        }
+        public BookViewModel CreateBookViewModel()
+        {
+            var vm = new BookViewModel();
+            CurrentViewModel = vm; 
+            return vm;
+        }
+
+        public ReaderViewModel CreateReaderViewModel()
+        {
+            var vm = new ReaderViewModel();
+            CurrentViewModel = vm;
+            return vm;
+        }
+
+        public LoanViewModel CreateLoanViewModel()
+        {
+            var vm = new LoanViewModel();
+            CurrentViewModel = vm;
+            return vm;
+        }
+       
     }
 }

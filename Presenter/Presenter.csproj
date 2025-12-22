@@ -133,6 +133,7 @@
     <Compile Include="ViewModel\LoanViewModel.cs" />
     <Compile Include="ViewModel\ReaderViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
+    <Compile Include="ViewModel\ServiceLocator.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\ViewModelMAin.cs" />
     <Compile Include="ViewModel\VMManager.cs" />

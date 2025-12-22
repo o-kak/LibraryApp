@@ -14,7 +14,7 @@ using System.Windows;
 
 namespace Presenter.ViewModel
 {
-    public class BookViewModel : ViewModelBase
+    public class BookViewModel : ViewModelBase, IDisposable
     {
         private readonly IBookService _bookService;
         private BindingList<BookEventArgs> _books;
@@ -97,9 +97,9 @@ namespace Presenter.ViewModel
         public ICommand FilterByAuthorCommand { get; }
         public ICommand FilterByGenreCommand { get; }
 
-        public BookViewModel(IBookService bookService)
+        public BookViewModel()
         {
-            _bookService = bookService;
+            _bookService = ServiceLocator.BookService;
             Books = new BindingList<BookEventArgs>();    
 
             _bookService.DataChanged += OnModelDataChanged;

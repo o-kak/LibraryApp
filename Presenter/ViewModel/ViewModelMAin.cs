@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows; 
 
 namespace Presenter.ViewModel
 {
@@ -34,36 +35,38 @@ namespace Presenter.ViewModel
         public ICommand ShowLoanCommand { get; }
         public ICommand ExitCommand { get; }
 
-        public ViewModelMAin(IBookService bookService, IReaderService readerService, ILoan loanService, VMManager vmManager = null)
+        public ViewModelMAin(VMManager vmManager)
         {
-            _bookService = bookService;
-            _readerService = readerService;
-            _loanService = loanService;
-            _vmManager = vmManager ?? new VMManager();
+
+            _vmManager = vmManager ?? throw new ArgumentNullException(nameof(vmManager));
 
 
             ShowBooksCommand = new RelayCommand(() => ShowBooks());
             ShowReadersCommand = new RelayCommand(() => ShowReaders());
             ShowLoanCommand = new RelayCommand(() => ShowLoans());
-           
+            ExitCommand = new RelayCommand(ExitApp);
         }
         public VMManager Manager => _vmManager;
 
         private void ShowBooks()
         {
-            var bookViewModel = new BookViewModel(_bookService);
+            var bookViewModel = _vmManager.CreateBookViewModel();
             _vmManager.CurrentViewModel = bookViewModel;
         }
 
         private void ShowReaders() 
         {
-            var readerViewModel = new ReaderViewModel(_readerService, _loanService);
+            var readerViewModel = _vmManager.CreateReaderViewModel();
             _vmManager.CurrentViewModel = readerViewModel;
         }
         private void ShowLoans()
         {
-            var loanViewModel = new LoanViewModel(_loanService, _bookService, _readerService);
+            var loanViewModel = _vmManager.CreateLoanViewModel();
             _vmManager.CurrentViewModel = loanViewModel;
+        }
+        private void ExitApp()
+        {
+            System.Environment.Exit(0);
         }
 
     }

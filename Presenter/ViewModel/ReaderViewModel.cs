@@ -15,11 +15,12 @@ using System.Windows.Input;
 
 namespace Presenter.ViewModel
 {
-    public class ReaderViewModel : ViewModelBase
+    public class ReaderViewModel : ViewModelBase, IDisposable
     {
         private readonly IReaderService _readerService;
         private readonly ILoan _loanService;
         private BindingList<ReaderEventArgs> _readers;
+
 
         private ReaderEventArgs _selectedReader;
 
@@ -86,12 +87,13 @@ namespace Presenter.ViewModel
 
 
 
-        public ReaderViewModel(IReaderService readerService, ILoan loanService)
+        public ReaderViewModel()
         {
-            _readerService = readerService;
-            _loanService = loanService;
+            _readerService = ServiceLocator.ReaderService;
+            _loanService = ServiceLocator.LoanService;
 
             Readers = new BindingList<ReaderEventArgs>();
+            ReaderBooks = new BindingList<BookEventArgs>();
 
             _readerService.DataChanged += OnModelDataChanged;
 
