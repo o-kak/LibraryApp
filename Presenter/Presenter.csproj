@@ -129,6 +129,14 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReaderPresenter.cs" />
+    <Compile Include="ViewModel\BookViewModel.cs" />
+    <Compile Include="ViewModel\ReaderViewModel.cs" />
+    <Compile Include="ViewModel\RelayCommand.cs" />
+    <Compile Include="ViewModel\ReturnGiveBookViewModel.cs" />
+    <Compile Include="ViewModel\ServiceLocator.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\ViewModelMain.cs" />
+    <Compile Include="ViewModel\VMManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -156,6 +164,7 @@
       <Name>WindowsFormsView</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

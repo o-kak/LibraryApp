@@ -1,13 +1,14 @@
 ﻿using BusinessLogic;
 using ConsoleView;
 using Ninject;
+using Presenter.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WindowsFormsView;
 using System.Windows.Forms;
+using WindowsFormsView;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Presenter
@@ -24,6 +25,7 @@ namespace Presenter
                 Console.WriteLine("===== Главное меню выбора UI =====");
                 Console.WriteLine("1. Запустить Консольный режим (Console UI)");
                 Console.WriteLine("2. Запустить WinForms режим (WinForms UI)");
+                Console.WriteLine("3. Запустить WPF режим (WPF UI)");
                 Console.WriteLine("0. Выход");
                 Console.Write("Выберите вариант (0, 1 или 2): ");
 
@@ -38,6 +40,10 @@ namespace Presenter
 
                     case "2":
                         RunWinFormsMode();
+                        break;
+
+                    case "3":
+                        RunWPFMode();
                         break;
 
                     case "0":
@@ -92,6 +98,14 @@ namespace Presenter
             var loanPresenter = new LoanPresenter(winFormsLoanService, loanView, winFormsBookService);
 
             System.Windows.Forms.Application.Run(form1);    
+        }
+
+        [STAThread]
+        static void RunWPFMode() 
+        {
+           
+
+
         }
     }
 }
