@@ -1,4 +1,5 @@
 ﻿using BusinessLogic;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Presenter.ViewModel
     public class VMManager : ViewModelBase
     {
         public event Action<ViewModelBase> VMMReadyEvent;
+        public event Action ViewModelClosedEvent;
 
         private ViewModelBase _currentViewModel;
         public ViewModelBase CurrentViewModel
@@ -26,36 +28,45 @@ namespace Presenter.ViewModel
                 VMMReadyEvent?.Invoke(value);
             }
         }
-
-        public VMManager()
+        public void Start()
         {
-         
+            ShowMainView();
         }
 
-        public void Start() 
+        public void ShowMainView()
         {
             CurrentViewModel = new ViewModelMAin(this);
+            VMMReadyEvent?.Invoke(CurrentViewModel);
         }
+
         public BookViewModel CreateBookViewModel()
         {
-            var vm = new BookViewModel();
-            CurrentViewModel = vm; 
+            var vm = new BookViewModel(this);
+            CurrentViewModel = vm;
+            VMMReadyEvent?.Invoke(vm);
             return vm;
         }
 
-        public ReaderViewModel CreateReaderViewModel()
+        public ReaderViewModel CreateReaderViewModel(ReaderEventArgs existingReader = null)
         {
-            var vm = new ReaderViewModel();
+            var vm = new ReaderViewModel(this, existingReader);
             CurrentViewModel = vm;
+            VMMReadyEvent?.Invoke(vm);
             return vm;
         }
 
-        public LoanViewModel CreateLoanViewModel()
+        public ReturnGiveBookViewModel CreateReturnGiveBookViewModel()
         {
-            var vm = new LoanViewModel();
+            var vm = new ReturnGiveBookViewModel();
             CurrentViewModel = vm;
+            VMMReadyEvent?.Invoke(vm);
             return vm;
         }
-       
+        public void CloseCurrentView()
+        {
+            ViewModelClosedEvent?.Invoke();
+            ShowMainView();
+        }
+
     }
 }

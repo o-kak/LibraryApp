@@ -17,7 +17,7 @@ namespace WpfView.Windows
     /// <summary>
     /// Логика взаимодействия для UpdateReader.xaml
     /// </summary>
-    public partial class UpdateReader : Window
+    public partial class UpdateReader : View
     {
         public UpdateReader()
         {

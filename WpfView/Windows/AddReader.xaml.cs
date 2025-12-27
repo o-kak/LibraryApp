@@ -17,7 +17,7 @@ namespace WpfView.Windows
     /// <summary>
     /// Логика взаимодействия для AddReader.xaml
     /// </summary>
-    public partial class AddReader : Window
+    public partial class AddReader : View
     {
         public AddReader()
         {

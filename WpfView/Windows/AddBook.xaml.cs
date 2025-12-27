@@ -17,7 +17,7 @@ namespace WpfView.Windows
     /// <summary>
     /// Логика взаимодействия для AddBook.xaml
     /// </summary>
-    public partial class AddBook : Window
+    public partial class AddBook : View
     {
         public AddBook()
         {

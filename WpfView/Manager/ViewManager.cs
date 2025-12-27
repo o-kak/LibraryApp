@@ -11,58 +11,58 @@ namespace WpfView.Manager
 {
     public class ViewManager
     {
-        Dictionary<ViewModelBase, View> _viewDictionary;
+        Dictionary<ViewModelBase, View> _windows;
         private VMManager _vmManager;
+        private View _mainWindow;
 
         public ViewManager() 
         {
-            _viewDictionary = new Dictionary<ViewModelBase, View>();
+            _windows = new Dictionary<ViewModelBase, View>();
 
-            var vmManager = new VMManager();
-            vmManager.VMMReadyEvent += OnViewModelReady;
-            vmManager.Start();
+            _vmManager = new VMManager();
+            _vmManager.VMMReadyEvent += OnViewModelReady;
+            _vmManager.ViewModelClosedEvent += OnViewModelClosed;
+
+            _vmManager.Start();
         }
+
         private void OnViewModelReady(ViewModelBase vm) 
         {
             if (vm == null) return;
-            if (!_viewDictionary.ContainsKey(vm)) 
-            {
-                _viewDictionary.Add(vm, Fabric(vm));
-            }
 
-            _viewDictionary.TryGetValue(vm, out View view);
-            view.Show();
+            var window = CreateWindowForViewModel(vm);
+            if (window != null)
+            {
+                _windows[vm] = window;
+                window.DataContext = vm;
+
+                if (vm is ViewModelMAin)
+                {
+                    _mainWindow = window;
+                    window.Show();
+                }
+                else
+                {
+                    window.Owner = _mainWindow;
+                    window.ShowDialog();
+                }
+            }
         }
 
-        private View Fabric(ViewModelBase vm) 
+        private Window CreateWindowForViewModel(ViewModelBase vm)
         {
-            switch (vm) 
-            {
-                case ViewModelMAin mainVM:
-                    var mainWindow = new MainWindow();
-                    mainWindow.DataContext = mainVM;
-                    return mainWindow;
+            if (vm == null) return null;
 
-                case BookViewModel bookVM:
-                    var bookWindow = new AddBook();
-                    bookWindow.DataContext = bookVM;
-                    return bookWindow;
-
-                case ReaderViewModel readerVM:
-                    var readerWindow = new AddReader();
-                    readerWindow.DataContext = readerVM;
-                    return readerWindow;
-
-                case LoanViewModel loanVM:
-                    var returnGiveBook = new ReturnGiveBook();
-                    returnGiveBook.DataContext = loanVM;
-                    return returnGiveBook;
-
-
-                default:
-                    return new View(vm);
-
-            }
+            if (vm is ViewModelMAin)
+                return new MainWindow();
+            else if (vm is ReaderViewModel)
+                return new AddReader();
+            else if (vm is BookViewModel)
+                return new AddBook();
+            else if (vm is ReturnGiveBookViewModel)
+                return new ReturnGiveBook();
+            else
+                return null;
         }
 
         public void CloseView(ViewModelBase vm)

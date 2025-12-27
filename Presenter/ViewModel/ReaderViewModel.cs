@@ -15,50 +15,14 @@ using System.Windows.Input;
 
 namespace Presenter.ViewModel
 {
-    public class ReaderViewModel : ViewModelBase, IDisposable
+    public class ReaderViewModel : ViewModelBase
     {
         private readonly IReaderService _readerService;
-        private readonly ILoan _loanService;
-        private BindingList<ReaderEventArgs> _readers;
+        private readonly VMManager _vmManager;
 
 
         private ReaderEventArgs _selectedReader;
-
-        private string _newReaderName;
-        private string _newReaderAddress;
-
-        private BindingList<BookEventArgs> _readerBooks;
-
-        public BindingList<ReaderEventArgs> Readers
-        {
-            get => _readers;
-            set
-            {
-                _readers = value;
-                OnPropertyChanged();
-            }
-        }
-        public BindingList<BookEventArgs> ReaderBooks
-        {
-            get => _readerBooks;
-            set
-            {
-                _readerBooks = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string NewReaderName
-        {
-            get => _newReaderName;
-            set { _newReaderName = value; OnPropertyChanged(); }
-        }
-
-        public string NewReaderAddress
-        {
-            get => _newReaderAddress;
-            set { _newReaderAddress = value; OnPropertyChanged(); }
-        }
+        private bool _isEditMode;
 
         public ReaderEventArgs SelectedReader
         {
@@ -69,192 +33,75 @@ namespace Presenter.ViewModel
                 {
                     _selectedReader = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(CanUpdateReader));
                 }
             }
         }
-        public bool CanUpdateReader => SelectedReader != null;
-        public bool CanDeleteReader => SelectedReader != null;
-        public bool CanAddReader => !string.IsNullOrWhiteSpace(NewReaderName) &&
-                                    !string.IsNullOrWhiteSpace(NewReaderAddress);
 
-        public ICommand StartUpCommand { get; }
-        public ICommand DeleteReaderCommand { get; }
-        public ICommand AddReaderCommand { get; }
-        public ICommand UpdateReaderCommand { get; }
-        public ICommand ReadeByIdCommand { get; }
-        public ICommand GetBorrowedBooksCommand { get; }
+        public bool IsEditMode 
+        {
+            get => _isEditMode;
+            set
+            {
+                if (_isEditMode != value) 
+                {
+                    _isEditMode = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+       
+        public string Title => _isEditMode ? "Редактирование читателя" : "Добавление читателя";
 
+        public ICommand SaveCommand { get; }
+        public ICommand CancelCommand { get; }
 
-
-        public ReaderViewModel()
+        public ReaderViewModel(VMManager vmManager, ReaderEventArgs existingReader = null)
         {
             _readerService = ServiceLocator.ReaderService;
-            _loanService = ServiceLocator.LoanService;
+            _vmManager = vmManager;
 
-            Readers = new BindingList<ReaderEventArgs>();
-            ReaderBooks = new BindingList<BookEventArgs>();
+            IsEditMode = existingReader != null;
+            SelectedReader = existingReader ?? new ReaderEventArgs();
 
-            _readerService.DataChanged += OnModelDataChanged;
-
-            StartUpCommand = new RelayCommand(StartUp);
-            AddReaderCommand = new RelayCommand(AddReader, () => CanAddReader);
-            DeleteReaderCommand = new RelayCommand(DeleteReader, () => SelectedReader != null);
-            UpdateReaderCommand = new RelayCommand(UpdateReader, () => SelectedReader != null);
-            ReadeByIdCommand = new RelayCommand(ReadById, () => SelectedReader != null);
-            GetBorrowedBooksCommand = new RelayCommand(GetBorrowedBooks, () => SelectedReader != null);
-
-            StartUp();
+            SaveCommand = new RelayCommand(Save, CanSave);
+            CancelCommand = new RelayCommand(Cancel);
         }
 
-
-        private void StartUp() 
+        private bool CanSave() 
         {
-            _readerService.InvokeDataChanged();
+            return !string.IsNullOrWhiteSpace(SelectedReader.Name) &&
+                !string.IsNullOrWhiteSpace(SelectedReader.Address);
         }
 
-        private void OnModelDataChanged(IEnumerable<Reader> readers)
+        private void Save() 
         {
-            var readerList = readers.ToList();
-            SyncModelToDTO(readerList);
-        }
-
-        private void SyncModelToDTO(List<Reader> modelReaders)
-        {
-            var dtos = new List<ReaderEventArgs>();
-            foreach (var model in modelReaders.OrderBy(r => r.Name))
+            var readerModel = new Reader
             {
-                dtos.Add(new ReaderEventArgs
-                {
-                    Id = model.Id,
-                    Name = model.Name,
-                    Address = model.Address
-                });
-            }
-
-            Readers = new BindingList<ReaderEventArgs>(dtos);
-        }
-
-        private Reader ConvertDTOToModel(ReaderEventArgs dto)
-        {
-            return new Reader
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Address = dto.Address
-            };
-        }
-
-        private void AddReader()
-        {
-            var reader = new Reader
-            {
-                Name = NewReaderName?.Trim(),
-                Address = NewReaderAddress?.Trim()
+                Id = SelectedReader.Id,
+                Name = SelectedReader.Name.Trim(),
+                Address = SelectedReader.Address.Trim()
             };
 
-            _readerService.Add(reader);
-
-            NewReaderName = string.Empty;
-            NewReaderAddress = string.Empty;
-        }
-
-        private void DeleteReader()
-        {
-            if (SelectedReader == null) return;
-            if (SelectedReader != null)
+            if (IsEditMode)
             {
-
-                var books = _loanService.GetReadersBorrowedBooks(SelectedReader.Id).ToList();
-                if (books.Any())
-                {
-                    foreach (var book in books)
-                    {
-                        _loanService.ReturnBook(book.Id, SelectedReader.Id);
-                    }
-                }
-
-                _readerService.Delete(SelectedReader.Id);
-                SelectedReader = null;
-                ReaderBooks.Clear();
+                _readerService.Update(readerModel);
             }
-        }
-
-        private void UpdateReader() 
-        {
-            if (SelectedReader != null)
+            else 
             {
-                var reader = new Reader
-                {
-                    Id = SelectedReader.Id,
-                    Name = SelectedReader.Name?.Trim(),
-                    Address = SelectedReader.Address?.Trim()
-                };
-
-                _readerService.Update(reader);
-            }
-        }
-
-        /// <summary>
-        /// чтение пользователя по ID
-        /// </summary>
-        private void ReadById()
-        {
-            if (SelectedReader != null)
-            {
-                var reader = _readerService.GetReader(SelectedReader.Id);
-                var args = new ReaderEventArgs()
-                {
-                    Id = SelectedReader.Id,
-                    Name = reader.Name,
-                    Address = reader.Address
-                };
-
-                // В реальном приложении здесь можно открыть профиль
-                // Например, установить свойство для отображения деталей
-            }
-        }
-
-        /// <summary>
-        /// получить книги на руках у читателя
-        /// </summary>
-        private void GetBorrowedBooks()
-        {
-            if (SelectedReader != null)
-            {
-                LoadReadersBorrowedBooks(SelectedReader.Id);
-            }
-        }
-
-        /// <summary>
-        /// Загрузить книги читателя
-        /// </summary>
-        private void LoadReadersBorrowedBooks(int id)
-        {
-            var books = _loanService.GetReadersBorrowedBooks(id).ToList();
-            var args = new List<BookEventArgs>();
-            foreach (var book in books)
-            {
-                args.Add(new BookEventArgs()
-                {
-                    Id = book.Id,
-                    Title = book.Title,
-                    Author = book.Author,
-                    Genre = book.Genre,
-                    ReaderId = id
-                });
+                _readerService.Add(readerModel);
             }
 
-            ReaderBooks.Clear();
-            foreach (var arg in args)
-            {
-                ReaderBooks.Add(arg);
-            }
+            _vmManager.CloseCurrentView();
         }
 
-        public void Dispose()
+        private void Cancel()
         {
-            _readerService.DataChanged -= OnModelDataChanged;
+            _vmManager.CloseCurrentView();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
         }
 
     }
