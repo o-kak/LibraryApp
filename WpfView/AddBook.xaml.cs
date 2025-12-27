@@ -12,12 +12,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace WpfView.Windows
+namespace WpfView
 {
     /// <summary>
     /// Логика взаимодействия для AddBook.xaml
     /// </summary>
-    public partial class AddBook : View
+    public partial class AddBook : Window
     {
         public AddBook()
         {

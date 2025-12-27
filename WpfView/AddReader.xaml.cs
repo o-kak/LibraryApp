@@ -12,12 +12,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace WpfView.Windows
+namespace WpfView
 {
     /// <summary>
     /// Логика взаимодействия для AddReader.xaml
     /// </summary>
-    public partial class AddReader : View
+    public partial class AddReader : Window
     {
         public AddReader()
         {

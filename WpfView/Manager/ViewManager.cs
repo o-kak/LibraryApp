@@ -5,19 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Presenter.ViewModel;
-using WpfView.Windows;
+using WpfView;
 
 namespace WpfView.Manager
 {
     public class ViewManager
     {
-        Dictionary<ViewModelBase, View> _windows;
+        Dictionary<ViewModelBase, Window> _windows;
         private VMManager _vmManager;
-        private View _mainWindow;
+        private Window _mainWindow;
 
         public ViewManager() 
         {
-            _windows = new Dictionary<ViewModelBase, View>();
+            _windows = new Dictionary<ViewModelBase, Window>();
 
             _vmManager = new VMManager();
             _vmManager.VMMReadyEvent += OnViewModelReady;
@@ -67,10 +67,10 @@ namespace WpfView.Manager
 
         public void CloseView(ViewModelBase vm)
         {
-            if (_viewDictionary.TryGetValue(vm, out View view))
+            if (_windows.TryGetValue(vm, out Window view))
             {
                 view.Close();
-                _viewDictionary.Remove(vm);
+                _windows.Remove(vm);
             }
         }
 

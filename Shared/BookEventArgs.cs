@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shared
 {
-    public class BookEventArgs : INotifyPropertyChanged
+    public class BookEventArgs : EventArgs, INotifyPropertyChanged
     {
         private int _id;
         private string _title;
