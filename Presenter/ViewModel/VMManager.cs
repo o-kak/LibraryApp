@@ -38,22 +38,19 @@ namespace Presenter.ViewModel
         public void ShowMainView()
         {
             CurrentViewModel = new ViewModelMain(this);
-            VMMReadyEvent?.Invoke(CurrentViewModel);
         }
 
         public BookViewModel CreateBookViewModel()
         {
             var vm = new BookViewModel(this);
             CurrentViewModel = vm;
-            VMMReadyEvent?.Invoke(vm);
             return vm;
-        }
+        } 
 
         public ReaderViewModel CreateReaderViewModel(ReaderEventArgs existingReader = null)
         {
             var vm = new ReaderViewModel(this, existingReader);
             CurrentViewModel = vm;
-            VMMReadyEvent?.Invoke(vm);
             return vm;
         }
 
@@ -61,7 +58,6 @@ namespace Presenter.ViewModel
         {
             var vm = new ReturnGiveBookViewModel();
             CurrentViewModel = vm;
-            VMMReadyEvent?.Invoke(vm);
             return vm;
         }
         public void CloseCurrentView()

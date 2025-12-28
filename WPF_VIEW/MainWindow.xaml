@@ -45,11 +45,11 @@
 
                     <TextBlock Text="Жанр:" VerticalAlignment="Center" Margin="2"/>
                     <TextBox Width="100" Margin="2"/>
-                    <Button Content="Фильтр" Command="{Binding FilterByGenreCommand}" Margin="2" Padding="5"/>
+                    <Button Content="Фильтр" Command="{Binding FilterByGenreCommand, UpdateSourceTrigger=PropertyChanged}" Margin="2" Padding="5"/>
 
                     <TextBlock Text="Автор:" VerticalAlignment="Center" Margin="2"/>
                     <TextBox Width="100" Margin="2"/>
-                    <Button Content="Фильтр" Command="{Binding FilterByAuthorCommand}" Margin="2" Padding="5"/>
+                    <Button Content="Фильтр" Command="{Binding FilterByAuthorCommand, UpdateSourceTrigger=PropertyChanged}" Margin="2" Padding="5"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
@@ -59,9 +59,13 @@
             <TabItem Header="Читатели">
                 <DataGrid x:Name="ReadersGrid" 
                           ItemsSource="{Binding Readers}"
-                          SelectedItem="{Binding SelectedReader}"
+                          SelectedItem="{Binding SelectedReader, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           AutoGenerateColumns="False" 
-                          Margin="5">
+                          Margin="5"
+                          SelectionMode="Single"
+                          IsReadOnly="True"
+                          SelectionUnit="FullRow"
+                          EnableRowVirtualization="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
                         <DataGridTextColumn Header="ФИО" Binding="{Binding Name}" Width="200"/>
