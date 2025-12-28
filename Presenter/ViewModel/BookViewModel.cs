@@ -1,5 +1,6 @@
 ﻿using BusinessLogic;
 using Model;
+using Ninject;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows;
 
 namespace Presenter.ViewModel
 {
@@ -39,7 +40,7 @@ namespace Presenter.ViewModel
 
         public BookViewModel(VMManager vmManager)
         {
-            _bookService = ServiceLocator.BookService;
+            _bookService = _bookService = new StandardKernel(new SimpleConfigModule()).Get<BookService>(); ;
             _vmManager = vmManager;
 
             NewBook = new BookEventArgs();

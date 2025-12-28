@@ -28,6 +28,8 @@ namespace Presenter.ViewModel
                 VMMReadyEvent?.Invoke(value);
             }
         }
+
+
         public void Start()
         {
             ShowMainView();

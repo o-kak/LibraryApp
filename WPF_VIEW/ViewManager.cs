@@ -23,6 +23,7 @@ namespace WPF_VIEW
             _vmManager.VMMReadyEvent += OnViewModelReady;
             _vmManager.ViewModelClosedEvent += OnViewModelClosed;
 
+
             _vmManager.Start();
         }
 

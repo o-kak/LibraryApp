@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using BusinessLogic;
+﻿using BusinessLogic;
 using Model;
+using Ninject;
+using Shared;
+using System;
 using System;
 using System.Collections.Generic;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows;
-using System.ComponentModel;
-using Shared;
+using System.Windows.Input;
 
 namespace Presenter.ViewModel
 {
@@ -132,9 +133,9 @@ namespace Presenter.ViewModel
 
             _vmManager = vmManager ?? throw new ArgumentNullException(nameof(vmManager));
 
-            _bookService = ServiceLocator.BookService;
-            _readerService = ServiceLocator.ReaderService;
-            _loanService = ServiceLocator.LoanService;
+            _bookService = new StandardKernel(new SimpleConfigModule()).Get<BookService>(); 
+            _readerService = new StandardKernel(new SimpleConfigModule()).Get<ReaderService>(); 
+            _loanService = new StandardKernel(new SimpleConfigModule()).Get<LoanService>(); 
 
             Readers = new BindingList<ReaderEventArgs>();
             Books = new BindingList<BookEventArgs>();

@@ -13,6 +13,8 @@ namespace Presenter.ViewModel
         public static IReaderService ReaderService { get; private set; }
         public static ILoan LoanService { get; private set; }
 
+
+
         public static void Initialize(
             IBookService bookService,
             IReaderService readerService,
@@ -21,6 +23,7 @@ namespace Presenter.ViewModel
             BookService = bookService;
             ReaderService = readerService;
             LoanService = loanService;
+
         }
     }
 }

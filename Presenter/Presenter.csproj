@@ -151,6 +151,10 @@
       <Project>{4bb3331c-3d7a-435c-9927-ee450bdf3d73}</Project>
       <Name>ConsoleView</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
+      <Project>{1bff5b60-76c6-40b8-909b-8f95129f32d9}</Project>
+      <Name>DataAccessLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{25885a40-921a-49f7-80bb-ebb76344d398}</Project>
       <Name>Model</Name>

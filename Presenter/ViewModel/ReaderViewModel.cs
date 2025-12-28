@@ -1,5 +1,6 @@
 ﻿using BusinessLogic;
 using Model;
+using Ninject;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace Presenter.ViewModel
 
         public ReaderViewModel(VMManager vmManager, ReaderEventArgs existingReader = null)
         {
-            _readerService = ServiceLocator.ReaderService;
+            _readerService = new StandardKernel(new SimpleConfigModule()).Get<ReaderService>();
             _vmManager = vmManager;
 
             IsEditMode = existingReader != null;
