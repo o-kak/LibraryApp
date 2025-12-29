@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_VIEW"
         mc:Ignorable="d"
-        Title="Библиотека" Height="600" Width="1050">
+        Title="Библиотека" Height="600" Width="1070">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -39,6 +39,7 @@
                     <Button Content="Изменить" Command="{Binding UpdateReaderCommand}" Margin="2" Padding="5"/>
                     <Button Content="Удалить" Command="{Binding DeleteReaderCommand}" Margin="2" Padding="5"/>
                     <Button Content="Обновить" Command="{Binding LoadReadersCommand}" Margin="2" Padding="5"/>
+                    <Button Content="Выдать/Вернуть книги" Command="{Binding GiveReturnBookCommand}" Margin="2" Padding="5"/>
                 </StackPanel>
             </GroupBox>
 
@@ -47,9 +48,8 @@
                     <Button Content="Добавить" Command="{Binding AddBookCommand}" Margin="2" Padding="5"/>
                     <Button Content="Удалить" Command="{Binding DeleteBookCommand}" Margin="2" Padding="5"/>
                     <Button Content="Обновить" Command="{Binding RefreshBooksCommand}" Margin="2" Padding="5"/>
-                    <Button Content="Выдать/Вернуть" Command="{Binding GiveReturnBookCommand}" Margin="2" Padding="5"/>
-
-                    <Separator Margin="10,0" />
+                    
+                    <Separator Margin="10,0"/>
 
                     <TextBlock Text="Жанр:" VerticalAlignment="Center" Margin="2"/>
                     <TextBox Width="100" Margin="2" Text="{Binding GenreFilter, UpdateSourceTrigger=PropertyChanged}"/>
