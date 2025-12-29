@@ -118,23 +118,11 @@
                                 Foreground="White"
                                 HorizontalAlignment="Center"
                                 Command="{Binding ReturnBookCommand}">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedItem, ElementName=ReaderBooksListView}" 
-                                                     Value="{x:Null}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
                         </Button>
                     </Border>
                 </Grid>
             </Border>
 
-            <!-- Разделитель -->
             <GridSplitter Grid.Column="1" 
                           Width="5" 
                           HorizontalAlignment="Stretch"
@@ -201,17 +189,6 @@
                                 Foreground="White"
                                 HorizontalAlignment="Center"
                                 Command="{Binding GiveBookCommand}">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedAvailableBook, ElementName=AvailableBooksListView}" 
-                                                     Value="{x:Null}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
                         </Button>
                     </Border>
                 </Grid>
@@ -229,14 +206,9 @@
                         Content="Обновить"
                         Background="#607D8B"
                         Foreground="White"
-                        ToolTip="Обновить списки книг"/>
+                        ToolTip="Обновить списки книг"
+                        Command="{Binding UpdateCommand}"/>
                         
-
-                <Button x:Name="CloseButton" 
-                        Content="Закрыть"
-                        Margin="20,0,0,0"
-                        Background="Gray"
-                        Foreground="White"/>
             </StackPanel>
         </Border>
     </Grid>

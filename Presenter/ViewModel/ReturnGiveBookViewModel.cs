@@ -94,6 +94,10 @@ namespace Presenter.ViewModel
         {
             _vmManager = vmManager;
             SelectedReader = reader;
+
+            GiveBookCommand = new RelayCommand(GiveBook);
+            ReturnBookCommand = new RelayCommand(ReturnBook);
+            UpdateCommand = new RelayCommand(Update);
         }
 
         private void LoadReadersBooks()
@@ -144,6 +148,12 @@ namespace Presenter.ViewModel
         private void ReturnBook()
         {
             _loanService.ReturnBook(SelectedReadersBook.Id, SelectedReader.Id);
+            LoadAvailableBooks();
+            LoadReadersBooks();
+        }
+
+        private void Update()
+        {
             LoadAvailableBooks();
             LoadReadersBooks();
         }
