@@ -5,8 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_VIEW"
         mc:Ignorable="d"
-        Title="AddBook" Height="450" Width="800">
+        Title="AddBook" Height="300" Width="300">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="1" Orientation="Vertical">
+            <GroupBox Header="Добавить Книгу" Margin="9">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Название" VerticalAlignment="Center" Margin="9"/>
+                    <TextBox Width="200" Margin="5" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text="Жанр" VerticalAlignment="Center" Margin="9"/>
+                    <TextBox Width="200" Margin="5" Text="{Binding Genre, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text="Автор" VerticalAlignment="Center" Margin="9"/>
+                    <TextBox Width="200" Margin="5" Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Content="Добавить книгу" Command="{Binding SaveCommand}" Margin="14" Padding="5"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
     </Grid>
 </Window>

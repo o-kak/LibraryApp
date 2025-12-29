@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_VIEW"
         mc:Ignorable="d"
-        Title="UpdateReader" Height="250" Width="300">
+        Title="UpdateReader" Height="280" Width="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -32,13 +32,13 @@
 
 
         <StackPanel Grid.Row="1" Orientation="Vertical">
-            <GroupBox Header="Изменить читателя" Margin="10">
+            <GroupBox Header="Изменить читателя">
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="ФИО Читателя: " VerticalAlignment="Center" Margin="10"/>
                     <TextBox Width="200"  Margin="5" Text="{Binding SelectedReader.Name, UpdateSourceTrigger=PropertyChanged}"/>
                     <TextBlock Text="Адрес читателя: " VerticalAlignment="Center" Margin="10"/>
                     <TextBox Width="200" Margin="5" Text="{Binding SelectedReader.Address, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Button Content="Добавить читателя" Command="{Binding SaveCommand}" Margin="10" Padding="5"/>
+                    <Button Content="Изменить данные читателя" Command="{Binding SaveCommand}" Margin="10" Padding="5"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>

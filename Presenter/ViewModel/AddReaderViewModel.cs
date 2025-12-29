@@ -20,6 +20,10 @@ namespace Presenter.ViewModel
         private string _address;
         private int _id;
 
+        /// <summary>
+        /// ФИО читателя.
+        /// При изменении значения автоматически уведомляет об обновлении состояния команды сохранения.
+        /// </summary>
         public string Name
         {
             get => _name;
@@ -35,6 +39,10 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Адрес читателя.
+        /// При изменении значения автоматически уведомляет об обновлении состояния команды сохранения.
+        /// </summary>
         public string Address
         {
             get => _address;
@@ -50,6 +58,9 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Идентификатор читателя. Для нового читателя всегда равен 0.
+        /// </summary>
         public int Id
         {
             get => _id;
@@ -63,9 +74,12 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Команда для сохранения нового читателя в базу данных.
+        /// </summary>
         public ICommand SaveCommand { get; }
 
-        public AddReaderViewModel(VMManager vmManager, ReaderEventArgs existingReader = null)
+        public AddReaderViewModel(VMManager vmManager)
         {
             _readerService = new StandardKernel(new SimpleConfigModule()).Get<ReaderService>();
             _vmManager = vmManager;
@@ -77,23 +91,41 @@ namespace Presenter.ViewModel
             SaveCommand = new RelayCommand(Save, CanSave);
         }
 
+        /// <summary>
+        /// Определяет, может ли команда сохранения быть выполнена.
+        /// Команда доступна только когда все обязательные поля (имя и адрес) заполнены.
+        /// </summary>
+        /// <returns>true, если все обязательные поля заполнены; иначе false.</returns>
         private bool CanSave()
         {
             return !string.IsNullOrWhiteSpace(Name) &&
                    !string.IsNullOrWhiteSpace(Address);
         }
 
+        /// <summary>
+        /// Сохраняет нового читателя в базу данных.
+        /// Создает объект Reader на основе введенных данных и передает его в сервис читателей.
+        /// После успешного сохранения закрывает текущее окно.
+        /// </summary>
         private void Save()
         {
             var readerModel = new Reader
             {
-                Id = Id,
+                Id = 0,
                 Name = Name.Trim(),
                 Address = Address.Trim()
             };
 
             _readerService.Add(readerModel);
             _vmManager.CloseCurrentView();
+        }
+
+        /// <summary>
+        /// Освобождает ресурсы, используемые AddReaderViewModel.
+        /// </summary>
+        public override void Dispose()
+        {
+            base.Dispose();
         }
 
 

@@ -41,7 +41,9 @@ namespace Presenter.ViewModel
             remove { _canExecuteChanged -= value; }
         }
 
-        // Метод для ручного вызова обновления состояния команды
+        /// <summary>
+        /// Метод для ручного вызова обновления состояния команды
+        /// </summary>
         public void RaiseCanExecuteChanged()
         {
             _canExecuteChanged?.Invoke(this, EventArgs.Empty);

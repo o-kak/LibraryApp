@@ -30,6 +30,9 @@ namespace Presenter.ViewModel
         private string _authorFilter;
         private string _statusMessage;
 
+        /// <summary>
+        /// Список читателей для отображения в DataGrid
+        /// </summary>
         public BindingList<ReaderEventArgs> Readers
         {
             get => _readers;
@@ -42,6 +45,9 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Список книг для отображения в DataGrid
+        /// </summary>
         public BindingList<BookEventArgs> Books
         {
             get => _books;
@@ -54,6 +60,9 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Список книг читателей
+        /// </summary>
         public BindingList<BookEventArgs> SelectedReaderBooks 
         {
             get => _selectedReaderBooks;
@@ -66,6 +75,9 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Выбранный читатель из списка читателей
+        /// </summary>
         public ReaderEventArgs SelectedReader
         {
             get => _selectedReader;
@@ -83,6 +95,9 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Выбранная книга из списка книг
+        /// </summary>
         public BookEventArgs SelectedBook
         {
             get => _selectedBook;
@@ -97,6 +112,9 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Значение фильтра по жанру книг
+        /// </summary>
         public string GenreFilter
         {
             get => _genreFilter;
@@ -109,6 +127,9 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Значение фильтра по автору книг
+        /// </summary>
         public string AuthorFilter
         {
             get => _authorFilter;
@@ -121,6 +142,9 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Сообщение о статусе операций для отображения в статусной строке
+        /// </summary>
         public string StatusMessage
         {
             get => _statusMessage;
@@ -136,18 +160,56 @@ namespace Presenter.ViewModel
         public bool CanDoSomethingReader => SelectedReader != null;
         public bool CanDeleteBook => SelectedBook != null;
 
+        /// <summary>
+        /// Команда для добавления нового читателя
+        /// </summary>
         public ICommand AddReaderCommand { get; }
+
+        /// <summary>
+        /// Команда для редактирования выбранного читателя
+        /// </summary>
         public ICommand UpdateReaderCommand { get; }
+
+        /// <summary>
+        /// Команда для удаления выбранного читателя
+        /// </summary>
         public ICommand DeleteReaderCommand { get; }
+
+        /// <summary>
+        /// Команда для добавления новой книги
+        /// </summary>
         public ICommand AddBookCommand { get; }
+
+        /// <summary>
+        /// Команда для удаления выбранной книги
+        /// </summary>
         public ICommand DeleteBookCommand { get; }
-        public ICommand RefreshBooksCommand { get; }
+
+
+        /// <summary>
+        /// Команда для фильтрации книг по жанру
+        /// </summary>
         public ICommand FilterByGenreCommand { get; }
+
+        /// <summary>
+        /// Команда для фильтрации книг по автору
+        /// </summary>
         public ICommand FilterByAuthorCommand { get; }
+
+        /// <summary>
+        /// Команда для выдачи или возврата книги
+        /// </summary>
         public ICommand GiveReturnBookCommand { get; }
+
+        /// <summary>
+        /// Команда для обновления списка читателей
+        /// </summary>
         public ICommand LoadReadersCommand { get; }
+
+        /// <summary>
+        /// Команда для обновления списка книг
+        /// </summary>
         public ICommand LoadBooksCommand { get; }
-        public ICommand ExitCommand { get; }
 
         public ViewModelMain(VMManager vmManager)
         {
@@ -167,13 +229,11 @@ namespace Presenter.ViewModel
             DeleteReaderCommand = new RelayCommand(DeleteReader, () => CanDoSomethingReader);
             AddBookCommand = new RelayCommand(AddBook);
             DeleteBookCommand = new RelayCommand(DeleteBook, () => CanDeleteBook);
-            RefreshBooksCommand = new RelayCommand(LoadBooks);
             FilterByGenreCommand = new RelayCommand(FilterByGenre);
             FilterByAuthorCommand = new RelayCommand(FilterByAuthor);
             GiveReturnBookCommand = new RelayCommand(GiveReturnBook,() => CanDoSomethingReader);
             LoadReadersCommand = new RelayCommand(LoadReaders);
             LoadBooksCommand = new RelayCommand(LoadBooks);
-            ExitCommand = new RelayCommand(ExitApp);
 
             _bookService.DataChanged += OnBooksDataChanged;
             _readerService.DataChanged += OnReadersDataChanged;
@@ -182,28 +242,46 @@ namespace Presenter.ViewModel
             LoadBooks();
         }
 
+        /// <summary>
+        /// Обновляет список читателей
+        /// </summary>
         private void LoadReaders()
         {
             _readerService.InvokeDataChanged();
             StatusMessage = "Обновление списка читателей...";
         }
 
+        /// <summary>
+        /// Обновляет список книг
+        /// </summary>
         private void LoadBooks()
         {
             _bookService.InvokeDataChanged();
             StatusMessage = "Обновление списка книг...";
         }
 
+        /// <summary>
+        /// Обрабатывает событие изменения данных книг
+        /// </summary>
+        /// <param name="books">Обновленная коллекция книг из базы данных</param>
         private void OnBooksDataChanged(IEnumerable<Book> books)
         {
             UpdateBooksCollection(books);
         }
 
+        /// <summary>
+        /// Обрабатывает событие изменения данных читателей
+        /// </summary>
+        /// <param name="readers">Обновленная коллекция читателей из базы данных</param>
         private void OnReadersDataChanged(IEnumerable<Reader> readers)
         {
             UpdateReadersCollection(readers);
         }
 
+        /// <summary>
+        /// Обновляет коллекцию книг для отображения в UI
+        /// </summary>
+        /// <param name="modelBooks">Коллекция книг из модели данных</param>
         private void UpdateBooksCollection(IEnumerable<Book> modelBooks)
         {
             Books.Clear();
@@ -222,6 +300,10 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Обновляет коллекцию читателей для отображения в UI
+        /// </summary>
+        /// <param name="modelReaders">Коллекция читателей из модели данных</param>
         private void UpdateReadersCollection(IEnumerable<Reader> modelReaders)
         {
             Readers.Clear();
@@ -237,23 +319,37 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Открывает окно для выдачи или возврата книги выбранному читателю
+        /// </summary>
         private void GiveReturnBook()
         {
             var giveReturnBookVM = _vmManager.CreateReturnGiveBookViewModel();
         }
+
+        /// <summary>
+        /// Открывает окно для добавления нового читателя
+        /// </summary>
         private void AddReader()
         {
-            var readerVM = _vmManager.CreateReaderViewModel(null);
+            var readerVM = _vmManager.CreateAddReaderViewModel();
         }
 
+        /// <summary>
+        /// Открывает окно для редактирования выбранного читателя
+        /// </summary>
         private void UpdateReader()
         {
             if (SelectedReader != null)
             {
-                var readerVM = _vmManager.CreateReaderViewModel(SelectedReader);
+                var readerVM = _vmManager.CreateUpdateReaderViewModel(SelectedReader);
             }
         }
 
+        /// <summary>
+        /// Удаляет выбранного читателя из базы данных.
+        /// Перед удалением возвращает все книги, взятые читателем.
+        /// </summary>
         private void DeleteReader()
         {
             if (SelectedReader == null)
@@ -279,8 +375,6 @@ namespace Presenter.ViewModel
                     }
 
                     StatusMessage = $"Возвращено {borrowedBooks.Count()} книг читателя {readerToDelete.Name}";
-
-                    Task.Delay(1000).Wait();
                 }
 
                 _readerService.Delete(readerToDelete.Id);
@@ -294,21 +388,40 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Открывает окно для добавления новой книги
+        /// </summary>
         private void AddBook()
         {
             var bookVM = _vmManager.CreateBookViewModel();
         }
 
+        /// <summary>
+        /// Удаляет выбранную книгу из базы данных
+        /// </summary>
         private void DeleteBook()
         {
-            if (SelectedBook != null)
+            if (SelectedBook == null)
             {
-                _bookService.Delete(SelectedBook.Id);
+                StatusMessage = "Не выбрана книга для удаления";
+                return;
+            }
+            try
+            {
+                var bookToDelete = SelectedBook;
+                _bookService.Delete(bookToDelete.Id);
                 LoadBooks();
-                StatusMessage = $"Книга |{SelectedBook.Title}| удалена";
+                StatusMessage = $"Книга |{bookToDelete.Title}| удалена";
+            }
+            catch (Exception ex) 
+            {
+                StatusMessage = $"Ошибка удаления: {ex.Message}";
             }
         }
 
+        /// <summary>
+        /// Фильтрует список книг по заданному жанру
+        /// </summary>
         private void FilterByGenre()
         {
             if (string.IsNullOrWhiteSpace(GenreFilter))
@@ -321,6 +434,9 @@ namespace Presenter.ViewModel
             StatusMessage = $"Отфильтровано по жанру: {GenreFilter}";
         }
 
+        /// <summary>
+        /// Фильтрует список книг по заданному автору
+        /// </summary>
         private void FilterByAuthor()
         {
             if (string.IsNullOrWhiteSpace(AuthorFilter))
@@ -334,11 +450,9 @@ namespace Presenter.ViewModel
             StatusMessage = $"Отфильтровано по автору: {AuthorFilter}";
         }
 
-        private void ExitApp()
-        {
-            System.Environment.Exit(0);
-        }
-
+        /// <summary>
+        /// Освобождает ресурсы и отписывается от событий
+        /// </summary>
         public override void Dispose()
         {
             _bookService.DataChanged -= OnBooksDataChanged;

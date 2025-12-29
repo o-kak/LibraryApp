@@ -20,62 +20,112 @@ namespace Presenter.ViewModel
         private readonly IBookService _bookService;
         private readonly VMManager _vmManager;
 
-        private BookEventArgs _newBook;
+  
+        private string _title;
+        private string _genre;      
+        private string _author;
 
-        public BookEventArgs NewBook
+        /// <summary>
+        /// Название книги.
+        /// При изменении значения автоматически уведомляет об обновлении состояния команды сохранения.
+        /// </summary>
+        public string Title
         {
-            get => _newBook;
+            get => _title;
             set
             {
-                if (_newBook != value)
+                if (_title != value)
                 {
-                    _newBook = value;
+                    _title = value;
                     OnPropertyChanged();
+                    (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 }
             }
         }
-        public ICommand SaveCommand { get; }
-        public ICommand CancelCommand { get; }
 
+        /// <summary>
+        /// Жанр книги.
+        /// При изменении значения автоматически уведомляет об обновлении состояния команды сохранения.
+        /// </summary>
+        public string Genre
+        {
+            get => _genre;
+            set
+            {
+                if (_genre != value)
+                {
+                    _genre = value;
+                    OnPropertyChanged();
+                    (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Автор книги.
+        /// При изменении значения автоматически уведомляет об обновлении состояния команды сохранения.
+        /// </summary>
+        public string Author
+        {
+            get => _author;
+            set
+            {
+                if (_author != value)
+                {
+                    _author = value;
+                    OnPropertyChanged();
+                    (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+
+        public ICommand SaveCommand { get; }
 
         public BookViewModel(VMManager vmManager)
         {
-            _bookService = _bookService = new StandardKernel(new SimpleConfigModule()).Get<BookService>(); ;
+            _bookService = new StandardKernel(new SimpleConfigModule()).Get<BookService>(); ;
             _vmManager = vmManager;
 
-            NewBook = new BookEventArgs();
-
             SaveCommand = new RelayCommand(Save, CanSave);
-            CancelCommand = new RelayCommand(Cancel);
-
         }
 
+        /// <summary>
+        /// Определяет, может ли команда сохранения быть выполнена.
+        /// Команда доступна только когда все обязательные поля (название, жанр, автор) заполнены.
+        /// </summary>
+        /// <returns>true, если все обязательные поля заполнены; иначе false.</returns>
         private bool CanSave()
         {
-            return !string.IsNullOrWhiteSpace(NewBook.Title) &&
-               !string.IsNullOrWhiteSpace(NewBook.Genre) &&
-               !string.IsNullOrWhiteSpace(NewBook.Author);
+            return !string.IsNullOrWhiteSpace(Title) &&
+               !string.IsNullOrWhiteSpace(Genre) &&
+               !string.IsNullOrWhiteSpace(Author);
 
         }
 
+        /// <summary>
+        /// Сохраняет новую книгу в базу данных.
+        /// Создает объект Book на основе введенных данных и передает его в сервис книг.
+        /// После успешного сохранения закрывает текущее окно.
+        /// </summary>
         private void Save()
         {
             var bookModel = new Book
             {
                 Id = 0,
-                Title = NewBook.Title,
-                Genre = NewBook.Genre,
-                Author = NewBook.Author,
+                Title = Title,
+                Genre = Genre,
+                Author = Author,
+                IsAvailable = true
             };
 
             _bookService.Add(bookModel);
             _vmManager.CloseCurrentView();
         }
-        private void Cancel()
-        {
-            _vmManager.CloseCurrentView();
-        }
 
+        /// <summary>
+        /// Освобождает ресурсы, используемые BookViewModel.
+        /// </summary>
         public override void Dispose()
         {
             base.Dispose();

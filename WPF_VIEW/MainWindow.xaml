@@ -30,6 +30,18 @@
             <StatusBarItem>
                 <TextBlock Text="{Binding SelectedReader.Name, FallbackValue='нет'}" Foreground="Red"/>
             </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text=" | Выбрана книга ID: " Foreground="Red"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding SelectedBook.Id, FallbackValue='нет'}" Foreground="Red"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text=" | Название: " Foreground="Red"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding SelectedBook.Title, FallbackValue='нет'}" Foreground="Red"/>
+            </StatusBarItem>
         </StatusBar>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
@@ -47,7 +59,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Добавить" Command="{Binding AddBookCommand}" Margin="2" Padding="5"/>
                     <Button Content="Удалить" Command="{Binding DeleteBookCommand}" Margin="2" Padding="5"/>
-                    <Button Content="Обновить" Command="{Binding RefreshBooksCommand}" Margin="2" Padding="5"/>
+                    <Button Content="Обновить" Command="{Binding LoadBooksCommand}" Margin="2" Padding="5"/>
                     
                     <Separator Margin="10,0"/>
 
@@ -83,9 +95,13 @@
             <TabItem Header="Книги">
                 <DataGrid x:Name="BooksGrid" 
                           ItemsSource="{Binding Books}"
-                          SelectedItem="{Binding SelectedBook}"
+                          SelectedItem="{Binding SelectedBook, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           AutoGenerateColumns="False" 
-                          Margin="5">
+                          Margin="5"
+                          SelectionMode="Single"
+                          IsReadOnly="True"
+                          SelectionUnit="FullRow"
+                          EnableRowVirtualization="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="70"/>
                         <DataGridTextColumn Header="Название" Binding="{Binding Title}" Width="220"/>
