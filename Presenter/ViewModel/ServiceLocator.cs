@@ -25,5 +25,6 @@ namespace Presenter.ViewModel
             LoanService = loanService;
 
         }
+
     }
 }

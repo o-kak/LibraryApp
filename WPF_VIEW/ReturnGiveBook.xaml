@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_VIEW"
         mc:Ignorable="d"
-        Title="ReturnGiveBook" Height="450" Width="800">
+        Title="Управление книгами читателя" 
+        Height="600" 
+        Width="900">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" 
-                Background="#FFE3F2FD" 
+
                 Padding="10" 
                 Margin="0,0,0,10"
                 CornerRadius="5">
@@ -33,23 +35,20 @@
                 <StackPanel Grid.Column="1" 
                             Margin="10,0">
                     <TextBlock x:Name="ReaderNameText" 
-                               Text="Иванов Иван Иванович" 
+                               Text="{Binding SelectedReader.Name}"
                                FontSize="16"
                                FontWeight="SemiBold"/>
                     <TextBlock x:Name="ReaderInfoText" 
-                               Text="Номер билета: 12345" 
+                               Text="Адрес:" 
                                Foreground="Gray"/>
+                    <TextBlock x:Name="ReaderAddress" 
+                                Text="{Binding SelectedReader.Address}"
+                                FontSize="16"
+                                FontWeight="SemiBold"/>
                 </StackPanel>
-
-                <TextBlock Grid.Column="2" 
-                           x:Name="BooksCountText"
-                           Text="Книг на руках: 3" 
-                           FontWeight="Bold"
-                           Foreground="#1976D2"/>
             </Grid>
         </Border>
 
-        <!-- Основное содержимое -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -57,7 +56,6 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Список книг у читателя -->
             <Border Grid.Column="0" 
                     BorderBrush="#E0E0E0" 
                     BorderThickness="1"
@@ -80,6 +78,7 @@
 
                     <ListView Grid.Row="1" 
                               x:Name="ReaderBooksListView"
+                              ItemsSource="{Binding ReadersBooks}"
                               ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <ListView.View>
                             <GridView>
@@ -98,10 +97,10 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Дата выдачи" Width="100">
+                                <GridViewColumn Header="Жанр" Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding IssueDate, StringFormat=dd.MM.yyyy}"/>
+                                            <TextBlock Text="{Binding Genre}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -115,9 +114,10 @@
                             CornerRadius="0,0,5,5">
                         <Button x:Name="ReturnBookButton" 
                                 Content="Вернуть книгу"
-                                Background="#4CAF50"
+                                Background="Gray"
                                 Foreground="White"
-                                HorizontalAlignment="Center">
+                                HorizontalAlignment="Center"
+                                Command="{Binding ReturnBookCommand}">
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="IsEnabled" Value="True"/>
@@ -139,8 +139,7 @@
                           Width="5" 
                           HorizontalAlignment="Stretch"
                           Background="Transparent"/>
-
-            <!-- Список доступных книг -->
+            
             <Border Grid.Column="2" 
                     BorderBrush="#E0E0E0" 
                     BorderThickness="1"
@@ -169,6 +168,7 @@
 
                     <ListView Grid.Row="1" 
                               x:Name="AvailableBooksListView"
+                              ItemsSource="{Binding AvailableBooks}"
                               ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <ListView.View>
                             <GridView>
@@ -187,22 +187,6 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Год" Width="60">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Year}" 
-                                                       HorizontalAlignment="Center"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Доступно" Width="70">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding AvailableCount}" 
-                                                       HorizontalAlignment="Center"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -213,14 +197,15 @@
                             CornerRadius="0,0,5,5">
                         <Button x:Name="TakeBookButton" 
                                 Content="Взять книгу"
-                                Background="#2196F3"
+                                Background="Gray"
                                 Foreground="White"
-                                HorizontalAlignment="Center">
+                                HorizontalAlignment="Center"
+                                Command="{Binding GiveBookCommand}">
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="IsEnabled" Value="True"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedItem, ElementName=AvailableBooksListView}" 
+                                        <DataTrigger Binding="{Binding SelectedAvailableBook, ElementName=AvailableBooksListView}" 
                                                      Value="{x:Null}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
@@ -233,7 +218,6 @@
             </Border>
         </Grid>
 
-        <!-- Нижняя панель с кнопками -->
         <Border Grid.Row="2" 
                 Background="#F5F5F5" 
                 Padding="10"
@@ -246,18 +230,12 @@
                         Background="#607D8B"
                         Foreground="White"
                         ToolTip="Обновить списки книг"/>
-
-                <Button x:Name="HistoryButton" 
-                        Content="История выдачи"
-                        Margin="20,0,0,0"
-                        Background="#9C27B0"
-                        Foreground="White"
-                        ToolTip="Просмотр истории выдачи книг"/>
+                        
 
                 <Button x:Name="CloseButton" 
                         Content="Закрыть"
                         Margin="20,0,0,0"
-                        Background="#F44336"
+                        Background="Gray"
                         Foreground="White"/>
             </StackPanel>
         </Border>
