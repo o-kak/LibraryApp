@@ -77,8 +77,8 @@ namespace WPF_VIEW
 
             if (vm is ViewModelMain viewModelMain)
                 return new MainWindow(viewModelMain);
-            else if (vm is ReaderViewModel)
-                return new UpdateReader();
+            else if (vm is UpdateReaderViewModel viewModelUpdateReader)
+                return new UpdateReader(viewModelUpdateReader);
             else if (vm is AddReaderViewModel viewModelAddReader)
                 return new AddReader(viewModelAddReader);
             else if (vm is BookViewModel)
@@ -89,14 +89,6 @@ namespace WPF_VIEW
                 return null;
         }
 
-        public void CloseView(ViewModelBase vm)
-        {
-            if (_windows.TryGetValue(vm, out Window view))
-            {
-                view.Hide();
-
-            }
-        }
 
         public void Shutdown()
         {

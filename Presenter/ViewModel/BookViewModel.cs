@@ -35,8 +35,6 @@ namespace Presenter.ViewModel
             }
         }
         public ICommand SaveCommand { get; }
-        public ICommand CancelCommand { get; }
-
 
         public BookViewModel(VMManager vmManager)
         {
@@ -46,7 +44,6 @@ namespace Presenter.ViewModel
             NewBook = new BookEventArgs();
 
             SaveCommand = new RelayCommand(Save, CanSave);
-            CancelCommand = new RelayCommand(Cancel);
 
         }
 
@@ -69,10 +66,6 @@ namespace Presenter.ViewModel
             };
 
             _bookService.Add(bookModel);
-            _vmManager.CloseCurrentView();
-        }
-        private void Cancel()
-        {
             _vmManager.CloseCurrentView();
         }
 

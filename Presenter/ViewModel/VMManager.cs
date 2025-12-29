@@ -47,9 +47,15 @@ namespace Presenter.ViewModel
             return vm;
         } 
 
-        public ReaderViewModel CreateReaderViewModel(ReaderEventArgs existingReader = null)
+        public UpdateReaderViewModel CreateUpdateReaderViewModel(ReaderEventArgs existingReader)
         {
-            var vm = new ReaderViewModel(this, existingReader);
+            var vm = new UpdateReaderViewModel(this, existingReader);
+            CurrentViewModel = vm;
+            return vm;
+        }
+        public AddReaderViewModel CreateAddReaderViewModel() 
+        {
+            var vm = new AddReaderViewModel(this);
             CurrentViewModel = vm;
             return vm;
         }
@@ -63,7 +69,6 @@ namespace Presenter.ViewModel
         public void CloseCurrentView()
         {
             ViewModelClosedEvent?.Invoke();
-            ShowMainView();
         }
 
     }

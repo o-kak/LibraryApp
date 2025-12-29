@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Presenter.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,16 @@ namespace WPF_VIEW
     /// </summary>
     public partial class UpdateReader : Window
     {
+
         public UpdateReader()
         {
             InitializeComponent();
+
+        }
+
+        public UpdateReader(UpdateReaderViewModel readerViewModel) : this() 
+        {
+            DataContext = readerViewModel;
         }
     }
 }

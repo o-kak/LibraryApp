@@ -243,14 +243,14 @@ namespace Presenter.ViewModel
         }
         private void AddReader()
         {
-            var readerVM = _vmManager.CreateReaderViewModel(null);
+            var readerVM = _vmManager.CreateAddReaderViewModel();
         }
 
         private void UpdateReader()
         {
             if (SelectedReader != null)
             {
-                var readerVM = _vmManager.CreateReaderViewModel(SelectedReader);
+                var readerVM = _vmManager.CreateUpdateReaderViewModel(SelectedReader);
             }
         }
 

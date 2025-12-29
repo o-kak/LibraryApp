@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace Presenter.ViewModel
 {
-    public class ReaderViewModel : ViewModelBase
+    public class UpdateReaderViewModel : ViewModelBase
     {
         private readonly IReaderService _readerService;
         private readonly VMManager _vmManager;
@@ -42,7 +42,7 @@ namespace Presenter.ViewModel
 
         public ICommand SaveCommand { get; }
 
-        public ReaderViewModel(VMManager vmManager, ReaderEventArgs existingReader)
+        public UpdateReaderViewModel(VMManager vmManager, ReaderEventArgs existingReader)
         {
             _readerService = new StandardKernel(new SimpleConfigModule()).Get<ReaderService>();
             _vmManager = vmManager;

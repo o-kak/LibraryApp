@@ -65,7 +65,7 @@ namespace Presenter.ViewModel
 
         public ICommand SaveCommand { get; }
 
-        public AddReaderViewModel(VMManager vmManager, ReaderEventArgs existingReader = null)
+        public AddReaderViewModel(VMManager vmManager)
         {
             _readerService = new StandardKernel(new SimpleConfigModule()).Get<ReaderService>();
             _vmManager = vmManager;
@@ -94,6 +94,11 @@ namespace Presenter.ViewModel
 
             _readerService.Add(readerModel);
             _vmManager.CloseCurrentView();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
         }
 
 
