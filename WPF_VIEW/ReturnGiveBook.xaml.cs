@@ -25,7 +25,7 @@ namespace WPF_VIEW
             InitializeComponent();
         }
 
-        public ReturnGiveBook(ReturnGiveBookViewModel viewModel)
+        public ReturnGiveBook(ReturnGiveBookViewModel viewModel) : this()
         {
             DataContext = viewModel;
         }

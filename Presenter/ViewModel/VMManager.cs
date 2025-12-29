@@ -96,9 +96,9 @@ namespace Presenter.ViewModel
         /// Создает ViewModel для выдачи или возврата книги.
         /// </summary>
         /// <returns>Созданная ReturnGiveBookViewModel.</returns>
-        public ReturnGiveBookViewModel CreateReturnGiveBookViewModel()
+        public ReturnGiveBookViewModel CreateReturnGiveBookViewModel(ReaderEventArgs reader)
         {
-            var vm = new ReturnGiveBookViewModel();
+            var vm = new ReturnGiveBookViewModel(this, reader);
             CurrentViewModel = vm;
             return vm;
         }

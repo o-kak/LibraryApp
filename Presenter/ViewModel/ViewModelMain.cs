@@ -91,6 +91,8 @@ namespace Presenter.ViewModel
                     updateCmd.RaiseCanExecuteChanged();
                 if (DeleteReaderCommand is RelayCommand deleteCmd)
                     deleteCmd.RaiseCanExecuteChanged();
+                if (GiveReturnBookCommand is RelayCommand giveReturnBookCommand)
+                    giveReturnBookCommand.RaiseCanExecuteChanged();
 
             }
         }
@@ -324,7 +326,10 @@ namespace Presenter.ViewModel
         /// </summary>
         private void GiveReturnBook()
         {
-            var giveReturnBookVM = _vmManager.CreateReturnGiveBookViewModel();
+            if (SelectedReader != null)
+            {
+                var giveReturnBookVM = _vmManager.CreateReturnGiveBookViewModel(SelectedReader);
+            }
         }
 
         /// <summary>
