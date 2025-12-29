@@ -92,7 +92,8 @@ namespace Presenter.ViewModel
                     return;
                 _selectedBook = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(CanDeleteReader));
+                if (DeleteBookCommand is RelayCommand deletebookCmd)
+                    deletebookCmd.RaiseCanExecuteChanged();
             }
         }
 
@@ -132,8 +133,7 @@ namespace Presenter.ViewModel
             }
         }
 
-        public bool CanUpdateReader => SelectedReader != null;
-        public bool CanDeleteReader => SelectedReader != null;
+        public bool CanDoSomethingReader => SelectedReader != null;
         public bool CanDeleteBook => SelectedBook != null;
 
         public ICommand AddReaderCommand { get; }
@@ -163,14 +163,14 @@ namespace Presenter.ViewModel
 
 
             AddReaderCommand = new RelayCommand(AddReader);
-            UpdateReaderCommand = new RelayCommand(UpdateReader, () => CanUpdateReader);
-            DeleteReaderCommand = new RelayCommand(DeleteReader, () => CanDeleteReader);
+            UpdateReaderCommand = new RelayCommand(UpdateReader, () => CanDoSomethingReader);
+            DeleteReaderCommand = new RelayCommand(DeleteReader, () => CanDoSomethingReader);
             AddBookCommand = new RelayCommand(AddBook);
             DeleteBookCommand = new RelayCommand(DeleteBook, () => CanDeleteBook);
             RefreshBooksCommand = new RelayCommand(LoadBooks);
             FilterByGenreCommand = new RelayCommand(FilterByGenre);
             FilterByAuthorCommand = new RelayCommand(FilterByAuthor);
-            GiveReturnBookCommand = new RelayCommand(GiveReturnBook);
+            GiveReturnBookCommand = new RelayCommand(GiveReturnBook,() => CanDoSomethingReader);
             LoadReadersCommand = new RelayCommand(LoadReaders);
             LoadBooksCommand = new RelayCommand(LoadBooks);
             ExitCommand = new RelayCommand(ExitApp);

@@ -78,7 +78,9 @@ namespace WPF_VIEW
             if (vm is ViewModelMain viewModelMain)
                 return new MainWindow(viewModelMain);
             else if (vm is ReaderViewModel)
-                return new AddReader();
+                return new UpdateReader();
+            else if (vm is AddReaderViewModel viewModelAddReader)
+                return new AddReader(viewModelAddReader);
             else if (vm is BookViewModel)
                 return new AddBook();
             else if (vm is ReturnGiveBookViewModel)

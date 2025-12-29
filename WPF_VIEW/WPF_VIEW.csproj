@@ -111,6 +111,9 @@
     <Compile Include="ReturnGiveBook.xaml.cs">
       <DependentUpon>ReturnGiveBook.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UpdateReader.xaml.cs">
+      <DependentUpon>UpdateReader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewManager.cs" />
     <Page Include="AddBook.xaml">
       <SubType>Designer</SubType>
@@ -133,6 +136,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ReturnGiveBook.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UpdateReader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

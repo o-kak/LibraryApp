@@ -23,7 +23,6 @@ namespace Presenter.ViewModel
 
 
         private ReaderEventArgs _selectedReader;
-        private bool _isEditMode;
 
         public ReaderEventArgs SelectedReader
         {
@@ -34,43 +33,23 @@ namespace Presenter.ViewModel
                 {
                     _selectedReader = value;
                     OnPropertyChanged();
+                    if (SaveCommand is RelayCommand saveCmd)
+                        saveCmd.RaiseCanExecuteChanged();
+
                 }
             }
         }
-
-        public bool IsEditMode
-        {
-            get => _isEditMode;
-            set
-            {
-                if (_isEditMode != value)
-                {
-                    _isEditMode = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public string Title => _isEditMode ? "Редактирование читателя" : "Добавление читателя";
 
         public ICommand SaveCommand { get; }
-        public ICommand CancelCommand { get; }
 
-        public ReaderViewModel(VMManager vmManager, ReaderEventArgs existingReader = null)
+        public ReaderViewModel(VMManager vmManager, ReaderEventArgs existingReader)
         {
             _readerService = new StandardKernel(new SimpleConfigModule()).Get<ReaderService>();
             _vmManager = vmManager;
 
-            IsEditMode = existingReader != null;
-            SelectedReader = existingReader ?? new ReaderEventArgs()
-            {
-                Id = 0,
-                Name = string.Empty,
-                Address = string.Empty
-            };
+            SelectedReader = existingReader;
 
             SaveCommand = new RelayCommand(Save,() => CanSave());
-            CancelCommand = new RelayCommand(Cancel);
         }
 
         private bool CanSave()
@@ -88,20 +67,8 @@ namespace Presenter.ViewModel
                 Address = SelectedReader.Address.Trim()
             };
 
-            if (IsEditMode)
-            {
-                _readerService.Update(readerModel);
-            }
-            else
-            {
-                _readerService.Add(readerModel);
-            }
+            _readerService.Update(readerModel);
 
-            _vmManager.CloseCurrentView();
-        }
-
-        private void Cancel()
-        {
             _vmManager.CloseCurrentView();
         }
 

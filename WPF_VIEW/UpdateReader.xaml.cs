@@ -1,5 +1,4 @@
-﻿using Presenter.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,17 +15,13 @@ using System.Windows.Shapes;
 namespace WPF_VIEW
 {
     /// <summary>
-    /// Логика взаимодействия для AddReader.xaml
+    /// Логика взаимодействия для UpdateReader.xaml
     /// </summary>
-    public partial class AddReader : Window
+    public partial class UpdateReader : Window
     {
-        public AddReader()
+        public UpdateReader()
         {
             InitializeComponent();
-        }
-        public AddReader(AddReaderViewModel viewModel) : this()
-        {
-            DataContext = viewModel;
         }
     }
 }

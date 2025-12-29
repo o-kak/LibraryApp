@@ -1,0 +1,46 @@
+﻿<Window x:Class="WPF_VIEW.UpdateReader"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_VIEW"
+        mc:Ignorable="d"
+        Title="UpdateReader" Height="250" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StatusBar Grid.Row="0">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage}"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text=" | Выбран читатель ID: " Foreground="Red"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding SelectedReader.Id, FallbackValue='нет'}" Foreground="Red"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text=" | Имя: " Foreground="Red"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding SelectedReader.Name, FallbackValue='нет'}" Foreground="Red"/>
+            </StatusBarItem>
+        </StatusBar>
+
+
+        <StackPanel Grid.Row="1" Orientation="Vertical">
+            <GroupBox Header="Изменить читателя" Margin="10">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="ФИО Читателя: " VerticalAlignment="Center" Margin="10"/>
+                    <TextBox Width="200"  Margin="5" Text="{Binding SelectedReader.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text="Адрес читателя: " VerticalAlignment="Center" Margin="10"/>
+                    <TextBox Width="200" Margin="5" Text="{Binding SelectedReader.Address, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Content="Добавить читателя" Command="{Binding SaveCommand}" Margin="10" Padding="5"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </Grid>
+</Window>
