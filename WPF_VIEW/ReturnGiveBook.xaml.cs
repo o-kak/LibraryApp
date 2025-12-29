@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Presenter.ViewModel;
 
 namespace WPF_VIEW
 {
@@ -22,6 +23,11 @@ namespace WPF_VIEW
         public ReturnGiveBook()
         {
             InitializeComponent();
+        }
+
+        public ReturnGiveBook(ReturnGiveBookViewModel viewModel)
+        {
+            DataContext = viewModel;
         }
     }
 }
