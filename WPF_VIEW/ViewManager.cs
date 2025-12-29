@@ -11,6 +11,9 @@ namespace WPF_VIEW
 {
     public class ViewManager
     {
+        /// <summary>
+        /// Словарь для хранения соответствий между ViewModel и их окнами.
+        /// </summary>
         Dictionary<ViewModelBase, Window> _windows;
         private VMManager _vmManager;
         private Window _mainWindow;
@@ -27,6 +30,11 @@ namespace WPF_VIEW
             _vmManager.Start();
         }
 
+        /// <summary>
+        /// Обрабатывает событие готовности новой ViewModel к отображению.
+        /// Создает соответствующее окно, устанавливает DataContext и отображает его.
+        /// </summary>
+        /// <param name="vm">ViewModel, готовая к отображению.</param>
         private void OnViewModelReady(ViewModelBase vm)
         {
             if (vm == null) return;
@@ -49,6 +57,11 @@ namespace WPF_VIEW
                 } 
             }
         }
+
+        /// <summary>
+        /// Обрабатывает событие закрытия текущей ViewModel.
+        /// Скрывает все окна, кроме главного.
+        /// </summary>
         private void OnViewModelClosed()
         {
 
@@ -71,6 +84,11 @@ namespace WPF_VIEW
             }
         }
 
+        /// <summary>
+        /// Создает окно для указанной ViewModel.
+        /// </summary>
+        /// <param name="vm">ViewModel, для которой нужно создать окно.</param>
+        /// <returns>Созданное окно или null, если ViewModel не поддерживается.</returns>
         private Window CreateWindowForViewModel(ViewModelBase vm)
         {
             if (vm == null) return null;
@@ -89,7 +107,10 @@ namespace WPF_VIEW
                 return null;
         }
 
-
+        /// <summary>
+        /// Корректно завершает работу менеджера окон.
+        /// Отписывается от событий, закрывает все окна и очищает ресурсы.
+        /// </summary>
         public void Shutdown()
         {
             _vmManager.VMMReadyEvent -= OnViewModelReady;

@@ -134,7 +134,6 @@
     <Compile Include="ViewModel\UpdateReaderViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\ReturnGiveBookViewModel.cs" />
-    <Compile Include="ViewModel\ServiceLocator.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\ViewModelMain.cs" />
     <Compile Include="ViewModel\VMManager.cs" />

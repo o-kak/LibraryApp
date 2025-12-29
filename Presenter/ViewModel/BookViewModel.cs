@@ -25,6 +25,10 @@ namespace Presenter.ViewModel
         private string _genre;      
         private string _author;
 
+        /// <summary>
+        /// Название книги.
+        /// При изменении значения автоматически уведомляет об обновлении состояния команды сохранения.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -39,6 +43,10 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Жанр книги.
+        /// При изменении значения автоматически уведомляет об обновлении состояния команды сохранения.
+        /// </summary>
         public string Genre
         {
             get => _genre;
@@ -53,6 +61,10 @@ namespace Presenter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Автор книги.
+        /// При изменении значения автоматически уведомляет об обновлении состояния команды сохранения.
+        /// </summary>
         public string Author
         {
             get => _author;
@@ -72,12 +84,17 @@ namespace Presenter.ViewModel
 
         public BookViewModel(VMManager vmManager)
         {
-            _bookService = _bookService = new StandardKernel(new SimpleConfigModule()).Get<BookService>(); ;
+            _bookService = new StandardKernel(new SimpleConfigModule()).Get<BookService>(); ;
             _vmManager = vmManager;
 
             SaveCommand = new RelayCommand(Save, CanSave);
         }
 
+        /// <summary>
+        /// Определяет, может ли команда сохранения быть выполнена.
+        /// Команда доступна только когда все обязательные поля (название, жанр, автор) заполнены.
+        /// </summary>
+        /// <returns>true, если все обязательные поля заполнены; иначе false.</returns>
         private bool CanSave()
         {
             return !string.IsNullOrWhiteSpace(Title) &&
@@ -86,6 +103,11 @@ namespace Presenter.ViewModel
 
         }
 
+        /// <summary>
+        /// Сохраняет новую книгу в базу данных.
+        /// Создает объект Book на основе введенных данных и передает его в сервис книг.
+        /// После успешного сохранения закрывает текущее окно.
+        /// </summary>
         private void Save()
         {
             var bookModel = new Book
@@ -101,6 +123,9 @@ namespace Presenter.ViewModel
             _vmManager.CloseCurrentView();
         }
 
+        /// <summary>
+        /// Освобождает ресурсы, используемые BookViewModel.
+        /// </summary>
         public override void Dispose()
         {
             base.Dispose();

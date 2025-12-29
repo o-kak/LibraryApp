@@ -59,7 +59,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Добавить" Command="{Binding AddBookCommand}" Margin="2" Padding="5"/>
                     <Button Content="Удалить" Command="{Binding DeleteBookCommand}" Margin="2" Padding="5"/>
-                    <Button Content="Обновить" Command="{Binding RefreshBooksCommand}" Margin="2" Padding="5"/>
+                    <Button Content="Обновить" Command="{Binding LoadBooksCommand}" Margin="2" Padding="5"/>
                     
                     <Separator Margin="10,0"/>
 
