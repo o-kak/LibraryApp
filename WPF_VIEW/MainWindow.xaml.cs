@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Presenter.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
@@ -24,6 +25,11 @@ namespace WPF_VIEW
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public MainWindow(ViewModelMain viewModel) : this()
+        {
+            DataContext = viewModel;
         }
     }
 }

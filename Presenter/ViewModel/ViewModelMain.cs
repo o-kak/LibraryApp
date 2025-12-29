@@ -3,8 +3,6 @@ using Model;
 using Ninject;
 using Shared;
 using System;
-using System;
-using System.Collections.Generic;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -25,6 +23,7 @@ namespace Presenter.ViewModel
         private BindingList<ReaderEventArgs> _readers;
         private BindingList<BookEventArgs> _books;
         private ReaderEventArgs _selectedReader;
+        private BindingList<BookEventArgs> _selectedReaderBooks; 
         private BookEventArgs _selectedBook;
 
         private string _genreFilter;
@@ -55,6 +54,18 @@ namespace Presenter.ViewModel
             }
         }
 
+        public BindingList<BookEventArgs> SelectedReaderBooks 
+        {
+            get => _selectedReaderBooks;
+            set 
+            {
+                if( _selectedReaderBooks == value)
+                    return;
+                _selectedReaderBooks = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ReaderEventArgs SelectedReader
         {
             get => _selectedReader;
@@ -64,6 +75,11 @@ namespace Presenter.ViewModel
                     return;
                 _selectedReader = value;
                 OnPropertyChanged();
+                if (UpdateReaderCommand is RelayCommand updateCmd)
+                    updateCmd.RaiseCanExecuteChanged();
+                if (DeleteReaderCommand is RelayCommand deleteCmd)
+                    deleteCmd.RaiseCanExecuteChanged();
+
             }
         }
 
@@ -76,6 +92,7 @@ namespace Presenter.ViewModel
                     return;
                 _selectedBook = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(CanDeleteReader));
             }
         }
 
@@ -115,6 +132,10 @@ namespace Presenter.ViewModel
             }
         }
 
+        public bool CanUpdateReader => SelectedReader != null;
+        public bool CanDeleteReader => SelectedReader != null;
+        public bool CanDeleteBook => SelectedBook != null;
+
         public ICommand AddReaderCommand { get; }
         public ICommand UpdateReaderCommand { get; }
         public ICommand DeleteReaderCommand { get; }
@@ -142,10 +163,10 @@ namespace Presenter.ViewModel
 
 
             AddReaderCommand = new RelayCommand(AddReader);
-            UpdateReaderCommand = new RelayCommand(UpdateReader, () => SelectedReader != null);
-            DeleteReaderCommand = new RelayCommand(DeleteReader, () => SelectedReader != null);
+            UpdateReaderCommand = new RelayCommand(UpdateReader, () => CanUpdateReader);
+            DeleteReaderCommand = new RelayCommand(DeleteReader, () => CanDeleteReader);
             AddBookCommand = new RelayCommand(AddBook);
-            DeleteBookCommand = new RelayCommand(DeleteBook, () => SelectedBook != null);
+            DeleteBookCommand = new RelayCommand(DeleteBook, () => CanDeleteBook);
             RefreshBooksCommand = new RelayCommand(LoadBooks);
             FilterByGenreCommand = new RelayCommand(FilterByGenre);
             FilterByAuthorCommand = new RelayCommand(FilterByAuthor);
@@ -235,11 +256,41 @@ namespace Presenter.ViewModel
 
         private void DeleteReader()
         {
-            if (SelectedReader != null)
+            if (SelectedReader == null)
             {
-                _readerService.Delete(SelectedReader.Id);
+                StatusMessage = "Не выбран читатель для удаления";
+                return;
+            }
+
+            try
+            {
+                var readerToDelete = SelectedReader;
+
+                var borrowedBooks = _loanService.GetReadersBorrowedBooks(readerToDelete.Id);
+
+                if (borrowedBooks != null && borrowedBooks.Any())
+                {
+                    foreach (var book in borrowedBooks)
+                    {
+                        if (book.ReaderId == readerToDelete.Id)
+                        {
+                            _loanService.ReturnBook(book.Id, readerToDelete.Id);
+                        }
+                    }
+
+                    StatusMessage = $"Возвращено {borrowedBooks.Count()} книг читателя {readerToDelete.Name}";
+
+                    Task.Delay(1000).Wait();
+                }
+
+                _readerService.Delete(readerToDelete.Id);
                 LoadReaders();
-                StatusMessage = $"Читатель {SelectedReader.Name} удален";
+                LoadBooks();
+                StatusMessage = $"Читатель {readerToDelete.Name} удален";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Ошибка удаления: {ex.Message}";
             }
         }
 

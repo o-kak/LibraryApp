@@ -62,9 +62,14 @@ namespace Presenter.ViewModel
             _vmManager = vmManager;
 
             IsEditMode = existingReader != null;
-            SelectedReader = existingReader ?? new ReaderEventArgs();
+            SelectedReader = existingReader ?? new ReaderEventArgs()
+            {
+                Id = 0,
+                Name = string.Empty,
+                Address = string.Empty
+            };
 
-            SaveCommand = new RelayCommand(Save, CanSave);
+            SaveCommand = new RelayCommand(Save,() => CanSave());
             CancelCommand = new RelayCommand(Cancel);
         }
 

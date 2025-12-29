@@ -46,7 +46,7 @@ namespace WPF_VIEW
                 {
                     window.Owner = _mainWindow;
                     window.ShowDialog();
-                }
+                } 
             }
         }
         private void OnViewModelClosed()
@@ -66,8 +66,7 @@ namespace WPF_VIEW
             {
                 if (_windows.TryGetValue(vm, out var window))
                 {
-                    window.Close();
-                    _windows.Remove(vm);
+                    window.Hide();
                 }
             }
         }
@@ -76,8 +75,8 @@ namespace WPF_VIEW
         {
             if (vm == null) return null;
 
-            if (vm is ViewModelMain)
-                return new MainWindow();
+            if (vm is ViewModelMain viewModelMain)
+                return new MainWindow(viewModelMain);
             else if (vm is ReaderViewModel)
                 return new AddReader();
             else if (vm is BookViewModel)
@@ -92,8 +91,8 @@ namespace WPF_VIEW
         {
             if (_windows.TryGetValue(vm, out Window view))
             {
-                view.Close();
-                _windows.Remove(vm);
+                view.Hide();
+
             }
         }
 

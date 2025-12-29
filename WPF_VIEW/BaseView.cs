@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Presenter.ViewModel;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +13,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Presenter.ViewModel;
 
 
 
@@ -19,15 +20,11 @@ namespace WPF_VIEW
 {
     public partial class BaseView : Window
     {
-        public event Action<BaseView> ClosedEvent;
-        protected ViewModelBase ViewModel => DataContext as ViewModelBase;
-
-
-        protected override void OnClosed(EventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
-            ClosedEvent?.Invoke(this);
-            (ViewModel as IDisposable)?.Dispose();
-            base.OnClosed(e);
+            base.OnClosing(e);
+            e.Cancel = true;
+            this.Hide();
         }
 
     }

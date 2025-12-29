@@ -14,16 +14,25 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Status Bar -->
         <StatusBar Grid.Row="0">
             <StatusBarItem>
                 <TextBlock Text="{Binding StatusMessage}"/>
             </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text=" | Выбран читатель ID: " Foreground="Red"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding SelectedReader.Id, FallbackValue='нет'}" Foreground="Red"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text=" | Имя: " Foreground="Red"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding SelectedReader.Name, FallbackValue='нет'}" Foreground="Red"/>
+            </StatusBarItem>
         </StatusBar>
 
-        <!-- Toolbars for Readers and Books -->
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <!-- Readers Toolbar -->
             <GroupBox Header="Читатели" Margin="5">
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Добавить" Command="{Binding AddReaderCommand}" Margin="2" Padding="5"/>
@@ -33,7 +42,6 @@
                 </StackPanel>
             </GroupBox>
 
-            <!-- Books Toolbar -->
             <GroupBox Header="Книги" Margin="5">
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Добавить" Command="{Binding AddBookCommand}" Margin="2" Padding="5"/>
@@ -44,17 +52,16 @@
                     <Separator Margin="10,0" />
 
                     <TextBlock Text="Жанр:" VerticalAlignment="Center" Margin="2"/>
-                    <TextBox Width="100" Margin="2"/>
-                    <Button Content="Фильтр" Command="{Binding FilterByGenreCommand, UpdateSourceTrigger=PropertyChanged}" Margin="2" Padding="5"/>
+                    <TextBox Width="100" Margin="2" Text="{Binding GenreFilter, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Content="Фильтр" Command="{Binding FilterByGenreCommand}" Margin="2" Padding="5"/>
 
                     <TextBlock Text="Автор:" VerticalAlignment="Center" Margin="2"/>
-                    <TextBox Width="100" Margin="2"/>
-                    <Button Content="Фильтр" Command="{Binding FilterByAuthorCommand, UpdateSourceTrigger=PropertyChanged}" Margin="2" Padding="5"/>
+                    <TextBox Width="100" Margin="2" Text="{Binding AuthorFilter, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Content="Фильтр" Command="{Binding FilterByAuthorCommand}" Margin="2" Padding="5"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
 
-        <!-- Tab Control with Tables -->
         <TabControl Grid.Row="2" Margin="10">
             <TabItem Header="Читатели">
                 <DataGrid x:Name="ReadersGrid" 
@@ -85,6 +92,7 @@
                         <DataGridTextColumn Header="Автор" Binding="{Binding Author}" Width="170"/>
                         <DataGridTextColumn Header="Жанр" Binding="{Binding Genre}" Width="120"/>
                         <DataGridCheckBoxColumn Header="Доступна" Binding="{Binding IsAvailable}" Width="80"/>
+                        <DataGridTextColumn Header="ID читателя" Binding="{Binding ReaderId}" Width = "80"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>

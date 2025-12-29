@@ -11,10 +11,11 @@ namespace Presenter.ViewModel
     {
         private readonly Action _execute;
         private readonly Func<bool> _canExecute;
+        private event EventHandler _canExecuteChanged;
 
         public RelayCommand(Action execute, Func<bool> canExecute = null)
         {
-            _execute = execute;
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }
 
@@ -34,6 +35,17 @@ namespace Presenter.ViewModel
         /// <summary>
         /// Событие, которое вызывается при изменении состояния выполнения команды.
         /// </summary>
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler CanExecuteChanged
+        {
+            add { _canExecuteChanged += value; }
+            remove { _canExecuteChanged -= value; }
+        }
+
+        // Метод для ручного вызова обновления состояния команды
+        public void RaiseCanExecuteChanged()
+        {
+            _canExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
+
     }
 }
