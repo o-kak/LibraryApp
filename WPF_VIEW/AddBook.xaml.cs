@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Presenter.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,10 @@ namespace WPF_VIEW
         public AddBook()
         {
             InitializeComponent();
+        }
+        public AddBook(BookViewModel bookViewModel) : this()
+        {
+            DataContext = bookViewModel;
         }
     }
 }

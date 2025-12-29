@@ -20,20 +20,54 @@ namespace Presenter.ViewModel
         private readonly IBookService _bookService;
         private readonly VMManager _vmManager;
 
-        private BookEventArgs _newBook;
+  
+        private string _title;
+        private string _genre;      
+        private string _author;
 
-        public BookEventArgs NewBook
+        public string Title
         {
-            get => _newBook;
+            get => _title;
             set
             {
-                if (_newBook != value)
+                if (_title != value)
                 {
-                    _newBook = value;
+                    _title = value;
                     OnPropertyChanged();
+                    (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 }
             }
         }
+
+        public string Genre
+        {
+            get => _genre;
+            set
+            {
+                if (_genre != value)
+                {
+                    _genre = value;
+                    OnPropertyChanged();
+                    (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        public string Author
+        {
+            get => _author;
+            set
+            {
+                if (_author != value)
+                {
+                    _author = value;
+                    OnPropertyChanged();
+                    (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+
         public ICommand SaveCommand { get; }
 
         public BookViewModel(VMManager vmManager)
@@ -41,17 +75,14 @@ namespace Presenter.ViewModel
             _bookService = _bookService = new StandardKernel(new SimpleConfigModule()).Get<BookService>(); ;
             _vmManager = vmManager;
 
-            NewBook = new BookEventArgs();
-
             SaveCommand = new RelayCommand(Save, CanSave);
-
         }
 
         private bool CanSave()
         {
-            return !string.IsNullOrWhiteSpace(NewBook.Title) &&
-               !string.IsNullOrWhiteSpace(NewBook.Genre) &&
-               !string.IsNullOrWhiteSpace(NewBook.Author);
+            return !string.IsNullOrWhiteSpace(Title) &&
+               !string.IsNullOrWhiteSpace(Genre) &&
+               !string.IsNullOrWhiteSpace(Author);
 
         }
 
@@ -60,9 +91,10 @@ namespace Presenter.ViewModel
             var bookModel = new Book
             {
                 Id = 0,
-                Title = NewBook.Title,
-                Genre = NewBook.Genre,
-                Author = NewBook.Author,
+                Title = Title,
+                Genre = Genre,
+                Author = Author,
+                IsAvailable = true
             };
 
             _bookService.Add(bookModel);

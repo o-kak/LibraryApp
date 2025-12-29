@@ -87,7 +87,7 @@ namespace Presenter.ViewModel
         {
             var readerModel = new Reader
             {
-                Id = Id,
+                Id = 0,
                 Name = Name.Trim(),
                 Address = Address.Trim()
             };

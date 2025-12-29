@@ -301,11 +301,21 @@ namespace Presenter.ViewModel
 
         private void DeleteBook()
         {
-            if (SelectedBook != null)
+            if (SelectedBook == null)
             {
-                _bookService.Delete(SelectedBook.Id);
+                StatusMessage = "Не выбрана книга для удаления";
+                return;
+            }
+            try
+            {
+                var bookToDelete = SelectedBook;
+                _bookService.Delete(bookToDelete.Id);
                 LoadBooks();
-                StatusMessage = $"Книга |{SelectedBook.Title}| удалена";
+                StatusMessage = $"Книга |{bookToDelete.Title}| удалена";
+            }
+            catch (Exception ex) 
+            {
+                StatusMessage = $"Ошибка удаления(Возможно книга находится у читателя): {ex.Message}";
             }
         }
 
