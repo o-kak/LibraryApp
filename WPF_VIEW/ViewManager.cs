@@ -101,8 +101,8 @@ namespace WPF_VIEW
                 return new AddReader(viewModelAddReader);
             else if (vm is BookViewModel viewModelBookViewModel)
                 return new AddBook(viewModelBookViewModel);
-            else if (vm is ReturnGiveBookViewModel viewModelReturnGiveBook)
-                return new ReturnGiveBook(viewModelReturnGiveBook);
+            else if (vm is ReturnGiveBookViewModel)
+                return new ReturnGiveBook();
             else
                 return null;
         }
