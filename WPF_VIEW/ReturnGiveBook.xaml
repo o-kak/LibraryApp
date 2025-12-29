@@ -79,6 +79,7 @@
                     <ListView Grid.Row="1" 
                               x:Name="ReaderBooksListView"
                               ItemsSource="{Binding ReadersBooks}"
+                              SelectedItem="{Binding SelectedReadersBook}"
                               ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <ListView.View>
                             <GridView>
@@ -157,6 +158,7 @@
                     <ListView Grid.Row="1" 
                               x:Name="AvailableBooksListView"
                               ItemsSource="{Binding AvailableBooks}"
+                              SelectedItem="{Binding SelectedAvailableBook}"
                               ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <ListView.View>
                             <GridView>
@@ -172,6 +174,13 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Author}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Жанр" Width="50">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Genre}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

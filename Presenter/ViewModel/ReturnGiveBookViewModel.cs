@@ -8,6 +8,7 @@ using BusinessLogic;
 using Shared;
 using Model;
 using System.Windows.Input;
+using Ninject;
 
 namespace Presenter.ViewModel
 {
@@ -95,9 +96,18 @@ namespace Presenter.ViewModel
             _vmManager = vmManager;
             SelectedReader = reader;
 
+            _bookService = new StandardKernel(new SimpleConfigModule()).Get<BookService>();
+            _loanService = new StandardKernel(new SimpleConfigModule()).Get<LoanService>();
+
             GiveBookCommand = new RelayCommand(GiveBook);
             ReturnBookCommand = new RelayCommand(ReturnBook);
             UpdateCommand = new RelayCommand(Update);
+
+            ReadersBooks = new BindingList<BookEventArgs>();
+            AvailableBooks = new BindingList<BookEventArgs>();
+
+            LoadAvailableBooks();
+            LoadReadersBooks();
         }
 
         private void LoadReadersBooks()
