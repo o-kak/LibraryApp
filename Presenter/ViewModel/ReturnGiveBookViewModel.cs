@@ -166,6 +166,15 @@ namespace Presenter.ViewModel
         {
             LoadAvailableBooks();
             LoadReadersBooks();
+            _vmManager.CloseCurrentView();
+        }
+
+        /// <summary>
+        /// Освобождает ресурсы, используемые AddReaderViewModel.
+        /// </summary>
+        public override void Dispose()
+        {
+            base.Dispose();
         }
     }
 }
